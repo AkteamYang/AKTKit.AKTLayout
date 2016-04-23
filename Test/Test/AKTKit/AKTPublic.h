@@ -83,7 +83,7 @@
 #define mAKT_Color_Clear ([UIColor clearColor])
 // Random color
 #define mAKT_Color_Random __AKT_Color_Random_IMPL__
-#define __AKT_Color_Random_IMPL__ (aktRandomColor(.2))
+#define __AKT_Color_Random_IMPL__ (aktRandomColor(.5))
 /*
  * Random color
  */
