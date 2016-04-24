@@ -1,7 +1,8 @@
-![AKTKit.AKTLayout](https://raw.githubusercontent.com/AkteamYang/AKTKit.AKTLayout/master/Imgs/AKTLayout.jpg)
-#AKTLayout
+[ ![AKTKit.AKTLayout](https://raw.githubusercontent.com/AkteamYang/AKTKit.AKTLayout/master/Imgs/AKTLayout.jpg) ](https://github.com/AkteamYang/AKTKit.AKTLayout)
+#[AKTLayout](https://github.com/AkteamYang/AKTKit.AKTLayout)
+https://github.com/AkteamYang/AKTKit.AKTLayout
 
-AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系统的自动布局在复杂的界面呈现中，性能衰减十分严重（Masonry、PrueLayout、FLKAutoLayout...都是基于`NSLayoutConstraint`的自动布局书写框架）。AKTLayout最初的目的仅仅是为了简化手动布局时的代码编写，后来引入了高性能的内建自动布局引擎，展现出令人惊喜的特性。
+AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系统的自动布局在复杂的界面呈现中，性能衰减十分严重（Masonry、PureLayout、FLKAutoLayout...都是基于`NSLayoutConstraint`的自动布局书写框架）。AKTLayout最初的目的仅仅是为了简化手动布局时的代码编写，后来引入了高性能的内建自动布局引擎，展现出令人惊喜的特性。
 
 ###New beginning
 
@@ -116,20 +117,18 @@ AKTLayou顶层采用了基于Objective-C语法的shell，通过shell我们可以
 	1. **布局的添加**
 	![addLayout](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/addLayout.jpg?raw=true "addLayout")
 	
-	> view的数量线性增长，同时view的参考复杂度逐级提高（I～III），Masonry添加布局效率呈指数衰减，布局复杂度对AKTLayout的影响不大布局添加效率稳定。
+	> view的数量线性增长，同时view的参考复杂度逐级提高（I～III），Masonry添加布局效率呈指数衰减，布局复杂度对AKTLayout的影响较小，添加布局效率稳定。
 	
-	> I 同一层级视图之间相互参考
+	> I同一层级视图之间相互参考
 	
-	> I I 子视图父视图之间相互参考
+	> I I子视图父视图之间相互参考
 	
-	> I I I  跨层级视图之间相互参考
+	> I I I 跨层级视图之间相互参考
 
 	2. **布局更新**
 	![更新布局](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/updateLayout.jpg?raw=true "更新布局")
 	
-	> 随着布局复杂度的增长，`NSLayoutConstraint`布局效率下降严重，AKTLayout布局更新效率稳定。
-	
-	> AKTLayout运算量呈线性增长。
+	> 随着布局复杂度的增长，`NSLayoutConstraint`布局更新效率下降严重，AKTLayout布局更新效率稳定，由于手动布局无法自动更新所以在这里不参与比较。
 	
 	> 运算量比值`NSLayoutConstraint` : `AKTLayout` 1:1、3.1:1 、4.75:1
 	
@@ -140,7 +139,4 @@ AKTLyout采用响应式布局更新系统，避免不必要的布局计算。当
 ------------
 目前已在9.0系统完成测试，低版本系统后续完成测试。
 
-如果您在运行中发现了问题、对有些特性存在疑惑或者有pull request，你可以在[issue](https://github.com/AkteamYang/AKTKit.AKTLayout/issues "issue")创建一个问题。您也可以在我的[简书](http://www.jianshu.com/p/901cde2d4044 "简书")中进行评论，或者给我发送邮件battle0001@sina.com。
-
-
-
+如果您在运行中发现了问题、对有些特性存在疑惑或者有pull request，你可以在[issue](https://github.com/AkteamYang/AKTKit.AKTLayout/issues "issue")创建一个问题。您也可以在我的[简书](http://www.jianshu.com/p/901cde2d4044)中进行评论，或者给我发送邮件battle0001@sina.com。
