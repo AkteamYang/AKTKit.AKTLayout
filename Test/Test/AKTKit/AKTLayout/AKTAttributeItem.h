@@ -75,7 +75,7 @@ bool __andCenterXY_imp__();
  *  @return Reference configuration object.
  *  @return 参考设置对象
  */
-bool __equalTo_imp__(AKTRefence reference);
+bool __equalTo_imp__(AKTReference reference);
 #pragma mark - function implementations
 //|---------------------------------------------------------
 /**

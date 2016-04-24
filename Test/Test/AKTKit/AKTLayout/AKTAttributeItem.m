@@ -101,7 +101,7 @@ bool __andCenterXY_imp__() {
  *  @return Reference configuration object.
  *  @return 参考设置对象
  */
-bool __equalTo_imp__(AKTRefence reference) {
+bool __equalTo_imp__(AKTReference reference) {
     AKTAttributeItemRef itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount-1;
     if (!reference.referenceValidate) {
         UIView *bindView = (__bridge UIView *)(itemRef->bindView);

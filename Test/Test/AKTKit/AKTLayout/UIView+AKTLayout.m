@@ -20,8 +20,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
 
 @implementation UIView (AKTLayout)
 #pragma mark - layout methods
-- (AKTRefence)akt_top {
-    AKTRefence ref;
+- (AKTReference)akt_top {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate  = true;
     ref.referenceType      = AKTRefenceType_ViewAttribute;
@@ -29,8 +29,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
     return ref;
 }
 
-- (AKTRefence)akt_left {
-    AKTRefence ref;
+- (AKTReference)akt_left {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate  = true;
     ref.referenceType      = AKTRefenceType_ViewAttribute;
@@ -38,8 +38,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
     return ref;
 }
 
-- (AKTRefence)akt_bottom {
-    AKTRefence ref;
+- (AKTReference)akt_bottom {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate  = true;
     ref.referenceType      = AKTRefenceType_ViewAttribute;
@@ -47,8 +47,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
     return ref;
 }
 
-- (AKTRefence)akt_right {
-    AKTRefence ref;
+- (AKTReference)akt_right {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate  = true;
     ref.referenceType      = AKTRefenceType_ViewAttribute;
@@ -56,8 +56,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
     return ref;
 }
 
-- (AKTRefence)akt_width {
-    AKTRefence ref;
+- (AKTReference)akt_width {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate  = true;
     ref.referenceType      = AKTRefenceType_ViewAttribute;
@@ -65,8 +65,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
     return ref;
 }
 
-- (AKTRefence)akt_height {
-    AKTRefence ref;
+- (AKTReference)akt_height {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate  = true;
     ref.referenceType      = AKTRefenceType_ViewAttribute;
@@ -74,8 +74,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
     return ref;
 }
 
-- (AKTRefence)akt_whRatio {
-    AKTRefence ref;
+- (AKTReference)akt_whRatio {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate  = true;
     ref.referenceType      = AKTRefenceType_ViewAttribute;
@@ -83,8 +83,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
     return ref;
 }
 
-- (AKTRefence)akt_centerX {
-    AKTRefence ref;
+- (AKTReference)akt_centerX {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate  = true;
     ref.referenceType      = AKTRefenceType_ViewAttribute;
@@ -92,8 +92,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
     return ref;
 }
 
-- (AKTRefence)akt_centerY {
-    AKTRefence ref;
+- (AKTReference)akt_centerY {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate  = true;
     ref.referenceType      = AKTRefenceType_ViewAttribute;

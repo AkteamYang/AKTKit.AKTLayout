@@ -56,14 +56,14 @@ typedef struct {
     void *referenceView;
     CGFloat referenceValue;
     CGSize referenceSize;
-} AKTRefence;
-typedef AKTRefence* AKTRefenceRef;
+} AKTReference;
+typedef AKTReference* AKTRefenceRef;
 
 /*
  * AKTLayoutReferenceObjInfo
  */
 struct AKTReferenceConfigurationStruct {
-    AKTRefence reference;
+    AKTReference reference;
     UIEdgeInsets referenceEdgeInsert;
     float referenceMultiple;
     float referenceOffset;
@@ -95,11 +95,11 @@ void aktReferenceInit(AKTRefenceRef referenceRef);
 //|---------------------------------------------------------
 // Create reference object.
 // 创建参考
-AKTRefence __akt_size(float width, float height);
+AKTReference __akt_size(float width, float height);
 
-AKTRefence __akt_value(float value);
+AKTReference __akt_value(float value);
 
-AKTRefence __akt_view(UIView *view);
+AKTReference __akt_view(UIView *view);
 
 UIEdgeInsets __akt_inset(float top, float left, float bottom, float right);
 #pragma mark - configuration methods
