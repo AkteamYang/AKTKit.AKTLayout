@@ -1,7 +1,7 @@
 ![AKTKit.AKTLayout](https://raw.githubusercontent.com/AkteamYang/AKTKit.AKTLayout/master/Imgs/AKTLayout.jpg)
 #AKTLayout
 
-AKTLayout是一个服务于IOS平台的自动布局框架，由于系统的自动布局在复杂的界面呈现中，无法展现较高的性能（Masonry、PrueLayout、FLKAutoLayout...都是基于`NSLayoutConstraint`的自动布局书写框架）。AKTLayout最初的目的仅仅是为了简化手动布局时的代码编写，后来加入了内建的自动布局引擎，这才有了令人惊喜的特性。
+AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系统的自动布局在复杂的界面呈现中，性能衰减十分严重（Masonry、PrueLayout、FLKAutoLayout...都是基于`NSLayoutConstraint`的自动布局书写框架）。AKTLayout最初的目的仅仅是为了简化手动布局时的代码编写，后来引入了高性能的内建自动布局引擎，展现出令人惊喜的特性。
 
 ###New beginning
 
@@ -133,7 +133,7 @@ AKTLayou顶层采用了基于Objective-C语法的shell，通过shell我们可以
 	
 	> 运算量比值`NSLayoutConstraint` : `AKTLayout` 1:1、3.1:1 、4.75:1
 	
-AKTLyout采用响应式布局更新系统，某个视图布局发生变化时，自动重计算参照此视图的视图布局，在复杂的参照布局中依然保持高性能。
+AKTLyout采用响应式布局更新系统，避免不必要的布局计算。当某个视图布局发生变化时，自动重计算参照此视图的视图布局，在复杂的参照布局中依然保持高性能。
 
 ###FAQ&Contact
 
