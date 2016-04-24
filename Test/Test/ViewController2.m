@@ -19,14 +19,14 @@
     self.naviBar.hidden = YES;
     self.view.backgroundColor = [UIColor whiteColor];
     // Layout test
-//    [self layoutTest1];
+    [self layoutTest1];
 //    [self layoutTest2];
 //    [self layoutTest3];
     // Enter Performance Testing page
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        ViewController *v = [ViewController new];
-        [self presentViewController:v animated:YES completion:nil];
-    });
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        ViewController *v = [ViewController new];
+//        [self presentViewController:v animated:YES completion:nil];
+//    });
 }
 
 - (void)didReceiveMemoryWarning {
