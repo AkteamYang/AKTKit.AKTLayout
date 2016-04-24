@@ -109,25 +109,25 @@ AKTLayou顶层采用了基于Objective-C语法的shell，通过shell我们可以
 
 - **Performance Analysis**
 
-	在复杂布局中应用`NSLayoutConstraint`来进行自动布局，性能往往不令人满意。通常的做法是通过手写`frame`布局来提升性能。AKTLayout采用高性能的布局添加和运算架构，响应式布局更新算法，高效地实现自动布局。以下我们对frame、AKTLayout 和Masonry进行了性能比较。
+	在复杂布局中应用`NSLayoutConstraint`来进行自动布局，性能往往不令人满意。通常的做法是通过手写`frame`布局来提升性能。AKTLayout采用高性能的布局添加和运算架构，响应式布局更新算法，高效地实现自动布局。以下我们对frame、AKTLayout 和Masonry进行了性能比较（Platform：iPhone 6 SystemVersion：9.3.1）。
 
 	![test](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/screenShot.png?raw=true)
 
 	1. **布局的添加**
 	![addLayout](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/addLayout.jpg?raw=true "addLayout")
 	
-	> view的数量线性增长，并且参考复杂度逐级提高，Masonry添加布局效率呈指数衰减
+	> view的数量线性增长，同时view的参考复杂度逐级提高（I～III），Masonry添加布局效率呈指数衰减，布局复杂度对AKTLayout的影响不大布局添加效率稳定。
 	
-	> I 同一层级相互参考
+	> I 同一层级视图之间相互参考
 	
-	> I I 同一层级相互参考 子视图参考父视图
+	> I I 子视图父视图之间相互参考
 	
-	> I I I  同一层级相互参考 子视图参考父视图 跨层级视图参考
+	> I I I  跨层级视图之间相互参考
 
-	2. **运算布局**
+	2. **布局更新**
 	![更新布局](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/updateLayout.jpg?raw=true "更新布局")
 	
-	> 随着布局复杂度的增长，`NSLayoutConstraint`运算量成非线性增长。
+	> 随着布局复杂度的增长，`NSLayoutConstraint`布局效率下降严重，AKTLayout布局更新效率稳定。
 	
 	> AKTLayout运算量呈线性增长。
 	
@@ -138,6 +138,9 @@ AKTLyout采用响应式布局更新系统，避免不必要的布局计算。当
 ###FAQ&Contact
 
 ------------
-如果您在运行中发现了问题、对有些特性存在疑惑或者有pull request，你可以在[issue](https://github.com/AkteamYang/AKTKit.AKTLayout/issues "issue")创建一个问题。您也可以在我的简书中进行评论，或者给我发送邮件battle0001@sina.com。
+目前已在9.0系统完成测试，低版本系统后续完成测试。
+
+如果您在运行中发现了问题、对有些特性存在疑惑或者有pull request，你可以在[issue](https://github.com/AkteamYang/AKTKit.AKTLayout/issues "issue")创建一个问题。您也可以在我的[简书](http://www.jianshu.com/p/901cde2d4044 "简书")中进行评论，或者给我发送邮件battle0001@sina.com。
+
 
 
