@@ -14,11 +14,15 @@ AKTLayout是一个服务于IOS平台的自动布局框架，由于系统的自�
 
 ------------
 - **从GitHub手动获取**
-	1. 从[AKTKit.AKTLayout](https://github.com/AkteamYang/AKTKit.AKTLayout/releases "AKTKit.AKTLayout")中下载资源文件
-	2. 添加资源文件到你的Xcode工程中
-	3. 导入头文件`#import "AKTKit.h"`
-- ** 使用CocoaPods**
-等待后续更新...
+	
+	1.从[AKTKit.AKTLayout](https://github.com/AkteamYang/AKTKit.AKTLayout/releases "AKTKit.AKTLayout")中下载资源文件
+
+	2.添加资源文件到你的Xcode工程中
+	
+	3.导入头文件`#import "AKTKit.h"`
+- **使用CocoaPods**
+	
+	等待后续更新...
 
 
 ###Usage
@@ -27,7 +31,8 @@ AKTLayout是一个服务于IOS平台的自动布局框架，由于系统的自�
 
 
 - **Add layout**
-采用了类似于Masonry的语法，快速地书写布局代码，拥有较为丰富和易于使用的API。
+
+	采用了类似于Masonry的语法，快速地书写布局代码，拥有较为丰富和易于使用的API。
 
 	![Demo1](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/orientation.gif?raw=true "Demo1")
 
@@ -51,7 +56,8 @@ AKTLayout是一个服务于IOS平台的自动布局框架，由于系统的自�
     }];
 ```
 - **Animation**
-AKTLayout动画的添加和普通的动画添加没有区别
+
+	AKTLayout动画的添加和普通的动画添加没有区别
 
 	![animation](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/animation.gif?raw=true "animation")
 	1. **如果您仅仅需要暂时添加动画**
@@ -82,7 +88,8 @@ AKTLayout动画的添加和普通的动画添加没有区别
 ------------
 
 - **Architecture **
-![实现架构](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/architecture.png?raw=true "实现架构")
+
+![实现架构](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/architecture.jpg?raw=true "实现架构")
 > 实现架构
 
 	AKTLayou顶层采用了基于Objective-C语法的shell，通过shell我们可以快速地书写布局代码，底层采用了基于纯C的参考解析和运算系统。
