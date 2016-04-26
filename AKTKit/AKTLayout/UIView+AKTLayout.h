@@ -19,15 +19,15 @@
  * AktLayout
  */
 @interface UIView (AKTLayout)
-- (AKTRefence)akt_top;
-- (AKTRefence)akt_left;
-- (AKTRefence)akt_bottom;
-- (AKTRefence)akt_right;
-- (AKTRefence)akt_width;
-- (AKTRefence)akt_height;
-- (AKTRefence)akt_whRatio;
-- (AKTRefence)akt_centerX;
-- (AKTRefence)akt_centerY;
+- (AKTReference)akt_top;
+- (AKTReference)akt_left;
+- (AKTReference)akt_bottom;
+- (AKTReference)akt_right;
+- (AKTReference)akt_width;
+- (AKTReference)akt_height;
+- (AKTReference)akt_whRatio;
+- (AKTReference)akt_centerX;
+- (AKTReference)akt_centerY;
 
 /*
  * Configure layout attributes. It's a AKTLayout method and you can add layout items such as: top/left/bottom/width/whRatio... into currentView. When you add items you don't need to care about the order of these items. The syntax is very easy to write and understand. In order to meet the requirements, we did a lot in the internal processing. But the performance is still outstanding. I have already no longer use autolayout. Because autolayout has a bad performance especially when the view is complex.In order to guarantee the performance we can handwrite frame code. But it's a boring thing and a waste of time. What should I do? Please try AKTLayout！！！

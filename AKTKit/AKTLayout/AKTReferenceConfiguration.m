@@ -50,8 +50,8 @@ void aktReferenceInit(AKTRefenceRef referenceRef) {
 
 #pragma mark - reference methods
 //|---------------------------------------------------------
-AKTRefence __akt_size(float width, float height) {
-    AKTRefence ref;
+AKTReference __akt_size(float width, float height) {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate = true;
     ref.referenceType = AKTRefenceType_Constant;
@@ -59,8 +59,8 @@ AKTRefence __akt_size(float width, float height) {
     return  ref;
 }
 
-AKTRefence __akt_value(float value) {
-    AKTRefence ref;
+AKTReference __akt_value(float value) {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate = true;
     ref.referenceType = AKTRefenceType_Constant;
@@ -68,8 +68,8 @@ AKTRefence __akt_value(float value) {
     return  ref;
 }
 
-AKTRefence __akt_view(UIView *view) {
-    AKTRefence ref;
+AKTReference __akt_view(UIView *view) {
+    AKTReference ref;
     aktReferenceInit(&ref);
     ref.referenceValidate = true;
     ref.referenceType = AKTRefenceType_View;

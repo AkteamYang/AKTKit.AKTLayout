@@ -42,7 +42,7 @@
 - (AKTLayoutShellItem *)centerXY;
 
 // End set layout attribute item and set reference object
-- (AKTLayoutShellConfigure *(^)(AKTRefence reference))equalTo;
+- (AKTLayoutShellConfigure *(^)(AKTReference reference))equalTo;
 @end
 
 @interface AKTLayoutShellAttribute : NSObject

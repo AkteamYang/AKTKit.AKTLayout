@@ -110,8 +110,8 @@ id attribute_shell = nil;
 }
 
 // End set layout attribute item and set reference object
-- (AKTLayoutShellConfigure *(^)(AKTRefence reference))equalTo {
-    return ^AKTLayoutShellConfigure *(AKTRefence reference) {
+- (AKTLayoutShellConfigure *(^)(AKTReference reference))equalTo {
+    return ^AKTLayoutShellConfigure *(AKTReference reference) {
         __equalTo_imp__(reference);
         return configure_shell? configure_shell:[AKTLayoutShellConfigure sharedInstance];
     };

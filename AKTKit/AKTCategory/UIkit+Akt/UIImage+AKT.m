@@ -7,7 +7,6 @@
 //
 
 #import "UIImage+AKT.h"
-#import "AKTAsyncDispatcher.h"
 
 @implementation UIImage (AKT)
 /*
@@ -37,32 +36,34 @@
  * @complete: 完成回调
  */
 + (void)imageCutImage:(UIImage *)img toSize:(CGSize)size complete:(void(^)(UIImage *result))complete {
-    aktDispatcher_global_add(^(AKTAsyncTaskInfo *taskInfo) {
-        [taskInfo setTaskOperation:^id{
-            UIImage *newImage;
-            CGSize imgSize = img.size;
-            CGPoint drawPoint;
-            CGSize scaledSize;
-            if (imgSize.width/imgSize.height < size.width/size.height) {//scale with width
-                scaledSize = CGSizeMake(size.width, imgSize.height/(imgSize.width/size.width));
-                drawPoint.x = 0;
-                drawPoint.y = - (scaledSize.height-size.height)/2;
-            }else{//scale with height
-                scaledSize = CGSizeMake(imgSize.width/(imgSize.height/size.height), size.height);
-                drawPoint.y = 0;
-                drawPoint.x = - (scaledSize.width-size.width)/2;
+//    aktDispatcher_global_add(^(AKTAsyncTaskInfo *taskInfo) {
+//        [taskInfo setTaskOperation:^id{
+//            return nil;
+//        }];
+//    });
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        UIImage *newImage;
+        CGSize imgSize = img.size;
+        CGPoint drawPoint;
+        CGSize scaledSize;
+        if (imgSize.width/imgSize.height < size.width/size.height) {//scale with width
+            scaledSize = CGSizeMake(size.width, imgSize.height/(imgSize.width/size.width));
+            drawPoint.x = 0;
+            drawPoint.y = - (scaledSize.height-size.height)/2;
+        }else{//scale with height
+            scaledSize = CGSizeMake(imgSize.width/(imgSize.height/size.height), size.height);
+            drawPoint.y = 0;
+            drawPoint.x = - (scaledSize.width-size.width)/2;
+        }
+        UIGraphicsBeginImageContext(size);
+        [img drawInRect:CGRectMake(drawPoint.x, drawPoint.y, scaledSize.width, scaledSize.height)];
+        newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (complete) {
+                complete(newImage);
             }
-            UIGraphicsBeginImageContext(size);
-            [img drawInRect:CGRectMake(drawPoint.x, drawPoint.y, scaledSize.width, scaledSize.height)];
-            newImage = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (complete) {
-                    complete(newImage);
-                }
-            });
-            return nil;
-        }];
+        });
     });
 }
 @end
