@@ -114,10 +114,17 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
             return NO;
         }
         // Set layout items and reference object for the layout attribute
-        attributeRef_global = NULL;
+        // Bug report: 如果A在布局时引用了B并触发了B布局的创建，由于创建布局时attribute是全局的，此时B应该先保存A的布局状态再开始B的布局。
+        void *attributeRef_context = NULL;
+        // 保存布局状态上下文。
+        if(attributeRef_global && attributeRef_global->bindView != (__bridge const void *)(self)){
+            attributeRef_context = attributeRef_global;
+        }
         attributeRef_global = malloc(sizeof(AKTLayoutAttribute));
         if (!attributeRef_global) {
             mAKT_Log(@"%@: %@\nMalloc AKTLayoutAttribute error!",[self class], self.aktName);
+            // 恢复原来的布局上下文.
+            attributeRef_global = attributeRef_context;
             return NO;
         }
         aktLayoutAttributeInit(self);
@@ -129,6 +136,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
         if (layout) {
             layout([AKTLayoutShellAttribute sharedInstance]);
         }else{
+            // 恢复原来的布局上下文.
+            attributeRef_global = attributeRef_context;
             return NO;
         }
         // Change view's attributRef
@@ -151,6 +160,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
         // Set frame
         self.frame = rect;
         // 是否退出
+        // 恢复原来的布局上下文.
+        attributeRef_global = attributeRef_context;
         return NO;
     };
     block();

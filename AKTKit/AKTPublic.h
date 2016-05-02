@@ -12,8 +12,8 @@
 // Show debug info in debug mode When it's value is equal to Yes
 #ifdef DEBUG
     #if DEBUG != 0
-        #define DEBUG_INFO_SHOW YES
-        //#define DEBUG_INFO_SHOW NO
+//        #define DEBUG_INFO_SHOW YES
+        #define DEBUG_INFO_SHOW NO
     #else
         #define DEBUG_INFO_SHOW NO
     #endif

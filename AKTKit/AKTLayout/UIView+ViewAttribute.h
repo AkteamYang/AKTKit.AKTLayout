@@ -68,4 +68,10 @@ typedef struct AKTTestStruct AKTTest;
  *  @param offset        offset
  */
 - (void)AKTQuickLayoutWithType:(QuickLayoutConstraintType)type referenceView:(UIView *)referenceView offset:(CGFloat)offset;
+
+/**
+ *  Remove AKTLayout when distroied the view. This method will remove AKTLayout of itself and it's subviews.
+ *  When the view controller pop or dismiss self.view will call this method automaticly.
+ */
+- (void)aktRemoveAKTLayout;
 @end

@@ -26,7 +26,6 @@ static char * const kLayoutActive = "kLayoutActive";
 @implementation UIView (ViewAttribute)
 + (void)load {
     [UIView swizzleClass:[UIView class] fromMethod:@selector(setFrame:) toMethod:@selector(setNewFrame:)];
-    [UIView swizzleClass:[UIView class] fromMethod:@selector(removeFromSuperview) toMethod:@selector(aktRemoveFromSuperview)];
     [UIView swizzleClass:[UIView class] fromMethod:@selector(addSubview:) toMethod:@selector(aktAddSubview:)];
 }
 
@@ -274,19 +273,9 @@ static char * const kLayoutActive = "kLayoutActive";
         if (!bindView.layoutActive) {
             continue;
         }
-        // 改变参考视图布局计数器
-        //        for (UIView *reference in bindView.viewsReferenced) {
-        //            NSLog(@"%@ referencelayoutCount--", reference.aktName);
-        //            reference.layoutCount--;
-        //        }
-        //        bindView.layoutCount--;
         CGRect rect;
         rect = calculateAttribute(bindView.attributeRef);
         bindView.frame = rect;
-        //        bindView.layoutCount++;
-        //        for (UIView *reference in bindView.viewsReferenced) {
-        //            reference.layoutCount++;
-        //        }
     }
 }
 
@@ -296,11 +285,6 @@ static char * const kLayoutActive = "kLayoutActive";
  *  @param frame new frame
  */
 - (void)setNewFrame:(CGRect)frame {
-//    // Couldn't change frame on unactive mode.
-//    // 非激活模式下不能改变frame
-//    if (!self.layoutActive) {
-//        return;
-//    }
     //    NSLog(@"%@ set frame layoutCount: %ld",self.aktName, self.layoutCount);
     CGRect old = self.frame;
     CGRect new = frame;
@@ -314,12 +298,12 @@ static char * const kLayoutActive = "kLayoutActive";
     [self aktUpdateLayoutChainNode];
 }
 
-- (void)aktRemoveFromSuperview {
-    [self aktRemoveFromSuperview];
+/**
+ *  Remove AKTLayout when distroied the view. This method will remove AKTLayout of itself and it's subviews.
+ *  When the view controller pop or dismiss self.view will call this method automaticly.
+ */
+- (void)aktRemoveAKTLayout {
     //    NSLog(@"%@ did remove frome superview",self.aktName);
-    //
-    //    BOOL (^block)() = ^{
-    //        NSLog(@"%@ remove frome superview block start",self.aktName);
     if (self.attributeRef) {
         // Free layout attribute.
         AKTLayoutAttributeRef ref = self.attributeRef;
@@ -342,21 +326,12 @@ static char * const kLayoutActive = "kLayoutActive";
         [node.viewsReferenced removeObject:self];
     }
     [self.layoutChain removeAllObjects];
-    // 移除所有添加了akt布局的view
+    // Remove subivew's AKTLayout.
     for (UIView *view in self.subviews) {
         if (view.attributeRef) {
-            [view removeFromSuperview];
+            [view aktRemoveAKTLayout];
         }
     }
-    //        return YES;
-    //    };
-    //    if (self.layoutCount>=self.layoutChain.count) {
-    //        block();
-    //        return;
-    //    }
-    //    NSLog(@"%@ add block remove frome superview, aktlayoutCount:%ld",self.aktName, self.layoutCount);
-    //    self.layoutActive = NO;
-    //    [self.layoutComplete addObject:block];
 }
 
 - (void)aktAddSubview:(UIView *)view {
