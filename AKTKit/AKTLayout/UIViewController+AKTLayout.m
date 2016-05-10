@@ -29,6 +29,9 @@ typedef NS_ENUM(int, AKTVCEnterType) {
 @implementation UIViewController (AKTLayout)
 #pragma mark - class method
 //|---------------------------------------------------------
+/**
+ *  替换view controller方法
+ */
 + (void)load {
     [UIViewController swizzleClass:[UIViewController class] fromMethod:@selector(viewDidAppear:) toMethod:@selector(aktViewDidAppear:)];
     [UIViewController swizzleClass:[UIViewController class] fromMethod:@selector(viewDidDisappear:) toMethod:@selector(aktViewDidDisappear:)];
@@ -36,6 +39,11 @@ typedef NS_ENUM(int, AKTVCEnterType) {
 
 #pragma mark - life cycle
 //|---------------------------------------------------------
+/**
+ *  替换View did appear
+ *
+ *  @param animated 是否动画过度
+ */
 - (void)aktViewDidAppear:(BOOL)animated {
     // Get enter type.
     if (self.navigationController && [self.navigationController.viewControllers containsObject:self]) {
@@ -49,17 +57,22 @@ typedef NS_ENUM(int, AKTVCEnterType) {
     [self aktViewDidAppear:animated];
 }
 
+/**
+ *  替换View did disappear
+ *
+ *  @param animated 是否动画过度
+ */
 - (void)aktViewDidDisappear:(BOOL)animated {
     switch (self.enterType) {
         case AKTVCEnterType_Present: {
             if (!self.presentingViewController) {
-                [self.view aktRemoveAKTLayout];
+                [self.view aktDestroyFromSuperView];
             }
             break;
         }
         case AKTVCEnterType_Push: {
             if (![self.navigationController.viewControllers containsObject:self]) {
-                [self.view aktRemoveAKTLayout];
+                [self.view aktDestroyFromSuperView];
             }
             break;
         }
@@ -71,13 +84,24 @@ typedef NS_ENUM(int, AKTVCEnterType) {
     // View did disappear
     [self aktViewDidDisappear:animated];
 }
+
 #pragma mark - property settings
 //|---------------------------------------------------------
+/**
+ *  进入当前 view controller 的方式
+ *
+ *  @return 方式枚举
+ */
 - (AKTVCEnterType)enterType {
     id obj = objc_getAssociatedObject(self, &kVCEnterType);
     return obj? [obj intValue]:AKTVCEnterType_Present;
 }
 
+/**
+ *  设置进入当前 view controller 的方式
+ *
+ *  @param enterType 进入方式
+ */
 - (void)setEnterType:(AKTVCEnterType)enterType {
     objc_setAssociatedObject(self, &kVCEnterType, @(enterType), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }

@@ -34,7 +34,7 @@ typedef struct AKTTestStruct AKTTest;
 //-------------------- E.n.d -------------------->Structs statement, globle variables...
 
 @interface UIView (ViewAttribute)
-///< Properties related to frame
+///< Frame设置相关的属性
 @property (nonatomic) CGFloat x;
 @property (nonatomic) CGFloat y;
 @property (nonatomic) CGFloat width;
@@ -50,28 +50,19 @@ typedef struct AKTTestStruct AKTTest;
 //> The views which were referened by currrent view.
 //> 当前视图所参考的视图
 @property (readonly, strong, nonatomic) NSMutableArray *viewsReferenced;
-//> The number of node views which are not setting layout
-//> 子节点不在进行布局运算的视图的数量
-//@property (assign, nonatomic) NSInteger layoutCount;
-//> It's active by default.
-//> 默认是激活状态，允许布局操作，
-@property (assign, nonatomic) BOOL layoutActive;
-//> All layout operation complete, before view enter active mode we should run over blocks in the array. 
-//> 所有布局操作完成，view即将再次进入激活模式前，需要完成的操作
-@property (readonly, strong, nonatomic) NSMutableArray *layoutComplete;
 
-/*
- *  Layout
+/**
+ *  快速布局
  *
- *  @param type          layout type
- *  @param referenceView reference view
- *  @param offset        offset
+ *  @param type          快速布局约束类型
+ *  @param referenceView 参考视图
+ *  @param offset        偏移值
  */
 - (void)AKTQuickLayoutWithType:(QuickLayoutConstraintType)type referenceView:(UIView *)referenceView offset:(CGFloat)offset;
 
 /**
- *  Remove AKTLayout when distroied the view. This method will remove AKTLayout of itself and it's subviews.
- *  When the view controller pop or dismiss self.view will call this method automaticly.
+ *  从父视图中销毁（我们需要最终销毁视图时调用，从父视图中移除并且删除AKTLayout信息）
+ *  提醒：当我们pop、dismiss视图控制器的时候，会自动调用被释放控制器的view的"aktRemoveAKTLayout"，这种情况下无需手动调用。
  */
-- (void)aktRemoveAKTLayout;
+- (void)aktDestroyFromSuperView;
 @end

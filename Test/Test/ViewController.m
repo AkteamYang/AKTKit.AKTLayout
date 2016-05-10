@@ -34,7 +34,11 @@
     });
 }
 - (void)tap:(UITapGestureRecognizer *)tap {
-    self.view.layoutActive = NO;
+    UIViewController *supVC = self.presentingViewController;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        ViewController *v = [ViewController new];
+        [supVC presentViewController:v animated:YES completion:nil];
+    });
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

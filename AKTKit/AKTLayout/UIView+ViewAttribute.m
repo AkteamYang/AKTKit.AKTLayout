@@ -19,14 +19,10 @@ static char * const kAktName = "aktName";
 static char * const kLayoutChain = "kLayoutChain";
 static char * const kAttributeRef = "kAttributeRef";
 static char * const kViewsReferenced = "kViewsReferenced";
-static char * const kLayoutComplete = "kLayoutComplete";
-static char * const kLayoutCount = "kLayoutCount";
-static char * const kLayoutActive = "kLayoutActive";
 //-------------------- E.n.d -------------------->Structs statement & globle variables
 @implementation UIView (ViewAttribute)
 + (void)load {
     [UIView swizzleClass:[UIView class] fromMethod:@selector(setFrame:) toMethod:@selector(setNewFrame:)];
-    [UIView swizzleClass:[UIView class] fromMethod:@selector(addSubview:) toMethod:@selector(aktAddSubview:)];
 }
 
 #pragma mark - properties
@@ -120,63 +116,14 @@ static char * const kLayoutActive = "kLayoutActive";
     }
 }
 
-//- (NSInteger)layoutCount {
-//    id obj = objc_getAssociatedObject(self, kLayoutCount);
-//    if (!obj) {
-//        return self.layoutChain.count;
-//    }
-//    return [obj integerValue];
-//}
-
-//- (void)setLayoutCount:(NSInteger)layoutingCount {
-//    objc_setAssociatedObject(self, kLayoutCount, @(layoutingCount), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-//    if ((layoutingCount == self.layoutChain.count) && !self.layoutActive) {
-//        NSLog(@"%@ layout complete", self.aktName);
-//        
-//        BOOL(^block)();
-//        NSArray *blocks = self.layoutComplete;
-//        if (blocks.count>0) {
-//            for (id obj in blocks) {
-//                block = obj;
-//                if (block()) {// 有退出命令，退出，只有执行了"removeFromeSuperview"才会退出。
-//                    return;
-//                }
-//            }
-//            // 恢复激活状态
-//            self.layoutActive = YES;
-//            NSLog(@"%@ 恢复激活状态", self.aktName);
-//        }
-//    }
-//}
-
-- (BOOL)layoutActive {
-    id obj = objc_getAssociatedObject(self, kLayoutActive);
-    if (!obj) {
-        return YES;
-    }
-    return [obj boolValue];
-}
-
-- (void)setLayoutActive:(BOOL)layoutActive {
-    objc_setAssociatedObject(self, kLayoutActive, @(layoutActive), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (NSMutableArray *)layoutComplete {
-    NSMutableArray *arr = objc_getAssociatedObject(self, kLayoutComplete);
-    if (!arr) {
-        arr = [NSMutableArray array];
-        objc_setAssociatedObject(self, kLayoutComplete, arr, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    return arr;
-}
 #pragma mark - Quick layout
 //|---------------------------------------------------------
 /**
- *  Layout
+ *  快速布局
  *
- *  @param type          layout type
- *  @param referenceView reference view
- *  @param offset        offset
+ *  @param type          快速布局约束类型
+ *  @param referenceView 参考视图
+ *  @param offset        偏移值
  */
 - (void)AKTQuickLayoutWithType:(QuickLayoutConstraintType)type referenceView:(UIView *)referenceView offset:(CGFloat)offset {
     switch (type) {
@@ -258,8 +205,7 @@ static char * const kLayoutActive = "kLayoutActive";
 #pragma mark - auto update node
 //|---------------------------------------------------------
 /**
- *  Update layout of the node in the view's layout chain.
- *  刷新布局链节点布局
+ *  刷新布局子节点（刷新参考了本视图的视图）
  */
 - (void)aktUpdateLayoutChainNode {
     NSInteger count = self.layoutChain.count;
@@ -270,9 +216,6 @@ static char * const kLayoutActive = "kLayoutActive";
     for (int i = 0; i< count;i++) {
         UIView *bindView = self.layoutChain[i];
         //        NSLog(@"%@ node will update frame", bindView.aktName);
-        if (!bindView.layoutActive) {
-            continue;
-        }
         CGRect rect;
         rect = calculateAttribute(bindView.attributeRef);
         bindView.frame = rect;
@@ -280,9 +223,9 @@ static char * const kLayoutActive = "kLayoutActive";
 }
 
 /**
- *  Observer for frame change
+ *  监控当前视图frame的变化
  *
- *  @param frame new frame
+ *  @param frame 新的frame
  */
 - (void)setNewFrame:(CGRect)frame {
     //    NSLog(@"%@ set frame layoutCount: %ld",self.aktName, self.layoutCount);
@@ -299,10 +242,21 @@ static char * const kLayoutActive = "kLayoutActive";
 }
 
 /**
- *  Remove AKTLayout when distroied the view. This method will remove AKTLayout of itself and it's subviews.
- *  When the view controller pop or dismiss self.view will call this method automaticly.
+ *  从父视图中销毁（我们需要最终销毁视图时调用，从父视图中移除并且删除AKTLayout信息）
+ *  提醒：当我们pop、dismiss视图控制器的时候，会自动调用被释放控制器的view的"aktRemoveAKTLayout"，这种情况下无需手动调用。
  */
-- (void)aktRemoveAKTLayout {
+- (void)aktDestroyFromSuperView {
+    // 移除自身和子视图AKTLayout布局
+    [self aktRemoveFromSuperView];
+    // 从父视图中移除
+    [self removeFromSuperview];
+}
+
+/**
+ *  移除当前视图及子视图的AKTLayout布局
+ *  提醒：当我们pop、dismiss视图控制器的时候，会自动调用被释放控制器的view的"aktRemoveAKTLayout"，这种情况下无需手动调用。
+ */
+- (void)aktRemoveFromSuperView {
     //    NSLog(@"%@ did remove frome superview",self.aktName);
     if (self.attributeRef) {
         // Free layout attribute.
@@ -311,11 +265,6 @@ static char * const kLayoutActive = "kLayoutActive";
         free(self.attributeRef);
         self.attributeRef = NULL;
     }
-    // Reset properties(layoutActive needn't change status)
-    self.adaptiveWidth = @YES;
-    self.adaptiveHeight = @YES;
-//    self.layoutCount = 0;
-    [self.layoutComplete removeAllObjects];
     // Remove from reference view's layout chain.
     for (UIView *referenceView in self.viewsReferenced) {
         [referenceView.layoutChain removeObject:self];
@@ -326,21 +275,11 @@ static char * const kLayoutActive = "kLayoutActive";
         [node.viewsReferenced removeObject:self];
     }
     [self.layoutChain removeAllObjects];
-    // Remove subivew's AKTLayout.
+    // 移除子视图的 AKTLayout.
     for (UIView *view in self.subviews) {
         if (view.attributeRef) {
-            [view aktRemoveAKTLayout];
+            [view aktRemoveFromSuperView];
         }
     }
-}
-
-- (void)aktAddSubview:(UIView *)view {
-    if (!self.layoutActive) {
-        mAKT_Log(@"%@\n// Current view \"layoutActive\" state is not available, it may be will be destroyed or are ready layout operation\n// 当前视图layoutActive状态不可用, 可能是已经准备销毁或者正在运算布局", self.aktName);
-        [self aktAddSubview:nil];
-        return;
-    }
-    //    NSLog(@"%@ did add to superview",self.aktName);
-    [self aktAddSubview:view];
 }
 @end
