@@ -102,6 +102,8 @@
                 layout.width.equalTo(akt_view(self.view)).multiple(1.f/columns);
                 layout.height.equalTo(akt_view(self.view)).multiple(1.f/lines);
             }];
+//            v.aktName = @"akt_v";
+//            v.tag = (j+1)+(i*columns);
             // 添加内部子视图
             UIView *sub = [UIView new];
             [v addSubview:sub];
@@ -110,6 +112,8 @@
                 layout.centerXY.equalTo(akt_view(v));
                 layout.size.equalTo(akt_view(v)).multiple(.33);
             }];
+//            sub.aktName = @"akt_sub";
+//            sub.tag = (j+1)+(i*columns);
             // 添加一个同级别视图（跨级参考sub）
             UIView*v1 = [UIView new];
             [self.view addSubview:v1];
@@ -119,13 +123,19 @@
                 layout.right.equalTo(sub.akt_left);
                 layout.bottom.equalTo(sub.akt_top);
             }];
+//            v1.aktName = @"akt_v1";
+//            v1.tag = (j+1)+(i*columns);
             last = v;
             v.backgroundColor = mAKT_Color_Color(arc4random()%255, arc4random()%255, arc4random()%255, 1);
         }
     }
     b = [[NSDate new] timeIntervalSince1970];
     NSLog(@"%lf",b-a);
+//    for(UIView *v in [[self.view viewWithTag:5] layoutChain]){
+//        NSLog(@"akt tag: %ld name: %@", v.tag, v.aktName);
+//    }
 }
+
 - (void)initUIMas {
     double a, b;
     a = [[NSDate new] timeIntervalSince1970];

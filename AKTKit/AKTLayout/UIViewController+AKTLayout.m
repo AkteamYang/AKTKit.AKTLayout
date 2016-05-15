@@ -90,7 +90,7 @@ typedef NS_ENUM(int, AKTVCEnterType) {
 /**
  *  进入当前 view controller 的方式
  *
- *  @return 方式枚举
+ *  @return 进入当前控制器方式
  */
 - (AKTVCEnterType)enterType {
     id obj = objc_getAssociatedObject(self, &kVCEnterType);

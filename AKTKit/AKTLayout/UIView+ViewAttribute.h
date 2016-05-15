@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+
 //--------------------Structs statement, globle variables...--------------------
-// QuickLayoutConstraintType
+// 快速布局约束类型
 typedef NS_ENUM(NSInteger, QuickLayoutConstraintType) {
     QuickLayoutConstraintAlignTo_Top,
     QuickLayoutConstraintAlignTo_Left,
@@ -34,22 +35,24 @@ typedef struct AKTTestStruct AKTTest;
 //-------------------- E.n.d -------------------->Structs statement, globle variables...
 
 @interface UIView (ViewAttribute)
-///< Frame设置相关的属性
+//> Frame设置相关的属性
 @property (nonatomic) CGFloat x;
 @property (nonatomic) CGFloat y;
 @property (nonatomic) CGFloat width;
 @property (nonatomic) CGFloat height;
-///< The width or height will be adaptive if we set the corresponding value to YES. But if all of the two values were setted to YES or NO the view wouldn't be adaptive.
+//> 自适应高度和宽度，默认值为nil，不做任何自适应处理
 @property (strong, nonatomic) NSNumber *adaptiveWidth;
 @property (strong, nonatomic) NSNumber *adaptiveHeight;
+//> AKTLayout Debug日志将用此名称进行打印日志
 @property (copy, nonatomic) NSString *aktName;
+//> 布局信息
 @property (assign, nonatomic) void *attributeRef;
-//> Layout chain, including layout which referenced to the current view, when the current view layout change will refresh-related layout.
-//> 布局链, 包含了参考了当前视图的布局，当当前视图布局改变时将刷新相关的布局。
+//> 布局链, 包含了参考了当前视图的布局，当当前视图布局改变时将刷新链表中的视图的布局
 @property (readonly, strong, nonatomic) NSMutableArray *layoutChain;
-//> The views which were referened by currrent view.
-//> 当前视图所参考的视图
+//> 当前视图所参考的视图的数组
 @property (readonly, strong, nonatomic) NSMutableArray *viewsReferenced;
+//> 布局需要被刷新次数
+@property (assign, nonatomic) NSInteger layoutUpdateCount;
 
 /**
  *  快速布局

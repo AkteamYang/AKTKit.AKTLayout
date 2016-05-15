@@ -8,12 +8,10 @@
 
 #import <Foundation/Foundation.h>
 // import-<frameworks.h>
-
 // import-"models.h"
 #import "UIView+ViewAttribute.h"
 #import "AKTLayoutAttribute.h"
 // import-"views & controllers.h"
-
 
 @interface AKTLayoutShellConfigure : NSObject
 + (AKTLayoutShellConfigure *)sharedInstance;

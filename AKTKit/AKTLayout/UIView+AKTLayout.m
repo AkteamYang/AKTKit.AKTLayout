@@ -20,6 +20,7 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
 
 @implementation UIView (AKTLayout)
 #pragma mark - layout methods
+//|---------------------------------------------------------
 - (AKTReference)akt_top {
     AKTReference ref;
     aktReferenceInit(&ref);
@@ -107,72 +108,59 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
  */
 - (void)aktLayout:(void(^)(AKTLayoutShellAttribute *layout))layout
 {
-    BOOL (^block)() = ^BOOL{
-        // Whether the view is validate
-        if (!self.superview) {
-            mAKT_Log(@"%@: %@\nYour view or the referenceview should has a superview",[self class], self.aktName);
-            return NO;
-        }
-        // Set layout items and reference object for the layout attribute
-        // Bug report: 如果A在布局时引用了B并触发了B布局的创建，由于创建布局时attribute是全局的，此时B应该先保存A的布局状态再开始B的布局。
-        void *attributeRef_context = NULL;
-        // 保存布局状态上下文。
-        if(attributeRef_global && attributeRef_global->bindView != (__bridge const void *)(self)){
-            attributeRef_context = attributeRef_global;
-        }
-        attributeRef_global = malloc(sizeof(AKTLayoutAttribute));
-        if (!attributeRef_global) {
-            mAKT_Log(@"%@: %@\nMalloc AKTLayoutAttribute error!",[self class], self.aktName);
-            // 恢复原来的布局上下文.
-            attributeRef_global = attributeRef_context;
-            return NO;
-        }
-        aktLayoutAttributeInit(self);
-        // Set the view what the attribute effect on to the attribute. We call the view the bindView. Before setting the bindView we need initialize the view's adapting properties.
-        if (!(self.adaptiveHeight || self.adaptiveWidth)) {
-            self.adaptiveWidth = @(YES);
-            self.adaptiveHeight = @(YES);
-        }
-        if (layout) {
-            layout([AKTLayoutShellAttribute sharedInstance]);
-        }else{
-            // 恢复原来的布局上下文.
-            attributeRef_global = attributeRef_context;
-            return NO;
-        }
-        // Change view's attributRef
-        AKTLayoutAttributeRef pt = self.attributeRef;
-        if (pt) {
-            CFRelease(pt->bindView);
-            free(pt);
-        }
-        // Remove layout chain in referened view
-        for (UIView *referenceView in self.viewsReferenced) {
-            [referenceView.layoutChain removeObject:self];
-        }
-        [self.viewsReferenced removeAllObjects];
-        self.attributeRef = attributeRef_global;
-        // Calculate layout with layout attriute.
-        CGRect rect = calculateAttribute(attributeRef_global);
-        attributeRef_global->check = true;
-//         更新布局计数器
-//        self.layoutCount = self.layoutChain.count;
-        // Set frame
-        self.frame = rect;
-        // 是否退出
+    // Whether the view is validate
+    if (!self.superview) {
+        mAKT_Log(@"%@: %@\nYour view or the referenceview should has a superview",[self class], self.aktName);
+        return;
+    }
+    // Set layout items and reference object for the layout attribute
+    // Bug report: 如果A在布局时引用了B并触发了B布局的创建，由于创建布局时attribute是全局的，此时B应该先保存A的布局状态再开始B的布局。
+    void *attributeRef_context = NULL;
+    // 保存布局状态上下文。
+    if(attributeRef_global && attributeRef_global->bindView != (__bridge const void *)(self)){
+        attributeRef_context = attributeRef_global;
+    }
+    attributeRef_global = malloc(sizeof(AKTLayoutAttribute));
+    if (!attributeRef_global) {
+        mAKT_Log(@"%@: %@\nMalloc AKTLayoutAttribute error!",[self class], self.aktName);
         // 恢复原来的布局上下文.
         attributeRef_global = attributeRef_context;
-        return NO;
-    };
-    block();
-//    // Whether cunrrent view is setting layout.
-//    if (self.layoutCount>=self.layoutChain.count) {
-//        block();
-//        return;
-//    }
-//    // 停止新的布局更新（包括自身和子节点的布局更新）
-//    self.layoutActive = NO;
-//    [self.layoutComplete addObject:block];
+        return;
+    }
+    aktLayoutAttributeInit(self);
+    // Set the view what the attribute effect on to the attribute. We call the view the bindView. Before setting the bindView we need initialize the view's adapting properties.
+    if (!(self.adaptiveHeight || self.adaptiveWidth)) {
+        self.adaptiveWidth = @(YES);
+        self.adaptiveHeight = @(YES);
+    }
+    if (layout) {
+        layout([AKTLayoutShellAttribute sharedInstance]);
+    }else{
+        // 恢复原来的布局上下文.
+        attributeRef_global = attributeRef_context;
+        return;
+    }
+    // Change view's attributRef
+    AKTLayoutAttributeRef pt = self.attributeRef;
+    if (pt) {
+        CFRelease(pt->bindView);
+        free(pt);
+    }
+    // Remove layout chain in referened view
+    for (UIView *referenceView in self.viewsReferenced) {
+        [referenceView.layoutChain removeObject:self];
+    }
+    [self.viewsReferenced removeAllObjects];
+    self.attributeRef = attributeRef_global;
+    // Calculate layout with layout attriute.
+    CGRect rect = calculateAttribute(attributeRef_global);
+    attributeRef_global->check = true;
+    // Set frame
+    self.frame = rect;
+    // 是否退出
+    // 恢复原来的布局上下文.
+    attributeRef_global = attributeRef_context;
+    return;
 }
 
 #pragma mark - update frame
@@ -205,7 +193,7 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
 
 - (void)aktLayoutUpdate
 {
-
+    
 }
 
 #pragma mark - distribute
