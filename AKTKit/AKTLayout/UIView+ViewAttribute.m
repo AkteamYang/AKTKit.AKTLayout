@@ -266,7 +266,7 @@ static const char kLayoutUpdateCount;
     // 设置相关视图的布局更新计数器
     // @备注：如果当前视图是触发布局更新的事件源，则需要设置参考了当前视图的视图的更新计数器
     if (self.layoutUpdateCount==0) {
-        NSLog(@"View start update related views akt tag: %ld name: %@", self.tag, self.aktName);
+        //NSLog(@"View start update related views akt tag: %ld name: %@", self.tag, self.aktName);
         [self aktSetLayoutUpdateCount];
     }
     // 刷新子节点布局
@@ -277,12 +277,12 @@ static const char kLayoutUpdateCount;
             bindView.layoutUpdateCount--;
             continue;
         }
-//        if ([bindView.aktName hasPrefix:@"akt"]) {
-//            NSLog(@"akt tag: %ld name: %@", bindView.tag, bindView.aktName);
-//            static int count = 0;
-//            count++;
-//            NSLog(@"count: %d", count);
-//        }
+        if ([bindView.aktName hasPrefix:@"akt"]) {
+            NSLog(@"akt tag: %ld name: %@", bindView.tag, bindView.aktName);
+            static int count = 0;
+            count++;
+            NSLog(@"count: %d", count);
+        }
         CGRect rect;
         rect = calculateAttribute(bindView.attributeRef);
         bindView.frame = rect;

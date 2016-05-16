@@ -102,8 +102,8 @@
                 layout.width.equalTo(akt_view(self.view)).multiple(1.f/columns);
                 layout.height.equalTo(akt_view(self.view)).multiple(1.f/lines);
             }];
-//            v.aktName = @"akt_v";
-//            v.tag = (j+1)+(i*columns);
+            v.aktName = @"akt_v";
+            v.tag = (j+1)+(i*columns);
             // 添加内部子视图
             UIView *sub = [UIView new];
             [v addSubview:sub];
@@ -112,9 +112,9 @@
                 layout.centerXY.equalTo(akt_view(v));
                 layout.size.equalTo(akt_view(v)).multiple(.33);
             }];
-//            sub.aktName = @"akt_sub";
-//            sub.tag = (j+1)+(i*columns);
-            // 添加一个同级别视图（跨级参考sub）
+            sub.aktName = @"akt_sub";
+            sub.tag = (j+1)+(i*columns);
+            // 添加一个视图（跨级参考sub）
             UIView*v1 = [UIView new];
             [self.view addSubview:v1];
             v1.backgroundColor = mAKT_Color_Color(101, 89, 155, 1);
@@ -123,8 +123,33 @@
                 layout.right.equalTo(sub.akt_left);
                 layout.bottom.equalTo(sub.akt_top);
             }];
-//            v1.aktName = @"akt_v1";
-//            v1.tag = (j+1)+(i*columns);
+            v1.aktName = @"akt_v1";
+            v1.tag = (j+1)+(i*columns);
+            // 添加一个视图（跨级参考sub、参考v1）
+            UIView*v2 = [UIView new];
+            [self.view addSubview:v2];
+            v2.backgroundColor = mAKT_Color_Color(0, 89, 155, 1);
+            [v2 aktLayout:^(AKTLayoutShellAttribute *layout) {
+                layout.top.right.equalTo(akt_view(v));
+                layout.height.equalTo(v1.akt_height);
+                layout.left.equalTo(sub.akt_right);
+            }];
+            v2.aktName = @"akt_v2";
+            v2.tag = (j+1)+(i*columns);
+            // 添加一个视图（跨级参考sub、参考v1/v2）
+            UIView*v3 = [UIView new];
+            [self.view addSubview:v3];
+            v3.backgroundColor = mAKT_Color_Color(101, 0, 155, 1);
+            [v3 aktLayout:^(AKTLayoutShellAttribute *layout) {
+                layout.top.equalTo(sub.akt_bottom);
+                layout.left.equalTo(v1.akt_right);
+                layout.right.equalTo(v2.akt_left);
+                layout.bottom.equalTo(akt_view(self.view));
+            }];
+            v3.aktName = @"akt_v3";
+            v3.tag = (j+1)+(i*columns);
+            
+            
             last = v;
             v.backgroundColor = mAKT_Color_Color(arc4random()%255, arc4random()%255, arc4random()%255, 1);
         }
