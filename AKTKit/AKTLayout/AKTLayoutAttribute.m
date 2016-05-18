@@ -10,7 +10,7 @@
 // import-<frameworks.h>
 
 // import-"models.h"
-#import "UIView+ViewAttribute.h"
+#import "UIView+AKTLayout.h"
 #import "AKTPublic.h"
 // import-"views & controllers.h"
 
@@ -280,7 +280,14 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
     // Filter layout setting information.(size, whRatio, recalculation)
     // 过滤布局设置信息(size, whRatio, recalculation)
     AKTLayoutParam paramInfo = initializedParamInfo();
-    NSMutableArray *viewReferenceTmp = [NSMutableArray array];
+    static id tempArr = nil;
+    NSMutableArray *viewReferenceTmp = tempArr;
+    if (viewReferenceTmp) {
+        [viewReferenceTmp removeAllObjects];
+    }else{
+        viewReferenceTmp = [NSMutableArray array];
+        tempArr = viewReferenceTmp;
+    }
     // Get whRatio if exist
     for (int i = 0; i<attributeRef->itemCount; i++) {
         AKTAttributeItemRef itemRef = attributeRef->itemArray+i;

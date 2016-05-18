@@ -8,17 +8,158 @@
 
 #import "UIView+AKTLayout.h"
 #import "AKTPublic.h"
+#import "UIView+ViewAttribute.h"
 #import <objc/runtime.h>
 
 //--------------------Structs statement, globle variables...--------------------
 static char * const kLastFrame = "kLastFrame";
+static char * const kAktName = "aktName";
 AKTLayoutAttributeRef attributeRef_global = NULL;
+BOOL willCommitAnimation = NO;
+extern BOOL screenRotatingAnimationSupport;
 //-------------------- E.n.d -------------------->Structs statement & globle variables
 
 @interface UIView()
 @end
 
 @implementation UIView (AKTLayout)
+#pragma mark - property settings
+//|---------------------------------------------------------
+/**
+ *Properties related to frame
+ */
+- (void)setX:(CGFloat)x {
+    self.frame = CGRectMake(x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+}
+
+- (CGFloat)x {
+    return self.frame.origin.x;
+}
+
+- (void)setY:(CGFloat)y {
+    self.frame = CGRectMake(self.frame.origin.x, y, self.frame.size.width, self.frame.size.height);
+}
+
+- (CGFloat)y {
+    return self.frame.origin.y;
+}
+
+- (void)setWidth:(CGFloat)width {
+    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, width, self.frame.size.height);
+}
+
+- (CGFloat)width {
+    return self.frame.size.width;
+}
+
+- (void)setHeight:(CGFloat)height {
+    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width,height);
+}
+
+- (CGFloat)height {
+    return self.frame.size.height;
+}
+
+/**
+ *  AKTLayout Debug日志将用此名称进行打印日志
+ *
+ *  @return AKTLayout 日志打印名称
+ */
+- (NSString *)aktName {
+    NSString *str = objc_getAssociatedObject(self, kAktName);
+    return str? str:[NSString stringWithFormat:@"%@:%p",NSStringFromClass(self.class),self];;
+}
+
+- (void)setAktName:(NSString *)aktName {
+    objc_setAssociatedObject(self, kAktName, aktName, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+#pragma mark - Quick layout
+//|---------------------------------------------------------
+/**
+ *  快速布局
+ *
+ *  @param type          快速布局约束类型
+ *  @param referenceView 参考视图
+ *  @param offset        偏移值
+ */
+- (void)AKTQuickLayoutWithType:(QuickLayoutConstraintType)type referenceView:(UIView *)referenceView offset:(CGFloat)offset {
+    switch (type) {
+        case QuickLayoutConstraintAlignTo_Top:
+            if (self.superview == referenceView.superview) {
+                self.y = referenceView.y + offset;
+            }else{
+                self.y = offset;
+            }
+            break;
+        case QuickLayoutConstraintAlignTo_Left:
+            if (self.superview == referenceView.superview) {
+                self.x = referenceView.x + offset;
+            }else{
+                self.x = offset;
+            }
+            break;
+        case QuickLayoutConstraintAlignTo_Bottom:
+            if (self.superview == referenceView.superview) {
+                self.y = referenceView.y + referenceView.height + offset - self.height;
+            }else{
+                self.y = offset + referenceView.height - self.height;
+            }
+            break;
+        case QuickLayoutConstraintAlignTo_Right:
+            if (self.superview == referenceView.superview) {
+                self.x = referenceView.x + referenceView.width + offset - self.width;
+            }else{
+                self.x = offset + referenceView.width - self.width;
+            }
+            break;
+        case QuickLayoutConstraintSpaceTo_Top:
+            if (self.superview == referenceView.superview) {
+                self.y = referenceView.y + offset - self.height;
+            }else{
+                self.y = offset - self.height;
+            }
+            break;
+        case QuickLayoutConstraintSpaceTo_Left:
+            if (self.superview == referenceView.superview) {
+                self.x = referenceView.x + offset - self.width;
+            }else{
+                self.x = offset - self.width;
+            }
+            break;
+        case QuickLayoutConstraintSpaceTo_Bottom:
+            if (self.superview == referenceView.superview) {
+                self.y = referenceView.y + offset + referenceView.height;
+            }else{
+                self.y = offset + referenceView.height;
+            }
+            break;
+        case QuickLayoutConstraintSpaceTo_Right:
+            if (self.superview == referenceView.superview) {
+                self.x = referenceView.x + offset + referenceView.width;
+            }else{
+                self.x = offset + referenceView.width;
+            }
+            break;
+        case QuickLayoutConstraintAlign_Horizontal:
+            if (self.superview == referenceView.superview) {
+                self.y = referenceView.y + offset + referenceView.height/2-self.height/2;
+            }else{
+                self.y = offset + referenceView.height/2-self.height/2;
+            }
+            break;
+        case QuickLayoutConstraintAlign_Vertical:
+            if (self.superview == referenceView.superview) {
+                self.x = referenceView.x + offset + referenceView.width/2-self.width/2;
+            }else{
+                self.x = offset + referenceView.width/2-self.width/2;
+            }
+            break;
+        default:
+            break;
+    }
+}
+
 #pragma mark - layout methods
 //|---------------------------------------------------------
 - (AKTReference)akt_top {
@@ -102,6 +243,8 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
     return ref;
 }
 
+#pragma mark - AKTLayout
+//|---------------------------------------------------------
 /*
  * Configure layout attributes. It's a AKTLayout method and you can add layout items such as: top/left/bottom/width/whRatio... into currentView. When you add items you don't need to care about the order of these items. The syntax is very easy to write and understand. In order to meet the requirements, we did a lot in the internal processing. But the performance is still outstanding. I have already no longer use autolayout. Because autolayout has a bad performance especially when the view is complex.In order to guarantee the performance we can handwrite frame code. But it's a boring thing and a waste of time. What should I do? Please try AKTLayout！！！
  * Notice！If one view call the method for many times the last call may override the previous one. Including layout attribute configuration and view's adapting properties.
@@ -163,7 +306,6 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
     return;
 }
 
-#pragma mark - update frame
 /*
  * The method："aktLayoutUpdate" will be called when the view's frame size changed. We can insert our subview layout code into the method, so that the UI can adaptive change
  */
@@ -179,6 +321,7 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
 }
 
 - (void)layoutSubviews {
+#if AKTLyoutVersion < 12
     int width = self.frame.size.width;
     int height = self.frame.size.height;
     int widthOld = self.lastFrame.size.width;
@@ -189,6 +332,9 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
         self.lastFrame = self.frame;
         [self aktLayoutUpdate];
     }
+#else
+    [self performSelector:@selector(aktLayoutUpdate)];
+#endif
 }
 
 - (void)aktLayoutUpdate
@@ -196,6 +342,70 @@ AKTLayoutAttributeRef attributeRef_global = NULL;
     
 }
 
+/**
+ *  从父视图中销毁（我们需要最终销毁视图时调用，从父视图中移除并且删除AKTLayout信息）
+ *  提醒：当我们pop、dismiss视图控制器的时候，会自动调用被释放控制器的view的"aktRemoveAKTLayout"，这种情况下无需手动调用。
+ */
+- (void)aktDestroyFromSuperView {
+    // 移除自身和子视图AKTLayout布局
+    [self aktRemoveFromSuperView];
+    // 从父视图中移除
+    [self removeFromSuperview];
+}
+
+/**
+ *  移除当前视图及子视图的AKTLayout布局
+ *  提醒：当我们pop、dismiss视图控制器的时候，会自动调用被释放控制器的view的"aktRemoveAKTLayout"，这种情况下无需手动调用。
+ */
+- (void)aktRemoveFromSuperView {
+    //    NSLog(@"%@ did remove frome superview",self.aktName);
+    if (self.attributeRef) {
+        // Free layout attribute.
+        AKTLayoutAttributeRef ref = self.attributeRef;
+        CFRelease(ref->bindView);
+        free(self.attributeRef);
+        self.attributeRef = NULL;
+    }
+    // Remove from reference view's layout chain.
+    for (UIView *referenceView in self.viewsReferenced) {
+        [referenceView.layoutChain removeObject:self];
+    }
+    [self.viewsReferenced removeAllObjects];
+    // Remove from node's view reference.
+    for (UIView *node in self.layoutChain) {
+        [node.viewsReferenced removeObject:self];
+    }
+    [self.layoutChain removeAllObjects];
+    // 移除子视图的 AKTLayout.
+    for (UIView *view in self.subviews) {
+        if (view.attributeRef) {
+            [view aktRemoveFromSuperView];
+        }
+    }
+}
+
+/**
+ *  添加AKTLyout动画
+ *
+ *  @param animation 动画代码
+ */
++ (void)aktAnimation:(void(^)())animation {
+    willCommitAnimation = YES;
+    if (animation) {
+        animation();
+    }
+    willCommitAnimation = NO;
+}
+
+/**
+ *  是否支持旋转屏幕动画
+ *  @备注：当支持旋转屏幕动画时，旋转屏幕视图布局速度将降低！一般情况下默认开启
+ *
+ *  @param support
+ */
++ (void)aktScreenRotatingAnimationSupport:(BOOL)support {
+    screenRotatingAnimationSupport = support;
+}
 #pragma mark - distribute
 //|---------------------------------------------------------
 /*

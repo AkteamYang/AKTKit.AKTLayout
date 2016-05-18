@@ -11,7 +11,7 @@
 #import <objc/runtime.h>
 // import-"models.h"
 #import "NSObject+AKT.h"
-#import "UIView+ViewAttribute.h"
+#import "UIView+AKTLayout.h"
 // import-"views & controllers.h"
 
 //--------------------Structs statement, globle variables...--------------------

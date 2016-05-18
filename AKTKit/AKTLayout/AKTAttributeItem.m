@@ -10,7 +10,7 @@
 // import-<frameworks.h>
 
 // import-"models.h"
-#import "UIView+ViewAttribute.h"
+#import "UIView+AKTLayout.h"
 #import "AKTPublic.h"
 #import "AKTLayoutAttribute.h"
 // import-"views & controllers.h"

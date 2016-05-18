@@ -398,7 +398,7 @@
 				TargetAttributes = {
 					F8B77AEF1CC27C1F00906CB7 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = AS4ANJJUVM;
+						DevelopmentTeam = WXT9EC2LVD;
 					};
 				};
 			};
@@ -595,7 +595,7 @@
 				INFOPLIST_FILE = Test/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ak-team.Test1";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ak-team.Test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -608,7 +608,7 @@
 				INFOPLIST_FILE = Test/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ak-team.Test1";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ak-team.Test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
