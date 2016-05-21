@@ -30,10 +30,10 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 
 	2.添加资源文件到你的Xcode工程中
 	
-	3.导入头文件`#import "AKTKit.h"`， `"UIView+ViewAttribute.m"`需要加入MRC编译选项`-fno-objc-arc`
+	3.导入头文件`#import "AKTKit.h"`， `“UIView+ViewAttribute.m”`需要加入MRC编译选项`-fno-objc-arc`
 - **使用CocoaPods**
 	
-	等待后续更新...
+	在Podfile中添加`pod 'AKTLayout', '~> 1.2.0'`如果你的`pod search AKTLayout `搜索不到结果，可以`pod setup`更新一下本地pod仓库
 
 
 ###Usage
@@ -73,22 +73,22 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 	
 	
  1. **如果您仅仅需要暂时添加动画**
-	```objective-c
-[UIView aktAnimation:^{
-        [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
-            tap.enabled = NO;
-            tap.view.frame = CGRectMake((self.view.width-150)/2, (self.view.height-150)/2, 150, 150);
-        } completion:^(BOOL finished) {
-            tap.enabled = YES;
-        }];
-	}];
-```
-	> 在动画代码块中修改frame，如果发生布局更新，界面将恢复到动画前的状态
+ ```objective-c
+ [UIView aktAnimation:^{
+ 	[UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
+ 		tap.enabled = NO;
+ 		tap.view.frame = CGRectMake((self.view.width-150)/2, (self.view.height-150)/2, 150, 150);
+ 	} completion:^(BOOL finished) {
+ 		tap.enabled = YES;
+ 	}];
+ }];
+ ```
+ > 在动画代码块中修改frame，如果发生布局更新，界面将恢复到动画前的状态
 
  2. **非暂时修改**
-	```objective-c
-[UIView aktAnimation:^{
-	    [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
+ ```objective-c
+ [UIView aktAnimation:^{
+ 	[UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
 	        tap.enabled = NO;
 	        [tap.view aktLayout:^(AKTLayoutShellAttribute *layout) {
 	            layout.centerXY.equalTo(akt_view(self.view));
@@ -96,9 +96,9 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 	        }];
 	    } completion:^(BOOL finished) {
 	        tap.enabled = YES;
-	    }];
-}];
-```
+	}];
+ }];
+ ```
 	> 在动画代码块中重新添加AKTLayout，如果发生布局更新，界面将保持动画后的状态，新的AKTLayout布局将会替换旧的。
 
 ###Implementation architecture
