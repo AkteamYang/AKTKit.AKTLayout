@@ -4,8 +4,18 @@ https://github.com/AkteamYang/AKTKit.AKTLayout
 
 AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系统的自动布局在复杂的界面呈现中，性能衰减十分严重（Masonry、PureLayout、FLKAutoLayout...都是基于`NSLayoutConstraint`的自动布局书写框架）。AKTLayout最初的目的仅仅是为了简化手动布局时的代码编写，后来引入了高性能的内建自动布局引擎，展现出令人惊喜的特性。
 
-###New beginning
+###New update
+-----------------
+####V 1.2.0  
+更新日期2016.5.21
+- 布局更新性能相比1.0.0提升约300%！
+- 移除对于UIView生命周期的介入性操作，不再需要手动控制UIView的生命周期，降低使用成本
+- 更新动画接口
+![compare with v1.0.0](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/compare.jpg?raw=true)
+>1.2.0版本布局更新性能的提升还是非常明显的，主要更新了布局刷新的函数调用方式以及view的布局更新逻辑。由于view是相互参照的，某个view的变化会带动相关联的view的变化，在复杂布局中，这些关联关系常常是有重叠的，这样也就导致，同一个view可能被多次计算，理论上来讲只有最后一次计算才是有效的。目前AKTLayout 1.2.0采用最为高效的工作方式自动忽略无效的计算。
 
+
+###New beginning
 ---------------
 ![orientation](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/AutoLayout.gif?raw=true)
 > 通过**AKTLayout**实现的自动布局
@@ -20,7 +30,7 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 
 	2.添加资源文件到你的Xcode工程中
 	
-	3.导入头文件`#import "AKTKit.h"`
+	3.导入头文件`#import "AKTKit.h"`， `"UIView+ViewAttribute.m"`需要加入MRC编译选项`-fno-objc-arc`
 - **使用CocoaPods**
 	
 	等待后续更新...
@@ -33,11 +43,10 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 
 - **Add layout**
 
-	采用了类似于Masonry的语法，快速地书写布局代码，拥有较为丰富和易于使用的API。
+快速地书写布局代码，拥有较为丰富和易于使用的API。
+![Demo1](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/orientation.gif?raw=true "Demo1")
 
-	![Demo1](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/orientation.gif?raw=true "Demo1")
-
-	```objective-c
+```objective-c
 	// 蓝色矩形布局
     [v1 aktLayout:^(AKTLayoutShellAttribute *layout) {
 			// 中心点Y坐标与self.view中心点Y对齐
@@ -58,30 +67,36 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 ```
 - **Animation**
 
-	AKTLayout动画的添加和普通的动画添加没有区别
+	AKTLayout动画的添加和普通的动画添加没有区别，仅仅需要在AKTLayout动画环境代码块中提交您的动画代码
 
 	![animation](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/animation.gif?raw=true "animation")
 	
 	
  1. **如果您仅仅需要暂时添加动画**
 	```objective-c
-[UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
+[UIView aktAnimation:^{
+        [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
+            tap.enabled = NO;
             tap.view.frame = CGRectMake((self.view.width-150)/2, (self.view.height-150)/2, 150, 150);
         } completion:^(BOOL finished) {
-			nil;
-}];
+            tap.enabled = YES;
+        }];
+	}];
 ```
 	> 在动画代码块中修改frame，如果发生布局更新，界面将恢复到动画前的状态
 
  2. **非暂时修改**
 	```objective-c
-[UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:1.f initialSpringVelocity:.2 options:0 animations:^{
-			[view aktLayout:^(AKTLayoutShellAttribute *layout) {
-				layout.centerXY.equalTo(akt_view(self.view));
-				layout.height.width.equalTo(self.view.akt_width).multiple(.6);
-			}];
-} completion:^(BOOL finished) {
-			nil;
+[UIView aktAnimation:^{
+	    [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
+	        tap.enabled = NO;
+	        [tap.view aktLayout:^(AKTLayoutShellAttribute *layout) {
+	            layout.centerXY.equalTo(akt_view(self.view));
+	            layout.height.width.equalTo(akt_value(200));
+	        }];
+	    } completion:^(BOOL finished) {
+	        tap.enabled = YES;
+	    }];
 }];
 ```
 	> 在动画代码块中重新添加AKTLayout，如果发生布局更新，界面将保持动画后的状态，新的AKTLayout布局将会替换旧的。
@@ -92,9 +107,9 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 
 - **Architecture**
 
-![实现架构](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/architecture.jpg?raw=true "实现架构")
-> 实现架构
-AKTLayou顶层采用了基于Objective-C语法的shell，通过shell我们可以快速地书写布局代码，底层采用了基于纯C的参考解析和运算系统。
+![AKTLayout架构](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/architecture.jpg?raw=true "实现架构")
+> AKTLayout架构
+AKTLayou顶层采用了基于Objective-C语法的shell，通过shell我们可以快速地书写布局代码，底层采用了基于纯C的参考解析、参考运算系统和布局更新系统。
 
 - **Reference Type Supported**
 
@@ -106,33 +121,32 @@ AKTLayou顶层采用了基于Objective-C语法的shell，通过shell我们可以
 | centerY  | centerX  | multiple |
 | whRation  | whRation  | * |
 
-支持添加同级别跨级别视图之间的相对参照，不支持自身布局属性之间的参照。
+支持添加同级别跨级别视图之间的相对参照，不支持自身布局属性之间的参照和循环参照。
 
 - **Performance Analysis**
 
 	在复杂布局中应用`NSLayoutConstraint`来进行自动布局，性能往往不令人满意。通常的做法是通过手写`frame`布局来提升性能。AKTLayout采用高性能的布局添加和运算架构，响应式布局更新算法，高效地实现自动布局。以下我们对frame、AKTLayout 和Masonry进行了性能比较（Platform：iPhone 6 SystemVersion：9.3.1）。
 
-	![test](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/screenShot.jpg?raw=true)
+	![iOS](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/screenShot.jpg?raw=true)
+- 关于参考复杂度
+	![Reference](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/reference.jpg?raw=true)
+> 图片展示了下文所测试的四种等级的视图参考，简单来讲越复杂的参考view间的关系越复杂，某个view的变化将影响相关的view进行布局刷新。
 
-	1. **布局的添加**
-	![addLayout](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/addLayout.jpg?raw=true "addLayout")
-	
-	> view的数量线性增长，同时view的参考复杂度逐级提高（I～III），Masonry添加布局效率呈指数衰减，布局复杂度对AKTLayout的影响较小，添加布局效率稳定。
-	
-	> I同一层级视图之间相互参考
-	
-	> I I子视图父视图之间相互参考
-	
-	> I I I 跨层级视图之间相互参考
+这里我还需要解释一下，为什么测试中要用这么多数量的View，有人说平时不可能遇到这么多view的情况。首先第一，数量多是为了便于观察性能的消耗情况，第二我们关注的重点是不同布局方式的运行效率，有兴趣的话可以自己将总时间换算成不同复杂度下的单个view布局的耗时。
 
-	2. **布局更新**
-	![更新布局](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/updateLayout.jpg?raw=true "更新布局")
+  1. **布局的添加**
 	
-	> 随着布局复杂度的增长，`NSLayoutConstraint`布局更新效率下降严重，AKTLayout布局更新效率稳定，由于手动布局无法自动更新所以在这里不参与比较。
+  ![AddLayout](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/addLayout.jpg?raw=true "addLayout")
 	
-	> 运算量比值`NSLayoutConstraint` : `AKTLayout` 1:1、3.1:1 、4.75:1
+  > view的数量线性增长，同时view的参考复杂度逐级提高（I～IIII）IIII级是接近日常使用中的参考复杂度的，Masonry添加布局效率衰减十分严重，在快速响应的UITableView上使用Masonry是必卡无疑的。
+
+  2. **布局更新**
+  ![更新布局](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/updateLayout.jpg?raw=true "更新布局")
 	
-AKTLyout采用响应式布局更新系统，避免不必要的布局计算。当某个视图布局发生变化时，自动重计算参照此视图的视图布局，在复杂的参照布局中依然保持高性能。
+  > 随着布局复杂度的增长，`NSLayoutConstraint`布局更新效率下降严重，AKTLayout布局更新效率稳定，由于手动布局无法自动更新所以在这里不参与比较。
+  > 运算量比值`NSLayoutConstraint` : `AKTLayout` 3:1、13.4:1 、22.8:1
+	
+AKTLyout采用优化的响应式布局更新系统，自动忽略无效的计算。当某个视图布局发生变化时，自动重计算参照此视图的视图布局，在复杂的参照布局中依然保持高性能。
 
 ###FAQ&Contact
 
