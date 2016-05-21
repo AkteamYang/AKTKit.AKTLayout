@@ -15,22 +15,25 @@
 // import-"aid.h"
 #import "NSObject+AKT.h"
 #import "AKTPublic.h"
+#import "UIView+AKTLayout.h"
 
 //--------------------Structs statement, globle variables...--------------------
-static char * const AKT_ADAPTIVE_WIDTH = "AKT_ADAPTIVE_WIDTH";
+static char * const AKT_ADAPTIVE_WIDTH  = "AKT_ADAPTIVE_WIDTH";
 static char * const AKT_ADAPTIVE_HEIGHT = "AKT_ADAPTIVE_HEIGHT";
-static char * const kLayoutChain = "kLayoutChain";
-static char * const kAttributeRef = "kAttributeRef";
-static char * const kViewsReferenced = "kViewsReferenced";
+static char * const kLayoutChain        = "kLayoutChain";
+static char * const kAttributeRef       = "kAttributeRef";
+static char * const kViewsReferenced    = "kViewsReferenced";
+static char const kAKTWeakContainer;
 static const char kLayoutUpdateCount;
 extern BOOL willCommitAnimation;
-BOOL screenRotatingAnimationSupport = YES;
-BOOL screenRotating = NO;
+BOOL screenRotatingAnimationSupport     = YES;
+BOOL screenRotating                     = NO;
 //-------------------- E.n.d -------------------->Structs statement & globle variables
 
 @implementation UIView (ViewAttribute)
 + (void)load {
     [UIView swizzleClass:[UIView class] fromMethod:@selector(setFrame:) toMethod:@selector(setNewFrame:)];
+    [UIView swizzleClass:[UIView class] fromMethod:@selector(dealloc) toMethod:@selector(myDealloc)];
 }
 
 #pragma mark - property settings
@@ -120,6 +123,25 @@ BOOL screenRotating = NO;
     objc_setAssociatedObject(self, &kLayoutUpdateCount, @(layoutUpdateCount<0? 0:layoutUpdateCount), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+/**
+ *  弱引用容器
+ *
+ *  @return 
+ */
+- (AKTWeakContainer *)aktContainer {
+    AKTWeakContainer *container = objc_getAssociatedObject(self, &kAKTWeakContainer);
+    if (!container) {
+        container = [[AKTWeakContainer new] autorelease];
+        container.weakView = self;
+        [self setAktContainer:container];
+    }
+    return container;
+}
+
+- (void)setAktContainer:(AKTWeakContainer *)aktContainer {
+    objc_setAssociatedObject(self, &kAKTWeakContainer, aktContainer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 #pragma mark - auto update node
 //|---------------------------------------------------------
 /**
@@ -129,7 +151,8 @@ BOOL screenRotating = NO;
     NSInteger count = self.layoutChain.count;
     // 刷新子节点布局
     for (int i = 0; i< count;i++) {
-        UIView *bindView = self.layoutChain[i];
+        AKTWeakContainer *container = self.layoutChain[i];
+        UIView *bindView = container.weakView;
         // 如果bindView的布局更新计数器大于0，则暂时不必计算布局更新
         NSInteger layoutUpdateCount = bindView.layoutUpdateCount;
         if (layoutUpdateCount>1) {
@@ -142,8 +165,7 @@ BOOL screenRotating = NO;
 //            count++;
 //            NSLog(@"count: %d", count);
 //        }
-        CGRect rect;
-        rect = calculateAttribute(bindView.attributeRef);
+        CGRect rect = calculateAttribute(bindView.attributeRef);
         bindView.frame = rect;
         // Frame更新完之后将更新计数器减1
         bindView.layoutUpdateCount = layoutUpdateCount-1;
@@ -155,12 +177,12 @@ BOOL screenRotating = NO;
  *  @备注：包含所有布局建立在当前视图基础上的视图（直接或间接参考了当前视图的视图）
  */
 - (void)aktSetLayoutUpdateCount {
-    for(UIView *nodeView in self.layoutChain) {
-        nodeView.layoutUpdateCount++;
+    for(AKTWeakContainer *container in self.layoutChain) {
+        container.weakView.layoutUpdateCount++;
         // 当nodeView的视图刷新次数大于1时不必再向下迭代增加子节点的布局更新次数，因为在必要时nodeView只刷新一次
-        if (nodeView.layoutUpdateCount>1) continue;
+        if (container.weakView.layoutUpdateCount>1) continue;
         // NodeView首次设置刷新时，为子节点添加刷新计数
-        [nodeView aktSetLayoutUpdateCount];
+        [container.weakView aktSetLayoutUpdateCount];
     }
 }
 
@@ -200,4 +222,27 @@ BOOL screenRotating = NO;
         });
     }
 }
+
+/**
+ *  系统 Dealloc 方法
+ */
+- (void)myDealloc {
+    // 移除布局信息\布局参考引用信息
+    if(self.attributeRef) {
+        free(self.attributeRef);
+    }
+    AKTWeakContainer *myContainer = self.aktContainer;
+    for (AKTWeakContainer *container in self.layoutChain) {
+        [container.weakView.viewsReferenced removeObject:myContainer];
+    }
+    for (AKTWeakContainer *container in self.viewsReferenced) {
+        [container.weakView.layoutChain removeObject:myContainer];
+    }
+//    mAKT_Log(@"%@ _dealloc count:%d",self.aktName, i);
+    [self myDealloc];
+}
+@end
+
+@implementation AKTWeakContainer
+
 @end

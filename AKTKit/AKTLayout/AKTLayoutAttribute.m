@@ -79,8 +79,7 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
  */
 void aktLayoutAttributeInit(UIView *view) {
     attributeRef_global->itemCount = 0;
-    // 强引用自身，同attributeRef同时释放
-    attributeRef_global->bindView = CFBridgingRetain(view);
+    attributeRef_global->bindView = (__bridge const void *)(view);
     attributeRef_global->check = false;
 }
 
@@ -242,7 +241,7 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
         }
         attributeRef->itemCount = valideItemCount;
     }
-    // If defined edgeInset set frame and return
+    // 如果定义了edge inset 则忽略其余配置信息
     {
         // Find which item set the edgeInset
         UIEdgeInsets edgeInset;
@@ -270,8 +269,8 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
                     // Add layout chain
                     // 添加布局链
                     UIView *bindView = (__bridge UIView *)(attributeRef->bindView);
-                    [referenceView.layoutChain addObject:bindView];
-                    [bindView.viewsReferenced addObject:referenceView];
+                    [referenceView.layoutChain addObject:bindView.aktContainer];
+                    [bindView.viewsReferenced addObject:referenceView.aktContainer];
                 }
                 return CGRectMake(x_i, y_i, w_i, h_i);
             }
@@ -334,8 +333,8 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
     // 添加布局链
     if (!attributeRef->check) {
         for (UIView *referenceView in viewReferenceTmp) {
-            [referenceView.layoutChain addObject:bindView];
-            [bindView.viewsReferenced addObject:referenceView];
+            [referenceView.layoutChain addObject:bindView.aktContainer];
+            [bindView.viewsReferenced addObject:referenceView.aktContainer];
         }
     }
     // Set other itemtypes: top/left/width.... into paramInfo

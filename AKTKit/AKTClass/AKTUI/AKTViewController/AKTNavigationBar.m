@@ -16,15 +16,13 @@
     self = [super init];
     if (self) {
         self.frame = CGRectMake(0, 0, mAKT_SCREENWITTH, 64);
-        // Forced layout
-        // 强制布局
-        [self aktLayoutUpdate];
     }
     return self;
 }
 #pragma mark - super methods
 //|---------------------------------------------------------
-- (void)aktLayoutUpdate {
+- (void)layoutSubviews {
+    [super layoutSubviews];
     // Layout subviews
     CGFloat topHeight = mAKT_EQ(self.width, mAKT_Device_Width)? 20:0;
     self.naviBackgroundImg.frame = CGRectMake(0, 0, self.superview.width, 44+topHeight);

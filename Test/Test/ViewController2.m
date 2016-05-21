@@ -16,17 +16,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.naviBar.hidden = YES;
+//    self.naviBar.hidden = YES;
     self.view.backgroundColor = [UIColor whiteColor];
     // Layout test
 //    [self layoutTest1];
-//    [self layoutTest2];
+    [self layoutTest2];
 //    [self layoutTest3];
     // Enter Performance Testing page
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        ViewController *v = [ViewController new];
-        [self presentViewController:v animated:YES completion:nil];
-    });
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        ViewController *v = [ViewController new];
+//        [self presentViewController:v animated:YES completion:nil];
+//    });
 }
 
 - (void)didReceiveMemoryWarning {
@@ -232,21 +232,25 @@
 //|---------------------------------------------------------
 - (void)tapTest2:(UITapGestureRecognizer *)tap {
     if (tap.view.width>150) {
-        [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
-            tap.enabled = NO;
-            tap.view.frame = CGRectMake((self.view.width-150)/2, (self.view.height-150)/2, 150, 150);
-        } completion:^(BOOL finished) {
-            tap.enabled = YES;
+        [UIView aktAnimation:^{
+            [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
+                tap.enabled = NO;
+                tap.view.frame = CGRectMake((self.view.width-150)/2, (self.view.height-150)/2, 150, 150);
+            } completion:^(BOOL finished) {
+                tap.enabled = YES;
+            }];
         }];
     }else{
-        [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
-            tap.enabled = NO;
-            [tap.view aktLayout:^(AKTLayoutShellAttribute *layout) {
-                layout.centerXY.equalTo(akt_view(self.view));
-                layout.height.width.equalTo(akt_value(200));
+        [UIView aktAnimation:^{
+            [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
+                tap.enabled = NO;
+                [tap.view aktLayout:^(AKTLayoutShellAttribute *layout) {
+                    layout.centerXY.equalTo(akt_view(self.view));
+                    layout.height.width.equalTo(akt_value(200));
+                }];
+            } completion:^(BOOL finished) {
+                tap.enabled = YES;
             }];
-        } completion:^(BOOL finished) {
-            tap.enabled = YES;
         }];
     }
 }
@@ -256,24 +260,28 @@
     tap.enabled = NO;
 }
 - (void)animation1WithView:(UIView *)view {
-    [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:1.f initialSpringVelocity:.2 options:0 animations:^{
-        [view aktLayout:^(AKTLayoutShellAttribute *layout) {
-            layout.centerXY.equalTo(akt_view(self.view));
-            layout.height.width.equalTo(self.view.akt_width).multiple(.6);
+    [UIView aktAnimation:^{
+        [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:1.f initialSpringVelocity:.2 options:0 animations:^{
+            [view aktLayout:^(AKTLayoutShellAttribute *layout) {
+                layout.centerXY.equalTo(akt_view(self.view));
+                layout.height.width.equalTo(self.view.akt_width).multiple(.6);
+            }];
+        } completion:^(BOOL finished) {
+            [self animation2WithView:view];
         }];
-    } completion:^(BOOL finished) {
-        [self animation2WithView:view];
     }];
 }
 
 - (void)animation2WithView:(UIView *)view {
-    [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:1.f initialSpringVelocity:.2 options:0 animations:^{
-        [view aktLayout:^(AKTLayoutShellAttribute *layout) {
-            layout.centerXY.equalTo(akt_view(self.view));
-            layout.height.width.equalTo(self.view.akt_width).multiple(.2);
+    [UIView aktAnimation:^{
+        [UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:1.f initialSpringVelocity:.2 options:0 animations:^{
+            [view aktLayout:^(AKTLayoutShellAttribute *layout) {
+                layout.centerXY.equalTo(akt_view(self.view));
+                layout.height.width.equalTo(self.view.akt_width).multiple(.2);
+            }];
+        } completion:^(BOOL finished) {
+            [self animation1WithView:view];
         }];
-    } completion:^(BOOL finished) {
-        [self animation1WithView:view];
     }];
 }
 @end

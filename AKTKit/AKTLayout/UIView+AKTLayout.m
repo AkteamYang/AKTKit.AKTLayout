@@ -2,6 +2,11 @@
 //  UIView+QuickLayout.m
 //  AKTeamUikitExtension
 //
+//  Our goal is to be the best framework for automatic layout
+//  Your support will help AKTLayout rising, welcome to provide code support, suggest improvements   to AKTLayout or lit a Star for us
+//  https://github.com/AkteamYang/AKTKit.AKTLayout
+//  AKTLayout version 1.2.0
+//
 //  Created by YaHaoo on 15/9/8.
 //  Copyright (c) 2015年 CoolHear. All rights reserved.
 //
@@ -247,16 +252,18 @@ extern BOOL screenRotatingAnimationSupport;
 //|---------------------------------------------------------
 /*
  * Configure layout attributes. It's a AKTLayout method and you can add layout items such as: top/left/bottom/width/whRatio... into currentView. When you add items you don't need to care about the order of these items. The syntax is very easy to write and understand. In order to meet the requirements, we did a lot in the internal processing. But the performance is still outstanding. I have already no longer use autolayout. Because autolayout has a bad performance especially when the view is complex.In order to guarantee the performance we can handwrite frame code. But it's a boring thing and a waste of time. What should I do? Please try AKTLayout！！！
- * Notice！If one view call the method for many times the last call may override the previous one. Including layout attribute configuration and view's adapting properties.
+ * 添加AKTLayout布局属性，你可以为视图添加多种布局项（top/left/bottom/width/whRatio...），当你添加布局项时你不用关心添加的顺序，语法非常容易理解和编写，为了达到要求我们进行了很多内部转换，但是仍然保持了高性能表现，我已经很久不用系统的自动布局，因为在复杂的视图关系中，它的性能表现实在过于糟糕，为了达到性能要求，必须要手写并计算布局代码，这是一件令人乏味而耗费时间的事情，如果你正在被这些问题困扰，可以尝试一下性能优异的AKTLayout！！！
+ *   https://github.com/AkteamYang/AKTKit.AKTLayout
+ *   我们的目标是成为最好的自动布局框架
+ *   你的支持将有助于AKTLayout不断提升，欢迎为AKTLayout提供代码支持、改进建议或者为我们点上一颗Star
  */
 - (void)aktLayout:(void(^)(AKTLayoutShellAttribute *layout))layout
 {
-    // Whether the view is validate
+    // 检测视图是否有效，没有父视图的view是无效的
     if (!self.superview) {
-        mAKT_Log(@"%@: %@\nYour view or the referenceview should has a superview",[self class], self.aktName);
+        mAKT_Log(@"%@: %@\nYour view should have a superview",[self class], self.aktName);
         return;
     }
-    // Set layout items and reference object for the layout attribute
     // Bug report: 如果A在布局时引用了B并触发了B布局的创建，由于创建布局时attribute是全局的，此时B应该先保存A的布局状态再开始B的布局。
     void *attributeRef_context = NULL;
     // 保存布局状态上下文。
@@ -271,13 +278,13 @@ extern BOOL screenRotatingAnimationSupport;
         return;
     }
     aktLayoutAttributeInit(self);
-    // Set the view what the attribute effect on to the attribute. We call the view the bindView. Before setting the bindView we need initialize the view's adapting properties.
+    // 设置视图的自适应长度和宽度属性（UILabel、UIImageView未来支持）.
     if (!(self.adaptiveHeight || self.adaptiveWidth)) {
         self.adaptiveWidth = @(YES);
         self.adaptiveHeight = @(YES);
     }
     if (layout) {
-        layout([AKTLayoutShellAttribute sharedInstance]);
+        layout(sharedShellAttribute());
     }else{
         // 恢复原来的布局上下文.
         attributeRef_global = attributeRef_context;
@@ -286,24 +293,29 @@ extern BOOL screenRotatingAnimationSupport;
     // Change view's attributRef
     AKTLayoutAttributeRef pt = self.attributeRef;
     if (pt) {
-        CFRelease(pt->bindView);
         free(pt);
     }
-    // Remove layout chain in referened view
-    for (UIView *referenceView in self.viewsReferenced) {
-        [referenceView.layoutChain removeObject:self];
+    // 移除先前的AKTLayout布局设置关联信息，并更新当前信息
+    for (AKTWeakContainer *container in self.viewsReferenced) {
+        [container.weakView.layoutChain removeObject:self.aktContainer];
     }
     [self.viewsReferenced removeAllObjects];
     self.attributeRef = attributeRef_global;
-    // Calculate layout with layout attriute.
+    // 计算布局并设置frame
     CGRect rect = calculateAttribute(attributeRef_global);
     attributeRef_global->check = true;
-    // Set frame
     self.frame = rect;
-    // 是否退出
     // 恢复原来的布局上下文.
     attributeRef_global = attributeRef_context;
     return;
+}
+
+/**
+ *  设置视图需要刷新布局
+ *  @备注：一般在更改了view的size需要立刻执行布局刷新时调用
+ */
+- (void)setAKTNeedRelayout {
+   if (self.attributeRef) self.frame = calculateAttribute(self.attributeRef);
 }
 
 /*
@@ -343,48 +355,6 @@ extern BOOL screenRotatingAnimationSupport;
 }
 
 /**
- *  从父视图中销毁（我们需要最终销毁视图时调用，从父视图中移除并且删除AKTLayout信息）
- *  提醒：当我们pop、dismiss视图控制器的时候，会自动调用被释放控制器的view的"aktRemoveAKTLayout"，这种情况下无需手动调用。
- */
-- (void)aktDestroyFromSuperView {
-    // 移除自身和子视图AKTLayout布局
-    [self aktRemoveFromSuperView];
-    // 从父视图中移除
-    [self removeFromSuperview];
-}
-
-/**
- *  移除当前视图及子视图的AKTLayout布局
- *  提醒：当我们pop、dismiss视图控制器的时候，会自动调用被释放控制器的view的"aktRemoveAKTLayout"，这种情况下无需手动调用。
- */
-- (void)aktRemoveFromSuperView {
-    //    NSLog(@"%@ did remove frome superview",self.aktName);
-    if (self.attributeRef) {
-        // Free layout attribute.
-        AKTLayoutAttributeRef ref = self.attributeRef;
-        CFRelease(ref->bindView);
-        free(self.attributeRef);
-        self.attributeRef = NULL;
-    }
-    // Remove from reference view's layout chain.
-    for (UIView *referenceView in self.viewsReferenced) {
-        [referenceView.layoutChain removeObject:self];
-    }
-    [self.viewsReferenced removeAllObjects];
-    // Remove from node's view reference.
-    for (UIView *node in self.layoutChain) {
-        [node.viewsReferenced removeObject:self];
-    }
-    [self.layoutChain removeAllObjects];
-    // 移除子视图的 AKTLayout.
-    for (UIView *view in self.subviews) {
-        if (view.attributeRef) {
-            [view aktRemoveFromSuperView];
-        }
-    }
-}
-
-/**
  *  添加AKTLyout动画
  *
  *  @param animation 动画代码
@@ -399,7 +369,7 @@ extern BOOL screenRotatingAnimationSupport;
 
 /**
  *  是否支持旋转屏幕动画
- *  @备注：当支持旋转屏幕动画时，旋转屏幕视图布局速度将降低！一般情况下默认开启
+ *  @备注：当支持旋转屏幕动画时，仅仅会导致旋转屏幕时视图布局速度将降低！一般情况下默认开启
  *
  *  @param support
  */

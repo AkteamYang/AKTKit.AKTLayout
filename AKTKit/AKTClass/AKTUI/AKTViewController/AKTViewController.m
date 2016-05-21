@@ -31,8 +31,7 @@ static const char *observer = "observer";
     // 不自动调整scrollview插入值
     self.automaticallyAdjustsScrollViewInsets = NO;
     // Add observer for layout event.
-    // 添加布局事件监控
-    [self addLayoutEventObserver];
+
     self.transitioningDelegate = self;
     _interactiveDismiss = self.interactiveDismiss;
     // Setup naviBar
@@ -64,7 +63,8 @@ static const char *observer = "observer";
 /*
  * Subviews need layout.
  */
-- (void)aktViewLayoutUpdate {
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
     self.naviBar.width = self.view.width;
     if (self.view.width>self.view.height) {
         self.naviBar.height = 44;
@@ -75,6 +75,7 @@ static const char *observer = "observer";
     }
     [self.naviBar aktLayoutUpdate];
 }
+
 
 /*
  * Current view controller was poped
@@ -143,31 +144,5 @@ static const char *observer = "observer";
 
 - (nullable id <UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id <UIViewControllerAnimatedTransitioning>)animator {
     return self.interactiveDismiss.isInteracting? self.interactiveDismiss:nil;
-}
-
-#pragma mark - KVO
-//|---------------------------------------------------------
-/*
- * Add layout event observer for "self.view".
- * 增加self.view布局事件监控
- * @note: 在"self.view"的frame改变时我们将得到一个触发信息，
- */
-- (void)addLayoutEventObserver {
-    [self.view addObserver:self forKeyPath:@"frame" options:(NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld) context:nil];
-    objc_setAssociatedObject(self, observer, @"", OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"frame"]) {
-        CGRect old = [change[NSKeyValueChangeOldKey] CGRectValue];
-        CGRect new = [change[NSKeyValueChangeNewKey] CGRectValue];
-        //        CGRect now = self.view.frame;
-        if (mAKT_EQ(old.size.width, new.size.width) && mAKT_EQ(old.size.height, new.size.height)) {
-            return;
-        }
-        // If frame changed call method "aktViewLayout".
-        // 如果frame发生的改变，则调用布局方法
-        [self aktViewLayoutUpdate];
-    }
 }
 @end

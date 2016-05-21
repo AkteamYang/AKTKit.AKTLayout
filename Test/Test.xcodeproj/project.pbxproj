@@ -49,8 +49,7 @@
 		F8DC8E5C1CD2EAF8005A2F71 /* AKTLayoutShell.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DC8E3C1CD2EAF8005A2F71 /* AKTLayoutShell.m */; };
 		F8DC8E5D1CD2EAF8005A2F71 /* AKTReferenceConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DC8E3E1CD2EAF8005A2F71 /* AKTReferenceConfiguration.m */; };
 		F8DC8E5E1CD2EAF8005A2F71 /* UIView+AKTLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DC8E401CD2EAF8005A2F71 /* UIView+AKTLayout.m */; };
-		F8DC8E5F1CD2EAF8005A2F71 /* UIView+ViewAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DC8E421CD2EAF8005A2F71 /* UIView+ViewAttribute.m */; };
-		F8DC8E601CD2EAF8005A2F71 /* UIViewController+AKTLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DC8E441CD2EAF8005A2F71 /* UIViewController+AKTLayout.m */; };
+		F8DC8E5F1CD2EAF8005A2F71 /* UIView+ViewAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DC8E421CD2EAF8005A2F71 /* UIView+ViewAttribute.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F8DC8E611CD2EAF8005A2F71 /* AKTPublic.m in Sources */ = {isa = PBXBuildFile; fileRef = F8DC8E461CD2EAF8005A2F71 /* AKTPublic.m */; };
 /* End PBXBuildFile section */
 
@@ -145,8 +144,6 @@
 		F8DC8E401CD2EAF8005A2F71 /* UIView+AKTLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AKTLayout.m"; sourceTree = "<group>"; };
 		F8DC8E411CD2EAF8005A2F71 /* UIView+ViewAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ViewAttribute.h"; sourceTree = "<group>"; };
 		F8DC8E421CD2EAF8005A2F71 /* UIView+ViewAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ViewAttribute.m"; sourceTree = "<group>"; };
-		F8DC8E431CD2EAF8005A2F71 /* UIViewController+AKTLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+AKTLayout.h"; sourceTree = "<group>"; };
-		F8DC8E441CD2EAF8005A2F71 /* UIViewController+AKTLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+AKTLayout.m"; sourceTree = "<group>"; };
 		F8DC8E451CD2EAF8005A2F71 /* AKTPublic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AKTPublic.h; sourceTree = "<group>"; };
 		F8DC8E461CD2EAF8005A2F71 /* AKTPublic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AKTPublic.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -361,8 +358,6 @@
 				F8DC8E401CD2EAF8005A2F71 /* UIView+AKTLayout.m */,
 				F8DC8E411CD2EAF8005A2F71 /* UIView+ViewAttribute.h */,
 				F8DC8E421CD2EAF8005A2F71 /* UIView+ViewAttribute.m */,
-				F8DC8E431CD2EAF8005A2F71 /* UIViewController+AKTLayout.h */,
-				F8DC8E441CD2EAF8005A2F71 /* UIViewController+AKTLayout.m */,
 			);
 			path = AKTLayout;
 			sourceTree = "<group>";
@@ -442,7 +437,6 @@
 			files = (
 				F8DC8E4A1CD2EAF8005A2F71 /* UIImage+AKT.m in Sources */,
 				F8DC8E4E1CD2EAF8005A2F71 /* AKTInteractivePop.m in Sources */,
-				F8DC8E601CD2EAF8005A2F71 /* UIViewController+AKTLayout.m in Sources */,
 				F84A2EF31CC47F8A001C3F37 /* View+MASAdditions.m in Sources */,
 				F8DC8E4B1CD2EAF8005A2F71 /* UILabel+Akt.m in Sources */,
 				F8DC8E611CD2EAF8005A2F71 /* AKTPublic.m in Sources */,

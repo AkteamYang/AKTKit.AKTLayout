@@ -14,8 +14,6 @@
 // import-"views & controllers.h"
 
 @interface AKTLayoutShellConfigure : NSObject
-+ (AKTLayoutShellConfigure *)sharedInstance;
-
 /*
  * Multiple and offset
  */
@@ -25,8 +23,6 @@
 @end
 
 @interface AKTLayoutShellItem : NSObject
-+ (AKTLayoutShellItem *)sharedInstance;
-
 // Configure layout attribute item
 - (AKTLayoutShellItem *)top;
 - (AKTLayoutShellItem *)left;
@@ -44,7 +40,7 @@
 @end
 
 @interface AKTLayoutShellAttribute : NSObject
-+ (AKTLayoutShellAttribute *)sharedInstance;
+AKTLayoutShellAttribute *sharedShellAttribute();
 /*
  * Create layout attribute item
  */

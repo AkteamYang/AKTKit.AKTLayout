@@ -13,10 +13,7 @@
 @property (strong, nonatomic) AKTNavigationBar *naviBar;
 @property (assign, nonatomic) BOOL interactiveGestureEnable;
 - (void)orientation:(UIInterfaceOrientation)toInterfaceOrientation;
-/*
- * Subviews need layout.
- */
-- (void)aktViewLayoutUpdate;
+
 /*
  * Current view controller was poped.
  */

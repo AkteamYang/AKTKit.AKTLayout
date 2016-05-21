@@ -77,6 +77,16 @@
             [self.view addSubview:v1];
             v1.backgroundColor = mAKT_Color_Color(101, 89, 155, 1);
             v1.frame = CGRectMake(v.x, v.y, (v.width-sub.width)/2, (v.height-sub.height)/2);
+            
+            UIView*v2 = [UIView new];
+            [self.view addSubview:v2];
+            v2.backgroundColor = mAKT_Color_Color(0, 89, 155, 1);
+            v2.frame = CGRectMake(v1.x+v1.width+sub.width, v1.y, v1.width, v1.height);
+            
+            UIView*v3 = [UIView new];
+            [self.view addSubview:v3];
+            v3.backgroundColor = mAKT_Color_Color(101, 0, 155, 1);
+            v3.frame = CGRectMake(v1.x+v1.width, v.y+sub.height+v1.height, sub.width, v1.height);
         }
     }
     b = [[NSDate new] timeIntervalSince1970];
