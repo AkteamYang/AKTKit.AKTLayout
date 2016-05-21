@@ -112,7 +112,7 @@ AKTLayou顶层采用了基于Objective-C语法的shell，通过shell我们可以
 
 	在复杂布局中应用`NSLayoutConstraint`来进行自动布局，性能往往不令人满意。通常的做法是通过手写`frame`布局来提升性能。AKTLayout采用高性能的布局添加和运算架构，响应式布局更新算法，高效地实现自动布局。以下我们对frame、AKTLayout 和Masonry进行了性能比较（Platform：iPhone 6 SystemVersion：9.3.1）。
 
-	![test](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/screenShot.png?raw=true)
+	![test](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/screenShot.jpg?raw=true)
 
 	1. **布局的添加**
 	![addLayout](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/addLayout.jpg?raw=true "addLayout")
