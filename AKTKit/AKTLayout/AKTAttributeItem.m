@@ -218,7 +218,7 @@ bool addItemType(AKTAttributeItemType type) {
  */
 CGFloat getValue(AKTViewAttributeInfo attributeInfo, UIView *bindView){
     UIView *v = (__bridge UIView *)(attributeInfo.referenceView);
-    CGRect viewRec = [bindView.superview convertRect:v.frame fromView:v.superview? v.superview:mAKT_APPDELEGATE.window];
+    CGRect viewRec = [bindView.superview convertRect:v.frame fromView:v.superview? v.superview:mAKT_APPDELEGATE.keyWindow];
     CGFloat result= 0.0f;
     switch (attributeInfo.type) {
         case AKTAttributeItemType_Top:

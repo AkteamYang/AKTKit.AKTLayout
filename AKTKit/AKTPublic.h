@@ -21,12 +21,11 @@
     #define DEBUG_INFO_SHOW NO
 #endif
 
-#import "AppDelegate.h"
 #define mAKT_SCREENWITTH ([UIScreen mainScreen].bounds.size.width)
 #define mAKT_SCREENHEIGHT ([UIScreen mainScreen].bounds.size.height)
 #define mAKT_Device_Width MIN(mAKT_SCREENHEIGHT, mAKT_SCREENWITTH)
 #define mAKT_Device_Height MAX(mAKT_SCREENHEIGHT, mAKT_SCREENWITTH)
-#define mAKT_APPDELEGATE ((AppDelegate *) ([UIApplication sharedApplication].delegate))
+#define mAKT_APPDELEGATE (([UIApplication sharedApplication]))
 
 // Version
 #define mAKT_SystemVERSION [[[UIDevice currentDevice] systemVersion] floatValue]

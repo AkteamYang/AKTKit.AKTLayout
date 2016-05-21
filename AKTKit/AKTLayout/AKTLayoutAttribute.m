@@ -254,7 +254,7 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
             // Calculate frame
             if (referenceView && edgeInset.top<FLT_MAX-1) {
                 CGFloat x_i, y_i,w_i,h_i;
-                CGRect viewRec = [bindView.superview convertRect:referenceView.frame fromView:referenceView.superview? referenceView.superview:mAKT_APPDELEGATE.window];
+                CGRect viewRec = [bindView.superview convertRect:referenceView.frame fromView:referenceView.superview? referenceView.superview:mAKT_APPDELEGATE.keyWindow];
                 x_i = viewRec.origin.x+calculate(edgeInset.left, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
                 y_i = viewRec.origin.y+calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
                 w_i = -calculate(edgeInset.left, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset)+viewRec.size.width-calculate(edgeInset.right, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
@@ -417,7 +417,7 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
         }else if(itemRef->configuration.reference.referenceType == AKTRefenceType_View){
             UIView *v = (__bridge UIView *)(itemRef->configuration.reference.referenceView);
             UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-            CGRect viewRec = [bindView.superview convertRect:v.frame fromView:v.superview? v.superview:mAKT_APPDELEGATE.window];
+            CGRect viewRec = [bindView.superview convertRect:v.frame fromView:v.superview? v.superview:mAKT_APPDELEGATE.keyWindow];
             switch (num) {
                 case AKTAttributeItemType_Top:
                 {
