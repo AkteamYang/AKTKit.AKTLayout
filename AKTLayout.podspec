@@ -99,7 +99,7 @@ Pod::Spec.new do |s|
   s.source_files  = "AKTKit/*.{h,m}", "AKTKit/**/*.{h,m}"
   s.exclude_files = "AKTKit/AKTLayout/UIView+ViewAttribute.{h,m}"
 
-  s.subspec 'mrcFile' do |cs|
+  s.subspec 'AKTKit/AKTLayout/UIView+ViewAttribute.{h,m}' do |cs|
     cs.source_files  = "AKTKit/AKTLayout/UIView+ViewAttribute.{h,m}"
     cs.requires_arc = false
   end
