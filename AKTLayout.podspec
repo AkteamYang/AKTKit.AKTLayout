@@ -69,11 +69,11 @@ Pod::Spec.new do |s|
   #  the deployment target. You can optionally include the target after the platform.
   #
 
-  s.platform     = :ios
-  # s.platform     = :ios, "5.0"
+  # s.platform     = :ios
+  # s.platform     = :ios, "7.0"
 
   #  When using multiple platforms
-  # s.ios.deployment_target = "5.0"
+  s.ios.deployment_target = "7.0"
   # s.osx.deployment_target = "10.7"
   # s.watchos.deployment_target = "2.0"
   # s.tvos.deployment_target = "9.0"
@@ -95,14 +95,17 @@ Pod::Spec.new do |s|
   #  For header files it will include any header in the folder.
   #  Not including the public_header_files will make all headers public.
   #
+  arc_files = "AKTKit/*.{h,m}", "AKTKit/**/*.{h,m}"
 
-  s.source_files  = "AKTKit/*.{h,m}", "AKTKit/**/*.{h,m}"
-  s.exclude_files = "AKTKit/AKTLayout/UIView+ViewAttribute.{h,m}"
+  s.source_files  = arc_files
+  # s.exclude_files = non_arc_files
+  s.requires_arc =  "AKTKit/ARC_File/*.{h,m}", "AKTKit/ARC_File/**/*.{h,m}"
+  # s.dependency = "AKTLayout"
 
-  s.subspec 'AKTKit/AKTLayout/UIView+ViewAttribute.{h,m}' do |cs|
-    cs.source_files  = "AKTKit/AKTLayout/UIView+ViewAttribute.{h,m}"
-    cs.requires_arc = false
-  end
+  # s.subspec 'AKTLayout' do |cs|
+  #   cs.source_files  = non_arc_files
+  #   cs.requires_arc = false
+  # end
 
   # s.public_header_files = "Classes/**/*.h"
 
