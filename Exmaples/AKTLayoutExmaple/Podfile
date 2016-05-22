@@ -1,0 +1,2 @@
+platform :ios, '7.1'
+pod 'AKTLayout', '~> 1.2.0'
