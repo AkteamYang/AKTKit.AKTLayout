@@ -159,8 +159,8 @@ BOOL screenRotating                     = NO;
             bindView.layoutUpdateCount = layoutUpdateCount-1;
             continue;
         }
-        // 是否需要同步运算（需要动画时 或者 视图是UITableView 、 UICollectionView）
-        if ((screenRotatingAnimationSupport && screenRotating) || [self isKindOfClass:[UITableView class]] || [self isKindOfClass:[UICollectionView class]]) {
+        // 是否需要同步运算（需要动画时、需要旋转时 或者 视图是UITableView 、 UICollectionView）
+        if (willCommitAnimation || (screenRotatingAnimationSupport && screenRotating) || [bindView isKindOfClass:[UITableView class]] || [bindView isKindOfClass:[UICollectionView class]]) {
             CGRect rect = calculateAttribute(bindView.attributeRef);
             [bindView setFrame:rect];
         }else{
