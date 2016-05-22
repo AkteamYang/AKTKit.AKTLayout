@@ -126,7 +126,7 @@ BOOL screenRotating                     = NO;
 /**
  *  弱引用容器
  *
- *  @return 
+ *  @return
  */
 - (AKTWeakContainer *)aktContainer {
     AKTWeakContainer *container = objc_getAssociatedObject(self, &kAKTWeakContainer);
@@ -159,14 +159,18 @@ BOOL screenRotating                     = NO;
             bindView.layoutUpdateCount = layoutUpdateCount-1;
             continue;
         }
-//        if ([bindView.aktName hasPrefix:@"akt"]) {
-//            NSLog(@"akt tag: %ld name: %@", bindView.tag, bindView.aktName);
-//            static int count = 0;
-//            count++;
-//            NSLog(@"count: %d", count);
-//        }
-        CGRect rect = calculateAttribute(bindView.attributeRef);
-        bindView.frame = rect;
+        // 是否需要同步运算（需要动画时 或者 视图是UITableView 、 UICollectionView）
+        if ((screenRotatingAnimationSupport && screenRotating) || [self isKindOfClass:[UITableView class]] || [self isKindOfClass:[UICollectionView class]]) {
+            CGRect rect = calculateAttribute(bindView.attributeRef);
+            [bindView setFrame:rect];
+        }else{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CGRect rect = calculateAttribute(bindView.attributeRef);
+                [bindView setNewFrame:rect];
+            });
+            // 模拟设置frame，为了将计算传播下去，真正计算的是上面异步计算frame
+            bindView.frame = CGRectMake(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
+        }
         // Frame更新完之后将更新计数器减1
         bindView.layoutUpdateCount = layoutUpdateCount-1;
     }
@@ -194,10 +198,16 @@ BOOL screenRotating                     = NO;
 - (void)setNewFrame:(CGRect)frame {
     CGRect old = self.frame;
     CGRect new = frame;
-    if (mAKT_EQ(old.size.width, new.size.width) && mAKT_EQ(old.size.height, new.size.height) && mAKT_EQ(old.origin.x, new.origin.x) && mAKT_EQ(old.origin.y, new.origin.y)) {
-        return;
+    if(frame.origin.x>=FLT_MAX-1){
+        // 这个frame设置仅仅为了通知当前view的相关view进行异步布局运算
+        nil;
+    }else{
+        if (mAKT_EQ(old.size.width, new.size.width) && mAKT_EQ(old.size.height, new.size.height) && mAKT_EQ(old.origin.x, new.origin.x) && mAKT_EQ(old.origin.y, new.origin.y)) {
+            return;
+        }
+        [self setNewFrame:frame];
     }
-    [self setNewFrame:frame];
+    //    NSLog(@"akt name: %@ new frame: %.1f, %.1f, %.1f, %.1f", self.aktName, frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
     NSInteger count = self.layoutChain.count;
     if (count<=0) {
         return;
@@ -208,19 +218,8 @@ BOOL screenRotating                     = NO;
         [self aktSetLayoutUpdateCount];
         screenRotating = mAKT_EQ(old.size.width, new.size.height) && mAKT_EQ(old.size.height, new.size.width);
     }
-    // 获取是否发生了旋转屏幕，旋转屏幕时需要动画
-    if (screenRotatingAnimationSupport && screenRotating) {
-        [self aktUpdateLayoutChainNode];
-        return;
-    }
     // 更新布局链节点布局
-    if (willCommitAnimation) {
-        [self aktUpdateLayoutChainNode];
-    }else{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self aktUpdateLayoutChainNode];
-        });
-    }
+    [self aktUpdateLayoutChainNode];
 }
 
 /**
@@ -238,7 +237,7 @@ BOOL screenRotating                     = NO;
     for (AKTWeakContainer *container in self.viewsReferenced) {
         [container.weakView.layoutChain removeObject:myContainer];
     }
-//    mAKT_Log(@"%@ _dealloc count:%d",self.aktName, i);
+    //    mAKT_Log(@"%@ _dealloc count:%d",self.aktName, i);
     [self myDealloc];
 }
 @end

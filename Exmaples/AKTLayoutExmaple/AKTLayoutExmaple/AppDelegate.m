@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "ViewController.h"
+#import "AKTKit.h"
 
 @interface AppDelegate ()
 
@@ -16,6 +18,12 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+//    ViewController *vc = [ViewController new];
+//    UIView *vv = vc.view;
+//    UINavigationController *nv = [[UINavigationController alloc]initWithRootViewController:vc];
+//    self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+//    self.window.rootViewController = nv;
+//    [self.window makeKeyAndVisible];
     // Override point for customization after application launch.
     return YES;
 }
