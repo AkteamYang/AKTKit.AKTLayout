@@ -12,6 +12,7 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 - 移除对于UIView生命周期的介入性操作，不再需要手动控制UIView的生命周期，降低使用成本
 - 更新动画接口
 ![compare with v1.0.0](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/compare.jpg?raw=true)
+
 >1.2.0版本布局更新性能的提升还是非常明显的，主要更新了布局刷新的函数调用方式以及view的布局更新逻辑。由于view是相互参照的，某个view的变化会带动相关联的view的变化，在复杂布局中，这些关联关系常常是有重叠的，这样也就导致，同一个view可能被多次计算，理论上来讲只有最后一次计算才是有效的。目前AKTLayout 1.2.0采用最为高效的工作方式自动忽略无效的计算。
 
 
@@ -72,34 +73,35 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 	![animation](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/animation.gif?raw=true "animation")
 	
 	
- 1. **如果您仅仅需要暂时添加动画**
- ```objective-c
- [UIView aktAnimation:^{
- 	[UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
- 		tap.enabled = NO;
- 		tap.view.frame = CGRectMake((self.view.width-150)/2, (self.view.height-150)/2, 150, 150);
- 	} completion:^(BOOL finished) {
- 		tap.enabled = YES;
- 	}];
- }];
- ```
- > 在动画代码块中修改frame，如果发生布局更新，界面将恢复到动画前的状态
-
- 2. **非暂时修改**
- ```objective-c
- [UIView aktAnimation:^{
- 	[UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
-	        tap.enabled = NO;
-	        [tap.view aktLayout:^(AKTLayoutShellAttribute *layout) {
-	            layout.centerXY.equalTo(akt_view(self.view));
-	            layout.height.width.equalTo(akt_value(200));
-	        }];
-	    } completion:^(BOOL finished) {
-	        tap.enabled = YES;
-	}];
- }];
- ```
-	> 在动画代码块中重新添加AKTLayout，如果发生布局更新，界面将保持动画后的状态，新的AKTLayout布局将会替换旧的。
+  1. **如果您仅仅需要暂时添加动画**
+ 
+	  ```objective-c
+	  [UIView aktAnimation:^{
+		  	[UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
+		 		tap.enabled = NO;
+		 		tap.view.frame = CGRectMake((self.view.width-150)/2, (self.view.height-150)/2, 150, 150);
+		 	} completion:^(BOOL finished) {
+		 		tap.enabled = YES;
+		 	}];
+	  }];
+	  ```
+  	  > 在动画代码块中修改frame，如果发生布局更新，界面将恢复到动画前的状态
+ 
+  2. **非暂时修改**
+	  ```objective-c
+	  [UIView aktAnimation:^{
+		 	[UIView animateWithDuration:1.f delay:0 usingSpringWithDamping:.3 initialSpringVelocity:.2 options:0 animations:^{
+			        tap.enabled = NO;
+			        [tap.view aktLayout:^(AKTLayoutShellAttribute *layout) {
+			            layout.centerXY.equalTo(akt_view(self.view));
+			            layout.height.width.equalTo(akt_value(200));
+			        }];
+			} completion:^(BOOL finished) {
+			        tap.enabled = YES;
+			}];
+	  }];
+	  ```
+      > 在动画代码块中重新添加AKTLayout，如果发生布局更新，界面将保持动画后的状态，新的AKTLayout布局将会替换旧的。
 
 ###Implementation architecture
 
