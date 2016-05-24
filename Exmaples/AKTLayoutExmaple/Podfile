@@ -1,4 +1,4 @@
 platform :ios, '7.1'
-pod 'AKTLayout', '~> 1.2.0'   
+pod 'AKTLayout', '~> 1.2.1’   
 pod 'Masonry', '~> 1.0.0'
 

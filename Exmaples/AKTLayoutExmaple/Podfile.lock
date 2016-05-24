@@ -3,7 +3,7 @@ PODS:
   - Masonry (1.0.0)
 
 DEPENDENCIES:
-  - AKTLayout (~> 1.2.0)
+  - AKTLayout (~> 1.2.1)
   - Masonry (~> 1.0.0)
 
 SPEC CHECKSUMS:
