@@ -67,6 +67,6 @@
     }
     
     // Update aktLayout
-    [self.superview aktLayoutUpdate];
+    [self setAKTNeedRelayout];
 }
 @end

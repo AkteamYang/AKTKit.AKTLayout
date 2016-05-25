@@ -9,6 +9,11 @@
 #import "ViewController.h"
 #import "AKTKit.h"
 
+//--------------------Structs statement, globle variables...--------------------
+extern const int kColumns;
+extern const int kLines;
+//-------------------- E.n.d -------------------->Structs statement, globle variables...
+
 @interface AKTCell: UITableViewCell
 @property (strong, nonatomic) UIImageView *img;
 @property (strong, nonatomic) UILabel *title;
@@ -123,6 +128,7 @@ static NSString *const kTitle = @"kTitle";
 //|---------------------------------------------------------
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
+    // Header 改变了必须重新设置一遍才能生效
     dispatch_async(dispatch_get_main_queue(), ^{
         self.tableView.tableHeaderView = self.tableView.tableHeaderView;
     });
@@ -135,14 +141,14 @@ static NSString *const kTitle = @"kTitle";
     // 设置导航
     [self.navigationController.navigationBar setBackgroundImage:mAKT_Image(@"P_Navi") forBarMetrics:(UIBarMetricsDefault)];
     [self.navigationController.navigationBar setTranslucent:YES];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:mAKT_Color_White,NSFontAttributeName:mAKT_Font_14}];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:mAKT_Color_White,NSFontAttributeName:mAKT_Font_Bold_18}];
     self.title = @"AKTLayout Demo";
     self.view.aktName = @"self.view";
     // Tableview
     [self.tableView registerClass:[AKTCell class] forCellReuseIdentifier:cellIdentifier];
     [self.data addObjectsFromArray:@[
-                                     @{kClass:@"ExampleMasonry",kImg:@"AKT_Test1",kTitle:@"Masonry Test x1500"},
-                                     @{kClass:@"ExampleAKTLayout",kImg:@"AKT_Test2",kTitle:@"AKTLayout Test x1500"},
+                                     @{kClass:@"ExampleMasonry",kImg:@"AKT_Test1",kTitle:[NSString stringWithFormat:@"Masonry Test x%d",kColumns*kLines*5]},
+                                     @{kClass:@"ExampleAKTLayout",kImg:@"AKT_Test2",kTitle:[NSString stringWithFormat:@"AKTLayout Test x%d",kColumns*kLines*5]},
                                      @{kClass:@"ExamplePlayer",kImg:@"AKT_Example",kTitle:@"Interactive page"},
                                      @{kClass:@"ExampleAnima",kImg:@"AKT_Anima",kTitle:@"Animation show"},
                                      ]];

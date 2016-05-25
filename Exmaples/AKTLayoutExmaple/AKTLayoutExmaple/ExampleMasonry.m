@@ -11,8 +11,13 @@
 #import "Masonry.h"
 
 //--------------------Structs statement, globle variables...--------------------
-const int kColumns = 10;
-const int kLines = 30;
+#if TARGET_IPHONE_SIMULATOR
+    const int kColumns = 15;
+    const int kLines = 30;
+#else 
+    const int kColumns = 10;
+    const int kLines = 30;
+#endif
 //-------------------- E.n.d -------------------->Structs statement, globle variables...
 
 @interface ExampleMasonry ()
@@ -52,9 +57,6 @@ const int kLines = 30;
 - (void)initUI {
     self.view.backgroundColor = [UIColor whiteColor];
     // 设置导航
-    [self.navigationController.navigationBar setBackgroundImage:mAKT_Image(@"P_Navi") forBarMetrics:(UIBarMetricsDefault)];
-    [self.navigationController.navigationBar setTranslucent:YES];
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:mAKT_Color_White,NSFontAttributeName:mAKT_Font_14}];
     self.view.aktName = @"self.view";
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc]initWithImage:mAKT_Image_Origin(@"P_Back") style:(UIBarButtonItemStylePlain) target:self action:@selector(back)]];
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc]initWithImage:mAKT_Image_Origin(@"P_Rotate") style:(UIBarButtonItemStylePlain) target:self action:@selector(rotate)]];
