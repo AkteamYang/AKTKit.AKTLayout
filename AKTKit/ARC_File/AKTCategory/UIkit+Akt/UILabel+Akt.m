@@ -42,19 +42,13 @@
     
     // If all of values of them are YES we'll set the view's height to single line height and adaptiveHeight to NO by default.
     if ([self.adaptiveWidth boolValue] == YES && [self.adaptiveHeight boolValue] == YES) {
-        self.adaptiveHeight = @NO;
-        CGSize size = [self.text sizeWithAttributes:@{NSFontAttributeName:self.font}];
-        // If self.frame.size is equal to size, just return.
-        if (mAKT_EQ(self.width, size.width) && mAKT_EQ(self.height, size.height)) {
+        CGSize oldSize = self.frame.size;
+        [self sizeToFit];
+        // 如果size未发生变化则frame不必进行重计算
+        if (mAKT_EQ(oldSize.width, self.width)&&mAKT_EQ(oldSize.height, self.height)) {
             return;
         }
-        self.height = size.height;
-        self.width = size.width;
-        return;
-    }
-    
-    // Set lable's bounds adaptively base on the content
-    if ([self.adaptiveHeight boolValue]) {
+    }else if ([self.adaptiveHeight boolValue]) {
         CGRect rec = [text boundingRectWithSize:(CGSizeMake(self.width, 9999)) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:@{NSFontAttributeName:self.font} context:nil];
         // If self.height is equal to CGRectGetHeight(rec), just return.
         if (mAKT_EQ(self.height, CGRectGetHeight(rec))) {
@@ -63,9 +57,11 @@
         self.height = CGRectGetHeight(rec);
     }else if ([self.adaptiveWidth boolValue]) {
         CGRect rec = [text boundingRectWithSize:(CGSizeMake(9999, self.height)) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:@{NSFontAttributeName:self.font} context:nil];
+        if (mAKT_EQ(self.width, CGRectGetWidth(rec))) {
+            return;
+        }
         self.width = CGRectGetWidth(rec);
     }
-    
     // Update aktLayout
     [self setAKTNeedRelayout];
 }

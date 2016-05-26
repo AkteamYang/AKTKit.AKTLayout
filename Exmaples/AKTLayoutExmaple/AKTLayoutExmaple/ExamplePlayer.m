@@ -23,13 +23,14 @@
         [self.view addSubview:_drag];
         [_drag aktLayout:^(AKTLayoutShellAttribute *layout) {
             layout.centerX.equalTo(akt_view(self.view));
+            layout.height.equalTo(akt_value(40));
             layout.top.equalTo(self.navigationController.navigationBar.akt_bottom);
         }];
-        _drag.y = self.navigationController.navigationBar.height;
         _drag.text = @"未完待续....";
         [_drag setTextAlignment:(NSTextAlignmentCenter)];
         _drag.backgroundColor = mAKT_Color_Background_204;
         _drag.textColor = mAKT_Color_Text_255;
+        [_drag setNumberOfLines:0];
     }
     return _drag;
 }

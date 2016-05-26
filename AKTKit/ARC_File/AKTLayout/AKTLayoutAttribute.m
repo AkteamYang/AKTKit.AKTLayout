@@ -158,7 +158,7 @@ bool __akt__create__edge() {
     itemRef->bindView = attributeRef_global->bindView;
     // Add itemType to item
     itemRef->configuration.referenceEdgeInsert = UIEdgeInsetsMake(0, 0, 0, 0);
-//    itemRef->typeCount++;
+    //    itemRef->typeCount++;
     return true;
 }
 
@@ -176,7 +176,7 @@ bool __akt__create__size() {
     itemRef->bindView = attributeRef_global->bindView;
     // Add itemType to item
     itemRef->configuration.reference.referenceSize = CGSizeMake(0, 0);
-//    itemRef->typeCount++;
+    //    itemRef->typeCount++;
     return true;
 }
 
@@ -669,6 +669,7 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
         }
         if (paramRef->width<FLT_MAX) {
             hCount++;
+            bindView.adaptiveWidth = @NO;
             if (hCount>2) {
                 paramRef->width = FLT_MAX;
                 hCount--;
@@ -701,6 +702,7 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
         }
         if (paramRef->height<FLT_MAX) {
             vCount++;
+            bindView.adaptiveHeight = @NO;
             if (vCount>2) {
                 paramRef->height = FLT_MAX;
                 vCount--;
@@ -757,6 +759,7 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
         }
         if (paramRef->width<FLT_MAX) {
             hCount++;
+            bindView.adaptiveWidth = @NO;
             if (hCount>2) {
                 paramRef->width = FLT_MAX;
                 hCount--;
@@ -789,6 +792,7 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
         }
         if (paramRef->height<FLT_MAX) {
             vCount++;
+            bindView.adaptiveHeight = @NO;
             if (vCount>2) {
                 paramRef->height = FLT_MAX;
                 vCount--;
