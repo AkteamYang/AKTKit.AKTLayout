@@ -113,10 +113,7 @@ bool __equalTo_imp__(AKTReference reference) {
     BOOL (^edgeCheck)() = ^(){
         if (itemRef->configuration.referenceEdgeInsert.top<(FLT_MAX-1)) {
             UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-            mAKT_Log(@"%@: %@\n// If added edgeinset item type, and reference types are: \"AKTRefenceType_Constant\", \"AKTRefenceType_ViewAttribute\", the reference set is invalid.\n// 如果设置了edgeinset，并且参考类型是：\"AKTRefenceType_Constant\", \"AKTRefenceType_ViewAttribute\",则参照设置是无效的", [bindView class],bindView.aktName);
-            // Remove invalid constraints
-            // 移除无效的约束设置
-            itemRef->configuration.referenceEdgeInsert = UIEdgeInsetsMake(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
+            mAKT_Log(@"%@: %@\n// 对于edge设置参考Constant或者ViewAttribute是没有意义的", [bindView class],bindView.aktName);
             return YES;
         }
         return NO;
@@ -126,14 +123,12 @@ bool __equalTo_imp__(AKTReference reference) {
     BOOL (^sizeCheck)() = ^(){
         if (itemRef->configuration.reference.referenceSize.width<(FLT_MAX-1)) {
             UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-            mAKT_Log(@"%@: %@\n// If added size item type, and reference types are: \"AKTRefenceType_Constant(value)\", \"AKTRefenceType_ViewAttribute\", the reference set is invalid.\n// 如果设置了size，并且参考类型是：\"AKTRefenceType_Constant(value)\", \"AKTRefenceType_ViewAttribute\",则参照设置是无效的", [bindView class],bindView.aktName);
-            // Remove invalid constraints
-            // 移除无效的约束设置
-            itemRef->configuration.reference.referenceSize = CGSizeMake(FLT_MAX, FLT_MAX);
+            mAKT_Log(@"%@: %@\n// 对于size设置参考Constant或者ViewAttribute是没有意义的", [bindView class],bindView.aktName);
             return YES;
         }
         return NO;
     };
+
     switch (reference.referenceType) {
         case AKTRefenceType_View:
             // Add reference view
@@ -153,14 +148,14 @@ bool __equalTo_imp__(AKTReference reference) {
                 // 设置非size参考
                 if (reference.referenceValue<FLT_MAX-1) {
                     UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-                    mAKT_Log(@"%@: %@\n// If added size item type, and reference types are: \"AKTRefenceType_Constant(value)\", \"AKTRefenceType_ViewAttribute\", the reference set is invalid.\n// 如果设置了size，并且参考类型是：\"AKTRefenceType_Constant(value)\", \"AKTRefenceType_ViewAttribute\",则参照设置是无效的", [bindView class],bindView.aktName);
+                    mAKT_Log(@"%@: %@\n// 对于size设置参考固定值和ViewAttribute是没有意义的", [bindView class],bindView.aktName);
                     return false;
                 }
             }else{
                 // 设置size参考
                 if (reference.referenceSize.width<FLT_MAX-1) {
                     UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-                    mAKT_Log(@"%@: %@\n// If added non-size item type, and reference types are: \"AKTRefenceType_Constant(size)\", the reference set is invalid.\n// 如果设置了非size布局项类型，并且参考类型是：\"AKTRefenceType_Constant(size)\",则参照设置是无效的", [bindView class],bindView.aktName);
+                    mAKT_Log(@"%@: %@\n// 对于位置：top、left、bottom...设置参考size是没有意义的", [bindView class],bindView.aktName);
                     return false;
                 }
             }

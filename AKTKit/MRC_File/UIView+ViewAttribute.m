@@ -199,7 +199,7 @@ BOOL screenRotating                     = NO;
     CGRect old = self.frame;
     CGRect new = frame;
     if(frame.origin.x>=FLT_MAX-1){
-        // 这个frame设置仅仅为了通知当前view的相关view进行异步布局运算
+        // 这个frame设置仅仅为了通知当前view的相关view进行异步布局运算，而不必设置frame
         nil;
     }else{
         if (mAKT_EQ(old.size.width, new.size.width) && mAKT_EQ(old.size.height, new.size.height) && mAKT_EQ(old.origin.x, new.origin.x) && mAKT_EQ(old.origin.y, new.origin.y)) {

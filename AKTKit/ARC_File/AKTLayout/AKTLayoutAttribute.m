@@ -44,6 +44,13 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef);
  */
 CGRect calculateRect(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRef);
 
+/**
+ *  检查是否存在循环参考
+ *
+ *  @param attributeRef 布局信息
+ */
+void cycleReferenceCheck(AKTLayoutAttributeRef attributeRef);
+
 /*
  * According to param, calculate the size of frame in horizontal direction. When you call the method, please ensure there were no redundant configurations in param.
  * In one direction two configurations in addition to "whRatio" is enough to calculate the frame in that direction. WhRation will be convert to the configuration of width or height
@@ -229,6 +236,9 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
             mAKT_Log(@"%@: %@\nNot added any attribute items",[bindView class], bindView.aktName);
             return bindView.frame;
         }
+        // 检查是否存在布局项循环参考
+        cycleReferenceCheck(attributeRef);
+        // 去除无效布局项
         int valideItemCount = 0;
         for (int i = 0; i<attributeRef->itemCount; i++) {
             AKTAttributeItemRef itemRef = attributeRef->itemArray+i;
@@ -345,7 +355,44 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
     return calculateRect(&paramInfo, attributeRef);
 }
 
+#pragma mark - check
+//|---------------------------------------------------------
+/**
+ *  检查是否存在循环参考
+ *
+ *  @param attributeRef 布局信息
+ */
+void cycleReferenceCheck(AKTLayoutAttributeRef attributeRef) {
+    UIView *bindView = (__bridge UIView *)(attributeRef->bindView);
+    NSArray *layoutChain = bindView.layoutChain;
+    // 获取bindview布局所参考的视图
+    NSMutableSet *viewReferenced = [NSMutableSet set];
+    for (int i = 0; i<attributeRef->itemCount; i++) {
+        AKTAttributeItemRef itemRef = attributeRef->itemArray+i;
+        if (itemRef->configuration.reference.referenceValidate == false) {
+            continue;
+        }
+        UIView *referenceView = nil;
+        if(itemRef->configuration.reference.referenceType == AKTRefenceType_View) {
+            referenceView = (__bridge UIView *)(itemRef->configuration.reference.referenceView);
+            [viewReferenced addObject:referenceView];
+        }else if (itemRef->configuration.reference.referenceType == AKTRefenceType_ViewAttribute) {
+            referenceView = (__bridge UIView *)(itemRef->configuration.reference.referenceAttribute.referenceView);
+            [viewReferenced addObject:referenceView];
+        }
+    }
+    NSMutableArray *referenceTrack = [NSMutableArray array];
+    
+    
+
+}
+
+void referenceTrack(NSMutableArray *referenceTrack, NSMutableArray *cycledView, UIView *bindview) {
+
+}
+
 #pragma mark - aid for frame calculation
+//|---------------------------------------------------------
 /*
  * Parse layout item to layout param
  */

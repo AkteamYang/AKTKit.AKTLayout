@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 @class AKTWeakContainer;
 
+/**
+ *  AKTLayout的布局更新处理模块MRC编译选项
+ */
 @interface UIView (ViewAttribute)
 //> 自适应高度和宽度，默认值为nil，不做任何自适应处理
 @property (strong, nonatomic) NSNumber *adaptiveWidth;

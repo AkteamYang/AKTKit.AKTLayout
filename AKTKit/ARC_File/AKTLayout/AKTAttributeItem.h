@@ -23,7 +23,6 @@ struct AKTAttributeItemStruct{
     AKTAttributeItemType typeArray[kTypeMaximum];
     int typeCount;
     AKTReferenceConfiguration configuration;
-    // 已由attributeRef强引用
     const void *bindView;
 } ;
 typedef struct AKTAttributeItemStruct AKTAttributeItem;
