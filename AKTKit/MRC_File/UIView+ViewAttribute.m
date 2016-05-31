@@ -25,6 +25,7 @@ static char * const kAttributeRef       = "kAttributeRef";
 static char * const kViewsReferenced    = "kViewsReferenced";
 static char const kAKTWeakContainer;
 static const char kLayoutUpdateCount;
+static const char kMinimumUpdateCount;
 extern BOOL willCommitAnimation;
 BOOL screenRotatingAnimationSupport     = YES;
 BOOL screenRotating                     = NO;
@@ -124,6 +125,21 @@ BOOL screenRotating                     = NO;
 }
 
 /**
+ *  布局更新最小次数，默认为1，如果设置了循环参照将会增加，由循环个数决定，当然我们不建议使用循环参照
+ *  @备注：什么是循环参照？A参照了B同时B也参照了A，对于这种情况我们的布局运算将会运算多次，一般情况下不建议使用循环参照
+ *
+ *  @return 最小布局次数
+ */
+- (NSInteger)minimumUpdateCount {
+    NSNumber *count = objc_getAssociatedObject(self, &kMinimumUpdateCount);
+    return count? [count integerValue]:1;
+}
+
+- (void)setMinimumUpdateCount:(NSInteger)minimumUpdateCount {
+    objc_setAssociatedObject(self, &kMinimumUpdateCount, @(minimumUpdateCount<1? 1:minimumUpdateCount), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+/**
  *  弱引用容器
  *
  *  @return
@@ -153,9 +169,13 @@ BOOL screenRotating                     = NO;
     for (int i = 0; i< count;i++) {
         AKTWeakContainer *container = self.layoutChain[i];
         UIView *bindView = container.weakView;
-        // 如果bindView的布局更新计数器大于0，则暂时不必计算布局更新
+        // 如果bindView的布局更新计数器大于最小刷新阈值，则暂时不必计算布局更新
         NSInteger layoutUpdateCount = bindView.layoutUpdateCount;
-        if (layoutUpdateCount>1) {
+        if (layoutUpdateCount<=0) {
+            // 只有循环参照才会走到这一步，还原最小更新阈值
+            bindView.minimumUpdateCount = 1;
+            continue;
+        }else if (layoutUpdateCount>bindView.minimumUpdateCount) {
             bindView.layoutUpdateCount = layoutUpdateCount-1;
             continue;
         }
@@ -178,15 +198,25 @@ BOOL screenRotating                     = NO;
 
 /**
  *  设置参考了本视图的相关视图的布局刷新计数器
+ *  @param trackArray 用于纪录当前参照路径，识别循环参照
  *  @备注：包含所有布局建立在当前视图基础上的视图（直接或间接参考了当前视图的视图）
  */
-- (void)aktSetLayoutUpdateCount {
+- (void)aktSetLayoutUpdateCountWithTrack:(NSMutableArray *)trackArray {
     for(AKTWeakContainer *container in self.layoutChain) {
-        container.weakView.layoutUpdateCount++;
+        UIView *view = container.weakView;
+        view.layoutUpdateCount++;
         // 当nodeView的视图刷新次数大于1时不必再向下迭代增加子节点的布局更新次数，因为在必要时nodeView只刷新一次
-        if (container.weakView.layoutUpdateCount>1) continue;
+        if (container.weakView.layoutUpdateCount>1) {
+            // 检测循环参照并更新循环
+            if ([trackArray containsObject:view]) {
+                view.minimumUpdateCount++;
+            }
+            continue;
+        }
+        [trackArray addObject:view];
         // NodeView首次设置刷新时，为子节点添加刷新计数
-        [container.weakView aktSetLayoutUpdateCount];
+        [container.weakView aktSetLayoutUpdateCountWithTrack:trackArray];
+        [trackArray removeLastObject];
     }
 }
 
@@ -215,7 +245,16 @@ BOOL screenRotating                     = NO;
     // 设置相关视图的布局更新计数器
     // @备注：如果当前视图是触发布局更新的事件源，则需要设置参考了当前视图的视图的更新计数器
     if (self.layoutUpdateCount==0) {
-        [self aktSetLayoutUpdateCount];
+        static id trackArrObj = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            trackArrObj = [NSMutableArray array];
+        });
+        NSMutableArray *trackArr = trackArrObj;
+        [trackArr removeAllObjects];
+        [trackArr addObject:self];
+        NSLog(@"aktname: %@", self.aktName);
+        [self aktSetLayoutUpdateCountWithTrack:trackArr];
         screenRotating = mAKT_EQ(old.size.width, new.size.height) && mAKT_EQ(old.size.height, new.size.width);
     }
     // 更新布局链节点布局
