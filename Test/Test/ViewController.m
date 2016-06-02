@@ -181,6 +181,16 @@
         layout.width.equalTo(akt_value(100));
         layout.height.equalTo(v.akt_width);
     }];
+    NSLog(@"%@", NSStringFromCGRect(v.frame));
+    
+    UIView*v1 = [UIView new];
+    [self.view addSubview:v1];
+    v1.aktName = @"cycle test v1";
+    v1.backgroundColor = mAKT_Color_Color(10, 89, 155, 1);
+    [v1 aktLayout:^(AKTLayoutShellAttribute *layout) {
+        layout.centerX.width.height.equalTo(akt_view(v));
+        layout.top.equalTo(v.akt_bottom);
+    }];
 }
 
 - (void)initUIMas {

@@ -136,7 +136,7 @@ BOOL screenRotating                     = NO;
 }
 
 - (void)setMinimumUpdateCount:(NSInteger)minimumUpdateCount {
-    objc_setAssociatedObject(self, &kMinimumUpdateCount, @(minimumUpdateCount<1? 1:minimumUpdateCount), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &kMinimumUpdateCount, @(minimumUpdateCount), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 /**
@@ -171,13 +171,18 @@ BOOL screenRotating                     = NO;
         UIView *bindView = container.weakView;
         // 如果bindView的布局更新计数器大于最小刷新阈值，则暂时不必计算布局更新
         NSInteger layoutUpdateCount = bindView.layoutUpdateCount;
+        NSInteger minimumUpdateCount = bindView.minimumUpdateCount;
+        NSLog(@"aktname: %@", bindView.aktName);
+
         if (layoutUpdateCount<=0) {
             // 只有循环参照才会走到这一步，还原最小更新阈值
             bindView.minimumUpdateCount = 1;
             continue;
-        }else if (layoutUpdateCount>bindView.minimumUpdateCount) {
+        }else if (layoutUpdateCount>minimumUpdateCount) {
             bindView.layoutUpdateCount = layoutUpdateCount-1;
             continue;
+        }else if (layoutUpdateCount == minimumUpdateCount) {
+            self.minimumUpdateCount = minimumUpdateCount-1;
         }
         // 是否需要同步运算（需要动画时、需要旋转时 或者 视图是UITableView 、 UICollectionView）
         if (willCommitAnimation || (screenRotatingAnimationSupport && screenRotating) || [bindView isKindOfClass:[UITableView class]] || [bindView isKindOfClass:[UICollectionView class]]) {
@@ -204,9 +209,10 @@ BOOL screenRotating                     = NO;
 - (void)aktSetLayoutUpdateCountWithTrack:(NSMutableArray *)trackArray {
     for(AKTWeakContainer *container in self.layoutChain) {
         UIView *view = container.weakView;
+        NSLog(@"aktname: %@", view.aktName);
         view.layoutUpdateCount++;
         // 当nodeView的视图刷新次数大于1时不必再向下迭代增加子节点的布局更新次数，因为在必要时nodeView只刷新一次
-        if (container.weakView.layoutUpdateCount>1) {
+        if (view.layoutUpdateCount>1) {
             // 检测循环参照并更新循环
             if ([trackArray containsObject:view]) {
                 view.minimumUpdateCount++;
@@ -239,23 +245,27 @@ BOOL screenRotating                     = NO;
     }
     //    NSLog(@"akt name: %@ new frame: %.1f, %.1f, %.1f, %.1f", self.aktName, frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
     NSInteger count = self.layoutChain.count;
-    if (count<=0) {
+    if (count<=0 || self.minimumUpdateCount<=0) {
         return;
     }
     // 设置相关视图的布局更新计数器
     // @备注：如果当前视图是触发布局更新的事件源，则需要设置参考了当前视图的视图的更新计数器
     if (self.layoutUpdateCount==0) {
+        NSLog(@"aktname: %@", self.aktName);
+        self.layoutUpdateCount = 1;
         static id trackArrObj = nil;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
+        if(!trackArrObj){
             trackArrObj = [NSMutableArray array];
-        });
+            [trackArrObj retain];
+        }
         NSMutableArray *trackArr = trackArrObj;
         [trackArr removeAllObjects];
         [trackArr addObject:self];
-        NSLog(@"aktname: %@", self.aktName);
         [self aktSetLayoutUpdateCountWithTrack:trackArr];
         screenRotating = mAKT_EQ(old.size.width, new.size.height) && mAKT_EQ(old.size.height, new.size.width);
+        // 由于本次的frame已经被计算，则将相关计数减一
+        self.layoutUpdateCount--;
+        self.minimumUpdateCount--;
     }
     // 更新布局链节点布局
     [self aktUpdateLayoutChainNode];
