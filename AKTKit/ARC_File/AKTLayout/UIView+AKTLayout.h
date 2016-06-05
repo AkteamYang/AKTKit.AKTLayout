@@ -95,13 +95,20 @@ typedef NS_ENUM(NSInteger, QuickLayoutConstraintType) {
 - (void)setAKTNeedRelayout;
 
 /**
- *  已经完成布局事件
+ *  已经完成布局
  *  @备注：当视图布局完成时会回调这个方法
  *
  *  @param target
  *  @param selector  selector的参数是当前的view (- (void)viewDidLayout:(UIView *)view)
  */
 - (void)aktDidLayoutTarget:(id)target forSelector:(SEL)selector;
+
+/**
+ *  已经完成布局
+ *
+ *  @param complete
+ */
+- (void)aktDidLayoutWithComplete:(void(^)(UIView *view))complete;
 
 /*
  * 当view的size变化时将被自动调用

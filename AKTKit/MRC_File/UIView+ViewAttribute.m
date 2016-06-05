@@ -28,6 +28,7 @@ static const char kLayoutUpdateCount;
 extern BOOL willCommitAnimation;
 extern char const kAktDidLayoutTarget;
 extern char const kAktDidLayoutSelector;
+extern char const kAktDidLayoutComplete;
 BOOL screenRotatingAnimationSupport     = YES;
 BOOL screenRotating                     = NO;
 //-------------------- E.n.d -------------------->Structs statement & globle variables
@@ -157,8 +158,8 @@ BOOL screenRotating                     = NO;
         UIView *bindView = container.weakView;
         // 如果bindView的布局更新计数器大于最小刷新阈值，则暂时不必计算布局更新
         NSInteger layoutUpdateCount = bindView.layoutUpdateCount;
-//        NSLog(@"%@",bindView.aktName);
-
+        //        NSLog(@"%@",bindView.aktName);
+        
         if (layoutUpdateCount>1) {
             bindView.layoutUpdateCount = layoutUpdateCount-1;
             continue;
@@ -192,7 +193,7 @@ BOOL screenRotating                     = NO;
         UIView *view = container.weakView;
         view.layoutUpdateCount++;
         // 当nodeView的视图刷新次数大于1时不必再向下迭代增加子节点的布局更新次数，因为在必要时nodeView只刷新一次
-//        NSLog(@"%@:  count: %d",view.aktName, view.layoutUpdateCount);
+        //        NSLog(@"%@:  count: %d",view.aktName, view.layoutUpdateCount);
         if (view.layoutUpdateCount>1) {
             // 检测循环参照
             if ([pathArray containsObject:view]) {
@@ -215,14 +216,14 @@ BOOL screenRotating                     = NO;
 - (void)setNewFrame:(CGRect)frame {
     CGRect old = self.frame;
     CGRect new = frame;
-    [self setViewWithFrame:frame];
+    if (![self setViewWithFrame:frame]) return;
     if(self.layoutChain.count<=0) return;
     
     
     // 设置相关视图的布局更新计数器
     // @备注：如果当前视图是触发布局更新的事件源，则需要设置参考了当前视图的视图的更新计数器
     if (self.layoutUpdateCount==0) {
-//        NSLog(@"%@",self.aktName);
+        //        NSLog(@"%@",self.aktName);
         self.layoutUpdateCount = 1;// @备注：为符合整体处理逻辑，事件源视图布局计数加一，等待相关布局更新完成后减一
         NSMutableArray *pathArr = __aktGetPathArray();
         [pathArr addObject:self];
@@ -307,7 +308,7 @@ void __aktErrorReporter(int errorCode, NSString *description, NSString *suggest)
  *
  *  @param frame
  */
-- (void)setViewWithFrame:(CGRect)frame {
+- (BOOL)setViewWithFrame:(CGRect)frame {
     CGRect old = self.frame;
     CGRect new = frame;
     if(frame.origin.x>=FLT_MAX-1){
@@ -315,10 +316,11 @@ void __aktErrorReporter(int errorCode, NSString *description, NSString *suggest)
         nil;
     }else{
         if (mAKT_EQ(old.size.width, new.size.width) && mAKT_EQ(old.size.height, new.size.height) && mAKT_EQ(old.origin.x, new.origin.x) && mAKT_EQ(old.origin.y, new.origin.y)) {
-            return;
+            return NO;
         }
         [self setNewFrame:frame];
     }
+    return YES;
 }
 
 /**
@@ -327,6 +329,10 @@ void __aktErrorReporter(int errorCode, NSString *description, NSString *suggest)
  *  @param view 当前视图
  */
 void __aktViewDidLayoutWithView(UIView *view) {
+    void(^complete)(UIView *view) = objc_getAssociatedObject(view, &kAktDidLayoutComplete);
+    if (complete) {
+        complete(view);
+    }
     id target = objc_getAssociatedObject(view, &kAktDidLayoutTarget);
     if (!target) {
         return;

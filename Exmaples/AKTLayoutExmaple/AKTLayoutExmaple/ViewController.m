@@ -29,8 +29,9 @@ extern const int kLines;
         [_img aktLayout:^(AKTLayoutShellAttribute *layout) {
             layout.centerY.equalTo(akt_view(self));
             layout.left.equalTo(akt_view(self)).offset(10);
-            layout.top.equalTo(akt_view(self)).offset(5);
-            layout.whRatio.equalTo(akt_value(1.0));
+        }];
+        [_img aktDidLayoutWithComplete:^(UIView *view) {
+            view.layer.cornerRadius = view.height/2;
         }];
         _img.layer.masksToBounds = YES;
         _img.aktName = @"img";
@@ -184,7 +185,6 @@ static NSString *const kTitle = @"kTitle";
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     AKTCell *myCell = (id)cell;
-    myCell.img.layer.cornerRadius = (cell.height-10)/2;
     NSDictionary *dic = self.data[indexPath.row];
     myCell.img.image = mAKT_Image(dic[kImg]);
     myCell.classString = dic[kClass];

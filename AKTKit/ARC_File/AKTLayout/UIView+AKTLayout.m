@@ -21,6 +21,7 @@ static char * const kLastFrame = "kLastFrame";
 static char * const kAktName = "aktName";
 char const kAktDidLayoutTarget;
 char const kAktDidLayoutSelector;
+char const kAktDidLayoutComplete;
 
 AKTLayoutAttributeRef attributeRef_global = NULL;
 BOOL willCommitAnimation = NO;
@@ -326,7 +327,7 @@ extern BOOL screenRotatingAnimationSupport;
  *  @备注：一般在更改了view的size需要立刻执行布局刷新时调用
  */
 - (void)setAKTNeedRelayout {
-   if (self.attributeRef) self.frame = calculateAttribute(self.attributeRef);
+    if (self.attributeRef) self.frame = calculateAttribute(self.attributeRef);
 }
 
 /*
@@ -378,6 +379,15 @@ extern BOOL screenRotatingAnimationSupport;
     }
     objc_setAssociatedObject(self, &kAktDidLayoutTarget, target, OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(self, &kAktDidLayoutSelector, NSStringFromSelector(selector), OBJC_ASSOCIATION_COPY);
+}
+
+/**
+ *  已经完成布局
+ *
+ *  @param complete
+ */
+- (void)aktDidLayoutWithComplete:(void(^)(UIView *view))complete {
+    objc_setAssociatedObject(self, &kAktDidLayoutComplete, complete, OBJC_ASSOCIATION_COPY);
 }
 
 /**

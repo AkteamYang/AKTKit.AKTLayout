@@ -29,7 +29,7 @@ static char kAKTLabelMaxWidth;
     dispatch_once(&onceToken, ^{
         // Exchange "setText:" to "aktText:"
         [UILabel swizzleClass:[UILabel class] fromMethod:@selector(setText:) toMethod:@selector(aktText:)];
-        [UILabel swizzleClass:[UILabel class] fromMethod:@selector(setText:) toMethod:@selector(setAKTNumberOfLines:)];
+        [UILabel swizzleClass:[UILabel class] fromMethod:@selector(setNumberOfLines:) toMethod:@selector(setAKTNumberOfLines:)];
     });
 }
 #pragma mark - property settings
