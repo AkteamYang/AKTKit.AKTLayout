@@ -148,7 +148,9 @@ bool __akt__create__edge() {
     // Check whether out of range
     if (attributeRef_global->itemCount==kItemMaximum) {
         UIView *view = (__bridge UIView *)(attributeRef_global->bindView);
-        mAKT_Log(@"%@: %@\nOut of the range of attributeItem array",[view class], view.aktName);
+        NSString *description = [NSString stringWithFormat:@"> %@: Out of the range of attributeItem array.\n> \"attributeItem\"数组越界", view.aktName];
+        NSString *sugget = [NSString stringWithFormat:@"> You add too much reference. For more details, please refer to the error message described in the document. 添加了过多的参照，详情请参考错误信息描述文档"];
+        __aktErrorReporter(301, description, sugget);
         return false;
     }
     AKTAttributeItemRef itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount;
@@ -166,7 +168,9 @@ bool __akt__create__size() {
     // Check whether out of range
     if (attributeRef_global->itemCount==kItemMaximum) {
         UIView *view = (__bridge UIView *)(attributeRef_global->bindView);
-        mAKT_Log(@"%@: %@\nOut of the range of attributeItem array",[view class], view.aktName);
+        NSString *description = [NSString stringWithFormat:@"> %@: Out of the range of attributeItem array.\n> \"attributeItem\"数组越界", view.aktName];
+        NSString *sugget = [NSString stringWithFormat:@"> You add too much reference. For more details, please refer to the error message described in the document. 添加了过多的参照，详情请参考错误信息描述文档"];
+        __aktErrorReporter(301, description, sugget);
         return false;
     }
     AKTAttributeItemRef itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount;
@@ -192,7 +196,9 @@ bool createItem(AKTAttributeItemType itemType) {
     // Check whether out of range
     if (attributeRef_global->itemCount==kItemMaximum) {
         UIView *view = (__bridge UIView *)(attributeRef_global->bindView);
-        mAKT_Log(@"%@: %@\nOut of the range of attributeItem array",[view class], view.aktName);
+        NSString *description = [NSString stringWithFormat:@"> %@: Out of the range of attributeItem array.\n> \"attributeItem\"数组越界", view.aktName];
+        NSString *sugget = [NSString stringWithFormat:@"> You add too much reference. For more details, please refer to the error message described in the document. 添加了过多的参照，详情请参考错误信息描述文档"];
+        __aktErrorReporter(301, description, sugget);
         return false;
     }
     AKTAttributeItemRef itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount;
@@ -226,7 +232,9 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
     UIView *bindView = (__bridge UIView *)(attributeRef->bindView);
     if (!attributeRef->check) {
         if (attributeRef->itemCount == 0) {
-            mAKT_Log(@"%@: %@\nNot added any attribute items",[bindView class], bindView.aktName);
+            NSString *description = [NSString stringWithFormat:@"> %@: Not added any attribute items.\n> 未添加任何参照", bindView.aktName];
+            NSString *sugget = [NSString stringWithFormat:@"> For more details, please refer to the error message described in the document. 详情请参考错误信息描述文档"];
+            __aktErrorReporter(302, description, sugget);
             return bindView.frame;
         }
         // 去除无效布局项
@@ -384,7 +392,9 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
                 {
                     if (paramRef->width<FLT_MAX-1 && !mAKT_EQ(paramRef->width, result)) {
                         UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-                        mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: width", bindView.aktName);
+                        NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: width.\n> 定义了多余参照：width", bindView.aktName];
+                        NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                        __aktErrorReporter(204, description, sugget);
                     }
                     paramRef->width = result;
                     break;
@@ -393,7 +403,9 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
                 {
                     if (paramRef->height<FLT_MAX-1 && !mAKT_EQ(paramRef->height, result)) {
                         UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-                        mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: height", bindView.aktName);
+                        NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: height.\n> 定义了多余参照：height", bindView.aktName];
+                        NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                        __aktErrorReporter(204, description, sugget);
                     }
                     paramRef->height = result;
                     break;
@@ -446,7 +458,9 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
                     CGFloat result = calculate(viewRec.size.width, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
                     if (paramRef->width<FLT_MAX-1 && !mAKT_EQ(paramRef->width, result)) {
                         UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-                        mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: width", bindView.aktName);
+                        NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: width.\n> 定义了多余参照：width", bindView.aktName];
+                        NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                        __aktErrorReporter(204, description, sugget);
                     }
                     paramRef->width = result;
                     
@@ -457,7 +471,9 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
                     CGFloat result = calculate(viewRec.size.height, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
                     if (paramRef->height<FLT_MAX-1 && !mAKT_EQ(paramRef->height, result)) {
                         UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-                        mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: height", bindView.aktName);
+                        NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: height.\n> 定义了多余参照：height", bindView.aktName];
+                        NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                        __aktErrorReporter(204, description, sugget);
                     }
                     paramRef->height = result;
                     break;
@@ -509,7 +525,9 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
                 case AKTAttributeItemType_Width:
                 {
                     if (paramRef->width<FLT_MAX-1 && !mAKT_EQ(paramRef->width, result)) {
-                        mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: width", bindView.aktName);
+                        NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: width.\n> 定义了多余参照：width", bindView.aktName];
+                        NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                        __aktErrorReporter(204, description, sugget);
                     }
                     paramRef->width = result;
                     break;
@@ -517,7 +535,9 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
                 case AKTAttributeItemType_Height:
                 {
                     if (paramRef->height<FLT_MAX-1 && !mAKT_EQ(paramRef->height, result)) {
-                        mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: height", bindView.aktName);
+                        NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: height.\n> 定义了多余参照：height", bindView.aktName];
+                        NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                        __aktErrorReporter(204, description, sugget);
                     }
                     paramRef->height = result;
                     break;
@@ -666,7 +686,9 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
             if (hCount>2) {
                 paramRef->right = FLT_MAX;
                 hCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: right", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: right.\n> 定义了多余参照：right", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         if (paramRef->width<FLT_MAX) {
@@ -675,7 +697,9 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
             if (hCount>2) {
                 paramRef->width = FLT_MAX;
                 hCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: width", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: width.\n> 定义了多余参照：width", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         if (paramRef->centerX<FLT_MAX) {
@@ -683,7 +707,9 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
             if (hCount>2) {
                 paramRef->centerX = FLT_MAX;
                 hCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: centerX", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: centerX.\n> 定义了多余参照：centerX", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         return hCount;
@@ -699,7 +725,9 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
             if (vCount>2) {
                 paramRef->bottom = FLT_MAX;
                 vCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: bottom", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: bottom.\n> 定义了多余参照：bottom", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         if (paramRef->height<FLT_MAX) {
@@ -708,7 +736,9 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
             if (vCount>2) {
                 paramRef->height = FLT_MAX;
                 vCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: height", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: height.\n> 定义了多余参照：height", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         if (paramRef->centerY<FLT_MAX) {
@@ -716,7 +746,9 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
             if (vCount>2) {
                 paramRef->centerY = FLT_MAX;
                 vCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: centerY", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: centerY.\n> 定义了多余参照：centerY", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         return vCount;
@@ -756,7 +788,9 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             if (hCount>2) {
                 paramRef->right = FLT_MAX;
                 hCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: right", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: right.\n> 定义了多余参照：right", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         if (paramRef->width<FLT_MAX) {
@@ -765,7 +799,9 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             if (hCount>2) {
                 paramRef->width = FLT_MAX;
                 hCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: width", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: width.\n> 定义了多余参照：width", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         if (paramRef->centerX<FLT_MAX) {
@@ -773,7 +809,9 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             if (hCount>2) {
                 paramRef->centerX = FLT_MAX;
                 hCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: centerX", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: centerX.\n> 定义了多余参照：centerX", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         return hCount;
@@ -789,7 +827,9 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             if (vCount>2) {
                 paramRef->bottom = FLT_MAX;
                 vCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: bottom", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: bottom.\n> 定义了多余参照：bottom", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         if (paramRef->height<FLT_MAX) {
@@ -798,7 +838,9 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             if (vCount>2) {
                 paramRef->height = FLT_MAX;
                 vCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: height", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: height.\n> 定义了多余参照：height", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         if (paramRef->centerY<FLT_MAX) {
@@ -806,7 +848,9 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             if (vCount>2) {
                 paramRef->centerY = FLT_MAX;
                 vCount--;
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: centerY", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: centerY.\n> 定义了多余参照：centerY", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }
         }
         return vCount;
@@ -841,7 +885,9 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
         }else if (hCount == 1) {
             rect = horizontalCalculation(paramRef, rect);
             if (paramRef->height<FLT_MAX) {
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: whRatio", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: whRatio.\n> 定义了多余参照：whRatio", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }else{
                 paramRef->height = rect.size.width/paramRef->whRatio;
             }
@@ -860,7 +906,9 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
         if (hCount == 1) {
             rect = verticalCalculation(paramRef, rect);
             if (paramRef->width<FLT_MAX) {
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: whRatio", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: whRatio.\n> 定义了多余参照：whRatio", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }else{
                 paramRef->width = rect.size.height*paramRef->whRatio;
             }
@@ -868,7 +916,9 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
         }else if (hCount == 2) {
             rect = horizontalCalculation(paramRef, rect);
             if (paramRef->height<FLT_MAX) {
-                mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: whRatio", bindView.aktName);
+                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: whRatio.\n> 定义了多余参照：whRatio", bindView.aktName];
+                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                __aktErrorReporter(204, description, sugget);
             }else{
                 paramRef->height = rect.size.width/paramRef->whRatio;
             }
@@ -883,7 +933,9 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
         int currentRatio = rect.size.width/rect.size.height;
         int whRatio = paramRef->whRatio;
         if (!mAKT_EQ(currentRatio, whRatio)) {
-            mAKT_Log(@"AKTLayoutReporter:%@ has redundant configuration: whRatio", bindView.aktName);
+            NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: whRatio.\n> 定义了多余参照：whRatio", bindView.aktName];
+            NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+            __aktErrorReporter(204, description, sugget);
         }
     };
     switch (hCount+vCount) {

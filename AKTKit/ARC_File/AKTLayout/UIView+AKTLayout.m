@@ -19,6 +19,9 @@
 //--------------------Structs statement, globle variables...--------------------
 static char * const kLastFrame = "kLastFrame";
 static char * const kAktName = "aktName";
+char const kAktDidLayoutTarget;
+char const kAktDidLayoutSelector;
+
 AKTLayoutAttributeRef attributeRef_global = NULL;
 BOOL willCommitAnimation = NO;
 extern BOOL screenRotatingAnimationSupport;
@@ -261,9 +264,13 @@ extern BOOL screenRotatingAnimationSupport;
 {
     // 检测视图是否有效，没有父视图的view是无效的
     if (!self.superview) {
-        mAKT_Log(@"%@: %@\nYour view should have a superview",[self class], self.aktName);
+        NSString *description = [NSString stringWithFormat:@"> %@: Your view should have a superview.\n> 当前视图尚未添加到父视图", self.aktName];
+        NSString *sugget = [NSString stringWithFormat:@"> Before add layout, firstly adding a view to a parent view. For more details, please refer to the error message described in the document. 添加布局前先将视图添加到父视图，详情请参考错误信息描述文档"];
+        __aktErrorReporter(101, description, sugget);
         return;
     }
+    
+    
     // Bug report: 如果A在布局时引用了B并触发了B布局的创建，由于创建布局时attribute是全局的，此时B应该先保存A的布局状态再开始B的布局。
     void *attributeRef_context = NULL;
     // 保存布局状态上下文。
@@ -272,12 +279,16 @@ extern BOOL screenRotatingAnimationSupport;
     }
     attributeRef_global = malloc(sizeof(AKTLayoutAttribute));
     if (!attributeRef_global) {
-        mAKT_Log(@"%@: %@\nMalloc AKTLayoutAttribute error!",[self class], self.aktName);
+        NSString *description = [NSString stringWithFormat:@"> %@: Malloc AKTLayoutAttribute error!\n> 布局信息体内存开辟失败", self.aktName];
+        NSString *sugget = [NSString stringWithFormat:@"> Please optimize memory allocation. For more details, please refer to the error message described in the document. 请优化内存分配，详情请参考错误信息描述文档"];
+        __aktErrorReporter(303, description, sugget);
         // 恢复原来的布局上下文.
         attributeRef_global = attributeRef_context;
         return;
     }
     aktLayoutAttributeInit(self);
+    
+    
     // 设置视图的自适应长度和宽度属性（UILabel、UIImageView未来支持）.
     if (!(self.adaptiveHeight || self.adaptiveWidth)) {
         self.adaptiveWidth = @(YES);
@@ -352,6 +363,21 @@ extern BOOL screenRotatingAnimationSupport;
 - (void)aktLayoutUpdate
 {
     
+}
+
+/**
+ *  已经完成布局
+ *  @备注：当视图布局完成时会回调这个方法
+ *
+ *  @param target
+ *  @param selector  selector的参数是当前的view (- (void)viewDidLayout:(UIView *)view)
+ */
+- (void)aktDidLayoutTarget:(id)target forSelector:(SEL)selector {
+    if (!target || !selector) {
+        return;
+    }
+    objc_setAssociatedObject(self, &kAktDidLayoutTarget, target, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(self, &kAktDidLayoutSelector, NSStringFromSelector(selector), OBJC_ASSOCIATION_COPY);
 }
 
 /**

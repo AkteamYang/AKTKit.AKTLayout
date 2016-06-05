@@ -105,7 +105,9 @@ bool __equalTo_imp__(AKTReference reference) {
     AKTAttributeItemRef itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount-1;
     if (!reference.referenceValidate) {
         UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-        mAKT_Log(@"%@: %@\nRefefence invalide!",[bindView class], bindView.aktName);
+        NSString *description = [NSString stringWithFormat:@"> %@: Refefence infomation invalide! 当前获取的参考信息无效", bindView.aktName];
+        NSString *suggest = [NSString stringWithFormat:@"> The correct way to get reference information: akt_size(), akt_value()...,view1.akt_top, view1.akt_height...\n> 正确获取参考信息的方式有：akt_size(), akt_value()...,view1.akt_top, view1.akt_height..."];
+        __aktErrorReporter(200, description, suggest);
         return false;
     }
     // If added edgeinset item type, and reference types are: "NSNumber", "NSVale", "AKT ViewAttribute", the reference set is invalid.
@@ -113,7 +115,9 @@ bool __equalTo_imp__(AKTReference reference) {
     BOOL (^edgeCheck)() = ^(){
         if (itemRef->configuration.referenceEdgeInsert.top<(FLT_MAX-1)) {
             UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-            mAKT_Log(@"%@: %@\n// 对于edge设置参考Constant或者ViewAttribute是没有意义的", [bindView class],bindView.aktName);
+            NSString *description = [NSString stringWithFormat:@"> %@: Reference types and reference information does not correspond, for setting \"edge\" referenced to \"Constant\" or \"ViewAttribute\" makes no sense\n> 参照类型和参照信息不对应,对于edge设置参考Constant或者ViewAttribute是没有意义的", bindView.aktName];
+            NSString *sugget = [NSString stringWithFormat:@"> For more details, please refer to the error message described in the document. 详情请参考错误信息描述文档"];
+            __aktErrorReporter(201, description, sugget);
             return YES;
         }
         return NO;
@@ -123,7 +127,9 @@ bool __equalTo_imp__(AKTReference reference) {
     BOOL (^sizeCheck)() = ^(){
         if (itemRef->configuration.reference.referenceSize.width<(FLT_MAX-1)) {
             UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-            mAKT_Log(@"%@: %@\n// 对于size设置参考Constant或者ViewAttribute是没有意义的", [bindView class],bindView.aktName);
+            NSString *description = [NSString stringWithFormat:@"> %@: Reference types and reference information does not correspond, for setting \"size\" referenced to \"Constant\" or \"ViewAttribute\" makes no sense\n> 参照类型和参照信息不对应,对于size设置参考Constant或者ViewAttribute是没有意义的", bindView.aktName];
+            NSString *sugget = [NSString stringWithFormat:@"> For more details, please refer to the error message described in the document. 详情请参考错误信息描述文档"];
+            __aktErrorReporter(202, description, sugget);
             return YES;
         }
         return NO;
@@ -148,14 +154,18 @@ bool __equalTo_imp__(AKTReference reference) {
                 // 设置非size参考
                 if (reference.referenceValue<FLT_MAX-1) {
                     UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-                    mAKT_Log(@"%@: %@\n// 对于size设置参考固定值和ViewAttribute是没有意义的", [bindView class],bindView.aktName);
+                    NSString *description = [NSString stringWithFormat:@"> %@: Reference types and reference information does not correspond, for setting \"size\" referenced to \"Constant\" or \"ViewAttribute\" makes no sense\n> 参照类型和参照信息不对应,对于size设置参考Constant或者ViewAttribute是没有意义的", bindView.aktName];
+                    NSString *sugget = [NSString stringWithFormat:@"> For more details, please refer to the error message described in the document. 详情请参考错误信息描述文档"];
+                    __aktErrorReporter(202, description, sugget);
                     return false;
                 }
             }else{
                 // 设置size参考
                 if (reference.referenceSize.width<FLT_MAX-1) {
                     UIView *bindView = (__bridge UIView *)(itemRef->bindView);
-                    mAKT_Log(@"%@: %@\n// 对于位置：top、left、bottom...设置参考size是没有意义的", [bindView class],bindView.aktName);
+                    NSString *description = [NSString stringWithFormat:@"> %@: Reference types and reference information does not correspond, for setting \"top、left、bottom...\" referenced to \"size\" makes no sense\n> 参照类型和参照信息不对应,对于top、left、bottom...设置参考size是没有意义的", bindView.aktName];
+                    NSString *sugget = [NSString stringWithFormat:@"> For more details, please refer to the error message described in the document. 详情请参考错误信息描述文档"];
+                    __aktErrorReporter(203, description, sugget);
                     return false;
                 }
             }
@@ -190,7 +200,9 @@ bool addItemType(AKTAttributeItemType type) {
     // Check whether out of range
     if (itemRef->typeCount==kTypeMaximum) {
         UIView *bindView = (__bridge UIView *)itemRef->bindView;
-        mAKT_Log(@"%@: %@\nOut of the range of attributeItemType array",[bindView class], bindView.aktName);
+        NSString *description = [NSString stringWithFormat:@"> %@: Out of the range of attributeItemType array.\n> \"attributeItemType\"数组越界", bindView.aktName];
+        NSString *sugget = [NSString stringWithFormat:@"> You add too much reference item at once. For more details, please refer to the error message described in the document. 一次添加了过多的参照项，详情请参考错误信息描述文档"];
+        __aktErrorReporter(300, description, sugget);
         return false;
     }
     // Add itemType to itemInfo

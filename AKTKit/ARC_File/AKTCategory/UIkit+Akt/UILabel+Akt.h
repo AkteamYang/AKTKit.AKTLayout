@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface UILabel (Akt)
-
+@property (strong, nonatomic) NSNumber *maxHeight;
+@property (strong, nonatomic) NSNumber *maxWidth;
 @end

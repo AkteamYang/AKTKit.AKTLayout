@@ -29,8 +29,8 @@
     self.view.aktName = @"self.view";
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //                    [self initUI];
-//        [self initUIAkt];
-        [self initAKTCycleUI];
+        [self initUIAkt];
+//        [self initAKTCycleUI];
 //                    [self initUIMas];
     });
 }
@@ -178,17 +178,15 @@
     v.backgroundColor = mAKT_Color_Color(101, 89, 155, 1);
     [v aktLayout:^(AKTLayoutShellAttribute *layout) {
         layout.centerXY.equalTo(akt_view(self.view));
-        layout.width.equalTo(akt_value(100));
-        layout.height.equalTo(v.akt_width);
+        layout.width.height.equalTo(akt_value(100));
     }];
-    NSLog(@"%@", NSStringFromCGRect(v.frame));
     
     UIView*v1 = [UIView new];
     [self.view addSubview:v1];
     v1.aktName = @"cycle test v1";
     v1.backgroundColor = mAKT_Color_Color(10, 89, 155, 1);
     [v1 aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.centerX.width.height.equalTo(akt_view(v));
+        layout.centerX.width.height.equalTo(akt_view(v1));
         layout.top.equalTo(v.akt_bottom);
     }];
 }

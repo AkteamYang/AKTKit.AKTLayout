@@ -24,10 +24,17 @@
 @property (readonly, strong, nonatomic) NSMutableArray<AKTWeakContainer *> *viewsReferenced;
 //> 布局需要被刷新次数
 @property (assign, nonatomic) NSInteger layoutUpdateCount;
-//> 最小布局更新次数（默认为1，但是当我们设置了直接或者间接的循环参照时会大于一，由循环个数决定）
-@property (assign, nonatomic) NSInteger minimumUpdateCount;
 //> 弱引用容器
 @property (retain, nonatomic) AKTWeakContainer *aktContainer;
+
+/**
+ *  AKTLayout standard log
+ *
+ *  @param errorCode
+ *  @param description
+ *  @param suggest
+ */
+void __aktErrorReporter(int errorCode, NSString *description, NSString *suggest);
 @end
 
 @interface AKTWeakContainer : NSObject

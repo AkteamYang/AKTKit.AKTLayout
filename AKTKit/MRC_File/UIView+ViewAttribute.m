@@ -25,8 +25,9 @@ static char * const kAttributeRef       = "kAttributeRef";
 static char * const kViewsReferenced    = "kViewsReferenced";
 static char const kAKTWeakContainer;
 static const char kLayoutUpdateCount;
-static const char kMinimumUpdateCount;
 extern BOOL willCommitAnimation;
+extern char const kAktDidLayoutTarget;
+extern char const kAktDidLayoutSelector;
 BOOL screenRotatingAnimationSupport     = YES;
 BOOL screenRotating                     = NO;
 //-------------------- E.n.d -------------------->Structs statement & globle variables
@@ -125,21 +126,6 @@ BOOL screenRotating                     = NO;
 }
 
 /**
- *  布局更新最小次数，默认为1，如果设置了循环参照将会增加，由循环个数决定，当然我们不建议使用循环参照
- *  @备注：什么是循环参照？A参照了B同时B也参照了A，对于这种情况我们的布局运算将会运算多次，一般情况下不建议使用循环参照
- *
- *  @return 最小布局次数
- */
-- (NSInteger)minimumUpdateCount {
-    NSNumber *count = objc_getAssociatedObject(self, &kMinimumUpdateCount);
-    return count? [count integerValue]:1;
-}
-
-- (void)setMinimumUpdateCount:(NSInteger)minimumUpdateCount {
-    objc_setAssociatedObject(self, &kMinimumUpdateCount, @(minimumUpdateCount), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-/**
  *  弱引用容器
  *
  *  @return
@@ -171,27 +157,22 @@ BOOL screenRotating                     = NO;
         UIView *bindView = container.weakView;
         // 如果bindView的布局更新计数器大于最小刷新阈值，则暂时不必计算布局更新
         NSInteger layoutUpdateCount = bindView.layoutUpdateCount;
-        NSInteger minimumUpdateCount = bindView.minimumUpdateCount;
-        NSLog(@"aktname: %@", bindView.aktName);
+//        NSLog(@"%@",bindView.aktName);
 
-        if (layoutUpdateCount<=0) {
-            // 只有循环参照才会走到这一步，还原最小更新阈值
-            bindView.minimumUpdateCount = 1;
-            continue;
-        }else if (layoutUpdateCount>minimumUpdateCount) {
+        if (layoutUpdateCount>1) {
             bindView.layoutUpdateCount = layoutUpdateCount-1;
             continue;
-        }else if (layoutUpdateCount == minimumUpdateCount) {
-            self.minimumUpdateCount = minimumUpdateCount-1;
         }
         // 是否需要同步运算（需要动画时、需要旋转时 或者 视图是UITableView 、 UICollectionView）
         if (willCommitAnimation || (screenRotatingAnimationSupport && screenRotating) || [bindView isKindOfClass:[UITableView class]] || [bindView isKindOfClass:[UICollectionView class]]) {
             CGRect rect = calculateAttribute(bindView.attributeRef);
             [bindView setFrame:rect];
+            __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
         }else{
             dispatch_async(dispatch_get_main_queue(), ^{
                 CGRect rect = calculateAttribute(bindView.attributeRef);
                 [bindView setNewFrame:rect];
+                __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
             });
             // 模拟设置frame，为了将计算传播下去，真正计算的是上面异步计算frame
             bindView.frame = CGRectMake(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
@@ -206,23 +187,23 @@ BOOL screenRotating                     = NO;
  *  @param trackArray 用于纪录当前参照路径，识别循环参照
  *  @备注：包含所有布局建立在当前视图基础上的视图（直接或间接参考了当前视图的视图）
  */
-- (void)aktSetLayoutUpdateCountWithTrack:(NSMutableArray *)trackArray {
+- (void)aktSetLayoutUpdateCountWithPath:(NSMutableArray *)pathArray {
     for(AKTWeakContainer *container in self.layoutChain) {
         UIView *view = container.weakView;
-        NSLog(@"aktname: %@", view.aktName);
         view.layoutUpdateCount++;
         // 当nodeView的视图刷新次数大于1时不必再向下迭代增加子节点的布局更新次数，因为在必要时nodeView只刷新一次
+//        NSLog(@"%@:  count: %d",view.aktName, view.layoutUpdateCount);
         if (view.layoutUpdateCount>1) {
-            // 检测循环参照并更新循环
-            if ([trackArray containsObject:view]) {
-                view.minimumUpdateCount++;
+            // 检测循环参照
+            if ([pathArray containsObject:view]) {
+                __aktPrintCycleReference(pathArray, view);
             }
             continue;
         }
-        [trackArray addObject:view];
+        [pathArray addObject:view];
         // NodeView首次设置刷新时，为子节点添加刷新计数
-        [container.weakView aktSetLayoutUpdateCountWithTrack:trackArray];
-        [trackArray removeLastObject];
+        [container.weakView aktSetLayoutUpdateCountWithPath:pathArray];
+        [pathArray removeLastObject];
     }
 }
 
@@ -234,38 +215,23 @@ BOOL screenRotating                     = NO;
 - (void)setNewFrame:(CGRect)frame {
     CGRect old = self.frame;
     CGRect new = frame;
-    if(frame.origin.x>=FLT_MAX-1){
-        // 这个frame设置仅仅为了通知当前view的相关view进行异步布局运算，而不必设置frame
-        nil;
-    }else{
-        if (mAKT_EQ(old.size.width, new.size.width) && mAKT_EQ(old.size.height, new.size.height) && mAKT_EQ(old.origin.x, new.origin.x) && mAKT_EQ(old.origin.y, new.origin.y)) {
-            return;
-        }
-        [self setNewFrame:frame];
-    }
-    //    NSLog(@"akt name: %@ new frame: %.1f, %.1f, %.1f, %.1f", self.aktName, frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
-    NSInteger count = self.layoutChain.count;
-    if (count<=0 || self.minimumUpdateCount<=0) {
-        return;
-    }
+    [self setViewWithFrame:frame];
+    if(self.layoutChain.count<=0) return;
+    
+    
     // 设置相关视图的布局更新计数器
     // @备注：如果当前视图是触发布局更新的事件源，则需要设置参考了当前视图的视图的更新计数器
     if (self.layoutUpdateCount==0) {
-        NSLog(@"aktname: %@", self.aktName);
-        self.layoutUpdateCount = 1;
-        static id trackArrObj = nil;
-        if(!trackArrObj){
-            trackArrObj = [NSMutableArray array];
-            [trackArrObj retain];
-        }
-        NSMutableArray *trackArr = trackArrObj;
-        [trackArr removeAllObjects];
-        [trackArr addObject:self];
-        [self aktSetLayoutUpdateCountWithTrack:trackArr];
-        screenRotating = mAKT_EQ(old.size.width, new.size.height) && mAKT_EQ(old.size.height, new.size.width);
-        // 由于本次的frame已经被计算，则将相关计数减一
-        self.layoutUpdateCount--;
-        self.minimumUpdateCount--;
+//        NSLog(@"%@",self.aktName);
+        self.layoutUpdateCount = 1;// @备注：为符合整体处理逻辑，事件源视图布局计数加一，等待相关布局更新完成后减一
+        NSMutableArray *pathArr = __aktGetPathArray();
+        [pathArr addObject:self];
+        [self aktSetLayoutUpdateCountWithPath:pathArr];
+        __aktGetPathArray(); // @备注：路径跟踪数组清空
+        screenRotating = (mAKT_EQ(old.size.width, mAKT_SCREENWITTH) || mAKT_EQ(old.size.width, mAKT_SCREENHEIGHT)) && mAKT_EQ(old.size.width, new.size.height) && mAKT_EQ(old.size.height, new.size.width);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.layoutUpdateCount = 0;
+        });
     }
     // 更新布局链节点布局
     [self aktUpdateLayoutChainNode];
@@ -288,6 +254,88 @@ BOOL screenRotating                     = NO;
     }
     //    mAKT_Log(@"%@ _dealloc count:%d",self.aktName, i);
     [self myDealloc];
+}
+
+#pragma mark - function implementations
+//|---------------------------------------------------------
+/**
+ *  获取跟踪数据
+ *
+ *  @return
+ */
+NSMutableArray *__aktGetPathArray() {
+    static id pathArrObj = nil;
+    if(!pathArrObj){
+        pathArrObj = [NSMutableArray array];
+        [pathArrObj retain];
+    }
+    NSMutableArray *pathArr = pathArrObj;
+    [pathArr removeAllObjects];
+    return pathArr;
+}
+
+/**
+ *  打印循环参照路径
+ *
+ *  @param view
+ */
+void __aktPrintCycleReference(NSArray *pathArray, UIView *lastView) {
+    NSMutableString *description = [NSMutableString string];
+    [description appendString:@"> AKTLayout cycle reference happened！\n> AKTLayout 发生循环参照！\n> Layout reference path: "];
+    for (UIView *view in pathArray) {
+        [description appendString:[NSString stringWithFormat:@"[%@] -> ", view.aktName]];
+    }
+    [description appendString:[NSString stringWithFormat:@"[%@]", lastView.aktName]];
+    NSString *suggest = @"> Please check the reference settings of these views. 请检查这些视图的参照设置";
+    __aktErrorReporter(100, description, suggest);
+}
+
+/**
+ *  AKTLayout standard log
+ *
+ *  @param errorCode
+ *  @param description
+ *  @param suggest
+ */
+void __aktErrorReporter(int errorCode, NSString *description, NSString *suggest) {
+    NSString *str = [NSString stringWithFormat:@"\n> AKTLayout error: %d\n%@\n%@", errorCode, description, suggest];
+    mAKT_Log(@"%@", str);
+}
+
+/**
+ *  给视图设置frame
+ *
+ *  @param frame
+ */
+- (void)setViewWithFrame:(CGRect)frame {
+    CGRect old = self.frame;
+    CGRect new = frame;
+    if(frame.origin.x>=FLT_MAX-1){
+        // 这个frame设置仅仅为了通知当前view的相关view进行异步布局运算，而不必设置frame
+        nil;
+    }else{
+        if (mAKT_EQ(old.size.width, new.size.width) && mAKT_EQ(old.size.height, new.size.height) && mAKT_EQ(old.origin.x, new.origin.x) && mAKT_EQ(old.origin.y, new.origin.y)) {
+            return;
+        }
+        [self setNewFrame:frame];
+    }
+}
+
+/**
+ *  已经布局完成回调
+ *
+ *  @param view 当前视图
+ */
+void __aktViewDidLayoutWithView(UIView *view) {
+    id target = objc_getAssociatedObject(view, &kAktDidLayoutTarget);
+    if (!target) {
+        return;
+    }
+    NSString *selectorStr = objc_getAssociatedObject(view, &kAktDidLayoutSelector);
+    if (!selectorStr || !view.superview) {
+        return;
+    }
+    [target performSelector:NSSelectorFromString(selectorStr) withObject:view];
 }
 @end
 
