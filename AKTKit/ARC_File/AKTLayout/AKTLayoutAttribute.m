@@ -264,10 +264,10 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
             if (referenceView && edgeInset.top<FLT_MAX-1) {
                 CGFloat x_i, y_i,w_i,h_i;
                 CGRect viewRec = [bindView.superview convertRect:referenceView.frame fromView:referenceView.superview? referenceView.superview:mAKT_APPDELEGATE.keyWindow];
-                x_i = viewRec.origin.x+calculate(edgeInset.left, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
-                y_i = viewRec.origin.y+calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
-                w_i = -calculate(edgeInset.left, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset)+viewRec.size.width-calculate(edgeInset.right, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
-                h_i = -calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset)+viewRec.size.height-calculate(edgeInset.bottom, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+                x_i = viewRec.origin.x+calculate(edgeInset.left, itemRef->configuration.referenceMultiple,  itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+                y_i = viewRec.origin.y+calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+                w_i = -calculate(edgeInset.left, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.width-calculate(edgeInset.right, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+                h_i = -calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.height-calculate(edgeInset.bottom, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
                 // If the layout of the first run.
                 // 如果布局首次运行
                 if (!attributeRef->check) {
@@ -321,8 +321,8 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
                 itemRef->configuration.reference.referenceSize = referenceView.frame.size;
             }
             size = itemRef->configuration.reference.referenceSize;
-            paramInfo.width = calculate(size.width, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
-            paramInfo.height = calculate(size.height, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+            paramInfo.width = calculate(size.width, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+            paramInfo.height = calculate(size.height, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
             continue;
         }
         // 如果没有设置size则查找是否设置whRatio，后面会根据有无whRatio分别处理
@@ -333,7 +333,7 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
                     paramInfo.whRatio = itemRef->configuration.reference.referenceValue;
                 }else{
                     UIView *v = (__bridge UIView *)(itemRef->configuration.reference.referenceView);
-                    paramInfo.whRatio = calculate(v.width/v.height, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+                    paramInfo.whRatio = calculate(v.width/v.height, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
                 }
             }
         }
@@ -366,7 +366,7 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
         // If we configured other position constraints do different treatment by differentiating the reference type of constraints.
         // 如果设置了其它的位置约束, 通过区分约束参考类型来做不同的处理
         if (itemRef->configuration.reference.referenceType == AKTRefenceType_Constant) {
-            float result = calculate(itemRef->configuration.reference.referenceValue, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+            float result = calculate(itemRef->configuration.reference.referenceValue, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
             switch (itemRef->typeArray[i]) {
                 case AKTAttributeItemType_Top:
                 {
@@ -435,27 +435,27 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
             switch (num) {
                 case AKTAttributeItemType_Top:
                 {
-                    paramRef->top = calculate(viewRec.origin.y, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+                    paramRef->top = calculate(viewRec.origin.y, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
                     break;
                 }
                 case AKTAttributeItemType_Left:
                 {
-                    paramRef->left = calculate(viewRec.origin.x, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+                    paramRef->left = calculate(viewRec.origin.x, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
                     break;
                 }
                 case AKTAttributeItemType_Bottom:
                 {
-                    paramRef->bottom = calculate(viewRec.origin.y+viewRec.size.height, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+                    paramRef->bottom = calculate(viewRec.origin.y+viewRec.size.height, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
                     break;
                 }
                 case AKTAttributeItemType_Right:
                 {
-                    paramRef->right = calculate(viewRec.origin.x+viewRec.size.width, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+                    paramRef->right = calculate(viewRec.origin.x+viewRec.size.width, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
                     break;
                 }
                 case AKTAttributeItemType_Width:
                 {
-                    CGFloat result = calculate(viewRec.size.width, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+                    CGFloat result = calculate(viewRec.size.width, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
                     if (paramRef->width<FLT_MAX-1 && !mAKT_EQ(paramRef->width, result)) {
                         UIView *bindView = (__bridge UIView *)(itemRef->bindView);
                         NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: width.\n> 定义了多余参照：width", bindView.aktName];
@@ -468,7 +468,7 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
                 }
                 case AKTAttributeItemType_Height:
                 {
-                    CGFloat result = calculate(viewRec.size.height, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+                    CGFloat result = calculate(viewRec.size.height, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
                     if (paramRef->height<FLT_MAX-1 && !mAKT_EQ(paramRef->height, result)) {
                         UIView *bindView = (__bridge UIView *)(itemRef->bindView);
                         NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: height.\n> 定义了多余参照：height", bindView.aktName];
@@ -480,18 +480,18 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
                 }
                 case AKTAttributeItemType_CenterX:
                 {
-                    paramRef->centerX = calculate(viewRec.origin.x+viewRec.size.width/2, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+                    paramRef->centerX = calculate(viewRec.origin.x+viewRec.size.width/2, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
                     break;
                 }
                 case AKTAttributeItemType_CenterY:
                 {
-                    paramRef->centerY = calculate(viewRec.origin.y+viewRec.size.height/2, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+                    paramRef->centerY = calculate(viewRec.origin.y+viewRec.size.height/2, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
                     break;
                 }
                 case AKTAttributeItemType_CenterXY:
                 {
-                    paramRef->centerX = calculate(viewRec.origin.x+viewRec.size.width/2, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
-                    paramRef->centerY = calculate(viewRec.origin.y+viewRec.size.height/2, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+                    paramRef->centerX = calculate(viewRec.origin.x+viewRec.size.width/2, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+                    paramRef->centerY = calculate(viewRec.origin.y+viewRec.size.height/2, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
                     break;
                 }
                 default:
@@ -500,7 +500,7 @@ void parseItem(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
         }else{
             UIView *bindView = (__bridge UIView *)(itemRef->bindView);
             float result = getValue(itemRef->configuration.reference.referenceAttribute, bindView);
-            result = calculate(result, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceOffset);
+            result = calculate(result, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
             switch (num) {
                 case AKTAttributeItemType_Top:
                 {

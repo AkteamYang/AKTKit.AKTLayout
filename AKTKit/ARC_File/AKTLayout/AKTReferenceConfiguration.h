@@ -66,6 +66,7 @@ struct AKTReferenceConfigurationStruct {
     AKTReference reference;
     UIEdgeInsets referenceEdgeInsert;
     float referenceMultiple;
+    float referenceCoefficientOffset;
     float referenceOffset;
 };
 typedef struct AKTReferenceConfigurationStruct AKTReferenceConfiguration;
@@ -125,6 +126,18 @@ void __akt__add__multiple(CGFloat value);
  *  @note 最终的结果＝参考对象＊倍数＋偏移值
  */
 void __akt__add__offset(CGFloat value);
+
+/**
+ *  Transformation of the result.
+ *  对于结果的变换
+ *
+ *  @param value     coefficientOffset
+ *  @param value     系数偏移值
+ *
+ *  @note The final result ＝ (reference object + coefficientOffset)* multiple + offset.
+ *  @note 最终的结果＝(参考对象+系数偏移值)＊倍数＋偏移值
+ */
+void __akt__add__coefficientOffset(CGFloat value);
 
 /**
  *  The value of edge inset.

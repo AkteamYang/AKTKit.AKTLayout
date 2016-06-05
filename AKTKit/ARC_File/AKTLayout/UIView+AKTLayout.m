@@ -272,6 +272,26 @@ extern BOOL screenRotatingAnimationSupport;
     }
     
     
+    // 如果layout不存在，移除原有的布局配置信息
+    void(^removeLastAttribute)() = ^(){
+        // Change view's attributRef
+        AKTLayoutAttributeRef pt = self.attributeRef;
+        if (pt) {
+            free(pt);
+        }
+        // 移除先前的AKTLayout布局设置关联信息，并更新当前信息
+        for (AKTWeakContainer *container in self.viewsReferenced) {
+            [container.weakView.layoutChain removeObject:self.aktContainer];
+        }
+        [self.viewsReferenced removeAllObjects];
+    };
+    if(!layout){
+        removeLastAttribute();
+        self.attributeRef = nil;
+        return;
+    }
+    
+    
     // Bug report: 如果A在布局时引用了B并触发了B布局的创建，由于创建布局时attribute是全局的，此时B应该先保存A的布局状态再开始B的布局。
     void *attributeRef_context = NULL;
     // 保存布局状态上下文。
@@ -288,30 +308,13 @@ extern BOOL screenRotatingAnimationSupport;
         return;
     }
     aktLayoutAttributeInit(self);
-    
-    
     // 设置视图的自适应长度和宽度属性（UILabel、UIImageView未来支持）.
     if (!(self.adaptiveHeight || self.adaptiveWidth)) {
         self.adaptiveWidth = @(YES);
         self.adaptiveHeight = @(YES);
     }
-    if (layout) {
-        layout(sharedShellAttribute());
-    }else{
-        // 恢复原来的布局上下文.
-        attributeRef_global = attributeRef_context;
-        return;
-    }
-    // Change view's attributRef
-    AKTLayoutAttributeRef pt = self.attributeRef;
-    if (pt) {
-        free(pt);
-    }
-    // 移除先前的AKTLayout布局设置关联信息，并更新当前信息
-    for (AKTWeakContainer *container in self.viewsReferenced) {
-        [container.weakView.layoutChain removeObject:self.aktContainer];
-    }
-    [self.viewsReferenced removeAllObjects];
+    layout(sharedShellAttribute());
+    removeLastAttribute();
     self.attributeRef = attributeRef_global;
     // 计算布局并设置frame
     CGRect rect = calculateAttribute(attributeRef_global);

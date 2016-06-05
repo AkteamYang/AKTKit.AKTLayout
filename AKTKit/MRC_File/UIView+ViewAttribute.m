@@ -106,9 +106,7 @@ BOOL screenRotating                     = NO;
 }
 
 - (void)setAttributeRef:(void *)attributeRef {
-    if (attributeRef) {
-        objc_setAssociatedObject(self, kAttributeRef, [NSValue valueWithPointer:attributeRef], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
+    objc_setAssociatedObject(self, kAttributeRef, [NSValue valueWithPointer:attributeRef], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 /**

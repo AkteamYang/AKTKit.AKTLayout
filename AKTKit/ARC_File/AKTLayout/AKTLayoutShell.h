@@ -19,6 +19,7 @@
  */
 - (AKTLayoutShellConfigure *(^)(CGFloat obj))multiple;
 - (AKTLayoutShellConfigure *(^)(CGFloat obj))offset;
+- (AKTLayoutShellConfigure *(^)(CGFloat obj))coefficientOffset;
 - (AKTLayoutShellConfigure *(^)(UIEdgeInsets inset))edgeInset;
 @end
 

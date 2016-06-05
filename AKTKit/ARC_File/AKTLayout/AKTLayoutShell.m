@@ -41,6 +41,14 @@ AKTLayoutShellConfigure *sharedConfigure() {
     };
 }
 
+- (AKTLayoutShellConfigure *(^)(CGFloat obj))coefficientOffset {
+    return ^AKTLayoutShellConfigure *(CGFloat obj){
+        AKTAttributeItemRef itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount-1;
+        itemRef->configuration.referenceCoefficientOffset = obj;
+        return configure_shell? configure_shell:sharedConfigure();
+    };
+}
+
 - (AKTLayoutShellConfigure *(^)(UIEdgeInsets inset))edgeInset {
     return ^AKTLayoutShellConfigure *(UIEdgeInsets inset){
         AKTAttributeItemRef itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount-1;

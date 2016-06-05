@@ -28,9 +28,10 @@ extern AKTLayoutAttributeRef attributeRef_global;
  */
 void aktReferenceConfigurationInit(AKTReferenceConfigurationRef configureRef) {
     aktReferenceInit(&(configureRef->reference));
-    configureRef->referenceEdgeInsert = UIEdgeInsetsMake(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
-    configureRef->referenceMultiple   = 1.f;
-    configureRef->referenceOffset     = 0.f;
+    configureRef->referenceEdgeInsert        = UIEdgeInsetsMake(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
+    configureRef->referenceMultiple          = 1.f;
+    configureRef->referenceOffset            = 0.f;
+    configureRef->referenceCoefficientOffset = 0.f;
 }
 
 /**
@@ -109,6 +110,22 @@ void __akt__add__multiple(CGFloat value) {
 void __akt__add__offset(CGFloat value) {
     AKTAttributeItem *itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount-1;
     itemRef->configuration.referenceOffset = value;
+    return;
+}
+
+/**
+ *  Transformation of the result.
+ *  对于结果的变换
+ *
+ *  @param value     coefficientOffset
+ *  @param value     系数偏移值
+ *
+ *  @note The final result ＝ (reference object + coefficientOffset)* multiple + offset.
+ *  @note 最终的结果＝(参考对象+系数偏移值)＊倍数＋偏移值
+ */
+void __akt__add__coefficientOffset(CGFloat value) {
+    AKTAttributeItem *itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount-1;
+    itemRef->configuration.referenceCoefficientOffset = value;
     return;
 }
 

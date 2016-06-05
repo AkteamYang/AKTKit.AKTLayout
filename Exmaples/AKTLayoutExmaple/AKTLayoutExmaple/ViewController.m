@@ -29,7 +29,10 @@ extern const int kLines;
         [_img aktLayout:^(AKTLayoutShellAttribute *layout) {
             layout.centerY.equalTo(akt_view(self));
             layout.left.equalTo(akt_view(self)).offset(10);
+            layout.top.equalTo(akt_view(self)).offset(5);
+            layout.whRatio.equalTo(akt_value(1.0));
         }];
+        // 更新圆角大小
         [_img aktDidLayoutWithComplete:^(UIView *view) {
             view.layer.cornerRadius = view.height/2;
         }];

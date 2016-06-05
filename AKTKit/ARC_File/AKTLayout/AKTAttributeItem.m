@@ -277,8 +277,8 @@ CGFloat getValue(AKTViewAttributeInfo attributeInfo, UIView *bindView){
 /*
  * Return origin*multiple+offset
  */
-CGFloat calculate(CGFloat origin, CGFloat multiple, CGFloat offset) {
-    return origin*multiple+offset;
+CGFloat calculate(CGFloat origin, CGFloat multiple, CGFloat coefficientOffset, CGFloat offset) {
+    return (origin+coefficientOffset)*multiple+offset;
 }
 //---------------------------------------------------------
 @implementation AKTViewAttribute

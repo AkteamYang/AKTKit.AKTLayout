@@ -39,6 +39,7 @@ static char kAKTLabelMaxWidth;
         return;
     }
     objc_setAssociatedObject(self, &kAKTLabelMaxWidth, maxWidth, OBJC_ASSOCIATION_RETAIN);
+    self.text = self.text;
 }
 
 - (NSNumber *)maxWidth {
@@ -50,6 +51,7 @@ static char kAKTLabelMaxWidth;
         return;
     }
     objc_setAssociatedObject(self, &kAKTLabelMaxHeight, maxHeight, OBJC_ASSOCIATION_RETAIN);
+    self.text = self.text;
 }
 
 - (NSNumber *)maxHeight {
@@ -72,24 +74,15 @@ static char kAKTLabelMaxWidth;
     }
     
     // If all of values of them are YES we'll set the view's height to single line height and adaptiveHeight to NO by default.
-    if ([self.adaptiveWidth boolValue] == YES && [self.adaptiveHeight boolValue] == YES) {
-        // 单行宽度自适应
-        CGSize oldSize = self.frame.size;
-        [self sizeToFit];
-        if (self.maxWidth) {
-            CGRect rec = self.frame;
-            rec.size.width = self.maxWidth.floatValue;
-            self.frame = rec;
-        }
-        // 如果size未发生变化则frame不必进行重计算
-        if (mAKT_EQ(oldSize.width, self.width)&&mAKT_EQ(oldSize.height, self.height)) {
-            return;
-        }
-    }else if ([self.adaptiveHeight boolValue]) {// 高度自适应
-        CGRect rec = [text boundingRectWithSize:(CGSizeMake(self.width, 9999)) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:@{NSFontAttributeName:self.font} context:nil];
+    NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
+    style.lineBreakMode = self.lineBreakMode==NSLineBreakByCharWrapping? NSLineBreakByCharWrapping:NSLineBreakByWordWrapping;
+    style.alignment = self.textAlignment;
+    NSDictionary *attributeDic = @{NSFontAttributeName:self.font, NSParagraphStyleAttributeName:style};
+    void(^adaptiveHeight)() = ^(){
+        CGRect rec = [text boundingRectWithSize:(CGSizeMake(self.width, 9999)) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:attributeDic context:nil];
         if(self.numberOfLines){// 设置了最大行数
-            CGRect rec1 = [@" " boundingRectWithSize:(CGSizeMake(self.width, 9999)) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:@{NSFontAttributeName:self.font} context:nil];
-            CGRect rec2 = [@" \n " boundingRectWithSize:(CGSizeMake(self.width, 9999)) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:@{NSFontAttributeName:self.font} context:nil];
+            CGRect rec1 = [@" " boundingRectWithSize:(CGSizeMake(self.width, 9999)) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:attributeDic context:nil];
+            CGRect rec2 = [@" \n " boundingRectWithSize:(CGSizeMake(self.width, 9999)) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:attributeDic context:nil];
             CGFloat height = rec1.size.height+(rec2.size.height-rec1.size.height)*(self.numberOfLines-1);
             self.height = rec.size.height>height? height:rec.size.height;
         }else{
@@ -99,8 +92,21 @@ static char kAKTLabelMaxWidth;
                 self.height = rec.size.height;
             }
         }
+    };
+    
+    if ([self.adaptiveWidth boolValue] == YES && [self.adaptiveHeight boolValue] == YES) {
+        CGRect rec = [text boundingRectWithSize:(CGSizeMake(9999, 9999)) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:attributeDic context:nil];
+        self.frame = rec;
+        if (self.maxWidth) {
+            if (self.maxWidth.floatValue<rec.size.width) {
+                self.width = self.maxWidth.floatValue;
+                adaptiveHeight();
+            }
+        }
+    }else if ([self.adaptiveHeight boolValue]) {// 高度自适应
+        adaptiveHeight();
     }else if ([self.adaptiveWidth boolValue]) {
-        CGRect rec = [text boundingRectWithSize:(CGSizeMake(9999, 9999)) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:@{NSFontAttributeName:self.font} context:nil];
+        CGRect rec = [text boundingRectWithSize:(CGSizeMake(9999, 9999)) options:(NSStringDrawingUsesLineFragmentOrigin) attributes:attributeDic context:nil];
         if (self.maxWidth) {
             self.width = self.maxWidth.floatValue<rec.size.width? self.maxWidth.floatValue:rec.size.width;
         }else{

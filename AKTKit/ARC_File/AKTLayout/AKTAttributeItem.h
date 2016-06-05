@@ -94,4 +94,4 @@ CGFloat getValue(AKTViewAttributeInfo attributeInfo, UIView *bindView);
 /*
  * Return origin*multiple+offset
  */
-CGFloat calculate(CGFloat origin, CGFloat multiple, CGFloat offset);
+CGFloat calculate(CGFloat origin, CGFloat multiple, CGFloat coefficientOffset, CGFloat offset);
