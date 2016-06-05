@@ -6,6 +6,12 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 
 ###New update
 -----------------
+####V 1.2.2  
+更新日期2016.6.5
+- 增加循环参照检测及提示
+- 增加UILabel、UIImageView的自适应
+- 增加View布局完成事件
+
 ####V 1.2.1  
 更新日期2016.5.24
 - 修复异步运算的兼容性问题
@@ -38,7 +44,7 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 	3.导入头文件`#import "AKTKit.h"`， `“UIView+ViewAttribute.m”`需要加入MRC编译选项`-fno-objc-arc`
 - **使用CocoaPods**
 	
-	在Podfile中添加`pod 'AKTLayout', '~> 1.2.1'`如果你的`pod search AKTLayout `搜索不到结果，可以`pod setup`更新一下本地pod仓库
+	在Podfile中添加`pod 'AKTLayout'`如果你的`pod search AKTLayout `搜索不到结果，可以`pod setup`更新一下本地pod仓库
 
 
 ###Usage

@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "AKTLayout"
-  s.version      = "1.2.1"
+  s.version      = "1.2.2"
   s.summary      = "The best framework for automatic layout."
 
   # This description is used to generate tags and improve search results.
@@ -85,7 +85,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/AkteamYang/AKTKit.AKTLayout.git", :tag => "1.2.1" }
+  s.source       = { :git => "https://github.com/AkteamYang/AKTKit.AKTLayout.git", :tag => "1.2.2" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
