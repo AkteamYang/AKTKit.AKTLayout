@@ -77,6 +77,34 @@
     _container = self.container;
 }
 
+- (void)show {
+    [UIView aktAnimation:^{
+        [UIView animateWithDuration:.5 delay:0 usingSpringWithDamping:1 initialSpringVelocity:.1 options:0 animations:^{
+            self.drag.y = self.navigationController.navigationBar.height+([UIApplication sharedApplication].statusBarHidden? 0:20);
+        } completion:^(BOOL finished) {
+            [self.drag aktLayout:^(AKTLayoutShellAttribute *layout) {
+                layout.centerX.left.equalTo(akt_view(self.view));
+                layout.height.equalTo(akt_value(60));
+                layout.top.equalTo(self.navigationController.navigationBar.akt_bottom);
+            }];
+        }];
+    }];
+}
+
+- (void)hide {
+    [UIView aktAnimation:^{
+        [UIView animateWithDuration:.5 delay:0 usingSpringWithDamping:1 initialSpringVelocity:.1 options:0 animations:^{
+            self.drag.y = self.view.height-self.drag.height-50;
+        } completion:^(BOOL finished) {
+            [self.drag aktLayout:^(AKTLayoutShellAttribute *layout) {
+                layout.centerX.left.equalTo(akt_view(self.view));
+                layout.height.equalTo(akt_value(60));
+                layout.bottom.equalTo(self.view.akt_bottom).offset(-50);
+            }];
+        }];
+    }];
+}
+
 #pragma mark - click events
 //|---------------------------------------------------------
 - (void)back {
@@ -87,12 +115,14 @@
 - (void)pan:(UIPanGestureRecognizer *)pan {
     CGPoint point = [pan translationInView:self.view];
     UIView *view = pan.view;
+    static CGRect startRect;
     if (pan.state == UIGestureRecognizerStateBegan) {
+        startRect = view.frame;
         [view aktLayout:^(AKTLayoutShellAttribute *layout) {
             layout.left.right.equalTo(akt_view(self.view));
         }];
-    }else{
-        CGFloat y = point.y+view.y;
+    }else if (pan.state == UIGestureRecognizerStateChanged){
+        CGFloat y = point.y+startRect.origin.y;
         CGFloat statusBar = [UIApplication sharedApplication].statusBarHidden? 0:20;
         if (y>=self.view.height-view.height){
             view.y = self.view.height-view.height;
@@ -101,7 +131,13 @@
         }else if (y<=(self.navigationController.navigationBar.height+statusBar)){
             view.y = (self.navigationController.navigationBar.height+statusBar);
         }
+    }else{
+        if (startRect.origin.y-view.frame.origin.y<60) {
+            [self hide];
+        }else{
+            [self show];
+        }
     }
-    [pan setTranslation:CGPointZero inView:self.view];
 }
+
 @end

@@ -27,6 +27,16 @@
 		F8BDB7901CF2079800E31155 /* ExampleAKTLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB78F1CF2079800E31155 /* ExampleAKTLayout.m */; };
 		F8BDB7931CF20B3300E31155 /* ExampleAnima.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB7921CF20B3300E31155 /* ExampleAnima.m */; };
 		F8BDB7951CF20F3200E31155 /* P_Stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8BDB7941CF20F3200E31155 /* P_Stop@2x.png */; };
+		F8DCF1A11D079314001651F3 /* CH_Last@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8DCF1971D079314001651F3 /* CH_Last@2x.png */; };
+		F8DCF1A21D079314001651F3 /* CH_ListBig@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8DCF1981D079314001651F3 /* CH_ListBig@2x.png */; };
+		F8DCF1A31D079314001651F3 /* CH_ListLittle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8DCF1991D079314001651F3 /* CH_ListLittle@2x.png */; };
+		F8DCF1A41D079314001651F3 /* CH_Mode0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8DCF19A1D079314001651F3 /* CH_Mode0@2x.png */; };
+		F8DCF1A51D079314001651F3 /* CH_Mode1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8DCF19B1D079314001651F3 /* CH_Mode1@2x.png */; };
+		F8DCF1A61D079314001651F3 /* CH_Next@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8DCF19C1D079314001651F3 /* CH_Next@2x.png */; };
+		F8DCF1A71D079314001651F3 /* CH_PauseBig@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8DCF19D1D079314001651F3 /* CH_PauseBig@2x.png */; };
+		F8DCF1A81D079314001651F3 /* CH_PauseLittle.png in Resources */ = {isa = PBXBuildFile; fileRef = F8DCF19E1D079314001651F3 /* CH_PauseLittle.png */; };
+		F8DCF1A91D079314001651F3 /* CH_PlayBig@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8DCF19F1D079314001651F3 /* CH_PlayBig@2x.png */; };
+		F8DCF1AA1D079314001651F3 /* CH_PlayLittle.png in Resources */ = {isa = PBXBuildFile; fileRef = F8DCF1A01D079314001651F3 /* CH_PlayLittle.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +70,16 @@
 		F8BDB7911CF20B3300E31155 /* ExampleAnima.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleAnima.h; sourceTree = "<group>"; };
 		F8BDB7921CF20B3300E31155 /* ExampleAnima.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleAnima.m; sourceTree = "<group>"; };
 		F8BDB7941CF20F3200E31155 /* P_Stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "P_Stop@2x.png"; sourceTree = "<group>"; };
+		F8DCF1971D079314001651F3 /* CH_Last@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CH_Last@2x.png"; sourceTree = "<group>"; };
+		F8DCF1981D079314001651F3 /* CH_ListBig@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CH_ListBig@2x.png"; sourceTree = "<group>"; };
+		F8DCF1991D079314001651F3 /* CH_ListLittle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CH_ListLittle@2x.png"; sourceTree = "<group>"; };
+		F8DCF19A1D079314001651F3 /* CH_Mode0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CH_Mode0@2x.png"; sourceTree = "<group>"; };
+		F8DCF19B1D079314001651F3 /* CH_Mode1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CH_Mode1@2x.png"; sourceTree = "<group>"; };
+		F8DCF19C1D079314001651F3 /* CH_Next@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CH_Next@2x.png"; sourceTree = "<group>"; };
+		F8DCF19D1D079314001651F3 /* CH_PauseBig@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CH_PauseBig@2x.png"; sourceTree = "<group>"; };
+		F8DCF19E1D079314001651F3 /* CH_PauseLittle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CH_PauseLittle.png; sourceTree = "<group>"; };
+		F8DCF19F1D079314001651F3 /* CH_PlayBig@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CH_PlayBig@2x.png"; sourceTree = "<group>"; };
+		F8DCF1A01D079314001651F3 /* CH_PlayLittle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CH_PlayLittle.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +165,16 @@
 		F8BDB77A1CF1967B00E31155 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				F8DCF1971D079314001651F3 /* CH_Last@2x.png */,
+				F8DCF1981D079314001651F3 /* CH_ListBig@2x.png */,
+				F8DCF1991D079314001651F3 /* CH_ListLittle@2x.png */,
+				F8DCF19A1D079314001651F3 /* CH_Mode0@2x.png */,
+				F8DCF19B1D079314001651F3 /* CH_Mode1@2x.png */,
+				F8DCF19C1D079314001651F3 /* CH_Next@2x.png */,
+				F8DCF19D1D079314001651F3 /* CH_PauseBig@2x.png */,
+				F8DCF19E1D079314001651F3 /* CH_PauseLittle.png */,
+				F8DCF19F1D079314001651F3 /* CH_PlayBig@2x.png */,
+				F8DCF1A01D079314001651F3 /* CH_PlayLittle.png */,
 				F8BDB7941CF20F3200E31155 /* P_Stop@2x.png */,
 				F8BDB78C1CF2008200E31155 /* P_Rotate@2x.png */,
 				F8BDB7871CF1AA4C00E31155 /* AKT_Header@2x.png */,
@@ -220,12 +250,22 @@
 			files = (
 				F8BDB7881CF1AA4C00E31155 /* AKT_Header@2x.png in Resources */,
 				F8BDB77F1CF1990400E31155 /* P_Back@2x.png in Resources */,
+				F8DCF1A11D079314001651F3 /* CH_Last@2x.png in Resources */,
+				F8DCF1A81D079314001651F3 /* CH_PauseLittle.png in Resources */,
 				F8BDB7731CF1936000E31155 /* LaunchScreen.storyboard in Resources */,
+				F8DCF1A21D079314001651F3 /* CH_ListBig@2x.png in Resources */,
 				F8BDB7951CF20F3200E31155 /* P_Stop@2x.png in Resources */,
+				F8DCF1A71D079314001651F3 /* CH_PauseBig@2x.png in Resources */,
+				F8DCF1A61D079314001651F3 /* CH_Next@2x.png in Resources */,
+				F8DCF1A31D079314001651F3 /* CH_ListLittle@2x.png in Resources */,
 				F8BDB7801CF1990400E31155 /* P_Navi.png in Resources */,
+				F8DCF1A91D079314001651F3 /* CH_PlayBig@2x.png in Resources */,
+				F8DCF1A51D079314001651F3 /* CH_Mode1@2x.png in Resources */,
 				F8BDB7701CF1936000E31155 /* Assets.xcassets in Resources */,
+				F8DCF1AA1D079314001651F3 /* CH_PlayLittle.png in Resources */,
 				F8BDB7841CF1A1BD00E31155 /* AKT_Anima@2x.png in Resources */,
 				F8BDB7851CF1A1BD00E31155 /* AKT_Test1@2x.png in Resources */,
+				F8DCF1A41D079314001651F3 /* CH_Mode0@2x.png in Resources */,
 				F8BDB77C1CF1967B00E31155 /* AKT_Example@2x.png in Resources */,
 				F8BDB78D1CF2008200E31155 /* P_Rotate@2x.png in Resources */,
 				F8BDB7861CF1A1BD00E31155 /* AKT_Test2@2x.png in Resources */,
