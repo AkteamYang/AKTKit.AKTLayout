@@ -26,6 +26,7 @@
 #define mAKT_Device_Width MIN(mAKT_SCREENHEIGHT, mAKT_SCREENWITTH)
 #define mAKT_Device_Height MAX(mAKT_SCREENHEIGHT, mAKT_SCREENWITTH)
 #define mAKT_APPDELEGATE (([UIApplication sharedApplication]))
+#define mAKT_Portrait ([UIApplication sharedApplication].keyWindow.frame.size.width<mAKT_SCREENHEIGHT)
 
 // Version
 #define mAKT_SystemVERSION [[[UIDevice currentDevice] systemVersion] floatValue]
@@ -41,11 +42,18 @@
 #if TARGET_IPHONE_SIMULATOR
 //iPhone Simulator
 #endif
+
+// 弱引用
+#define AKTLyoutVersion 12
+#if __has_feature(objc_arc)
+#define AKTWeakOject(VAR, OBJ) __weak typeof(OBJ) VAR = OBJ
+#else
+#define AKTWeakOject(VAR, OBJ) __block typeof(OBJ) VAR = OBJ
+#endif
 //--------------# E.n.d #--------------#>System related
 
 //--------------# UI related #--------------
 #import <UIKit/UIKit.h>
-
 // UIimage
 #define mAKT_Image(Name) [UIImage imageNamed:Name]
 #define mAKT_Image_Origin(Name) ([mAKT_Image(Name) imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)])

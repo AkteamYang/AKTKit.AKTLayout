@@ -21,26 +21,56 @@
     if (_drag == nil) {
         _drag = [UILabel new];
         [self.view addSubview:_drag];
+        [_drag aktDidLayoutTarget:self forSelector:@selector(dragDidLayout:)];
+        static int i = 0;
+        _drag.aktName = [NSString stringWithFormat:@"akt%d", i];
+        i++;
+        AKTWeakOject(weakself, self);
+        AKTWeakOject(weakdrag, _drag);
         [_drag aktLayout:^(AKTLayoutShellAttribute *layout) {
-            layout.centerX.left.equalTo(akt_view(self.view));
-            layout.height.equalTo(akt_value(60));
-            layout.top.equalTo(self.navigationController.navigationBar.akt_bottom);
+            layout.centerX.left.equalTo(akt_view(weakself.view));
+            if (weakself.view.width<weakself.view.height) {// 竖屏
+                if (weakdrag.y<64+1) {// 吸附在上方
+                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                        layout.top.equalTo(weakself.navigationController.navigationBar.akt_bottom);
+                        layout.height.equalTo(akt_value(45));
+                    }];
+                }else{
+                    [layout aktLayoutIdentifier:2 withDynamicAttribute:^{
+                        layout.bottom.equalTo(weakself.view.akt_bottom).offset(-55);
+                        layout.height.equalTo(akt_value(45));
+                    }];
+                }
+            }else{
+                if (weakdrag.y<64+1) {// 吸附在上方
+                    [layout aktLayoutIdentifier:3 withDynamicAttribute:^{
+                        layout.top.equalTo(weakself.navigationController.navigationBar.akt_bottom);
+                        layout.height.equalTo(akt_value(30));
+                    }];
+                }else{
+                    [layout aktLayoutIdentifier:4 withDynamicAttribute:^{
+                        layout.bottom.equalTo(weakself.view.akt_bottom).offset(-55);
+                        layout.height.equalTo(akt_value(30));
+                    }];
+                }
+            }
+            
         }];
         _drag.text = @"Drag the slider";
         [_drag setTextAlignment:(NSTextAlignmentCenter)];
         _drag.backgroundColor = mAKT_Color_Background_204;
-        _drag.textColor = mAKT_Color_Text_255;
+        _drag.textColor = mAKT_Color_Text_52;
+        _drag.font = mAKT_Font_12;
         [_drag setNumberOfLines:3];
         _drag.userInteractionEnabled = YES;
         UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(pan:)];
         [_drag addGestureRecognizer:pan];
-        [_drag aktDidLayoutTarget:self forSelector:@selector(dragDidLayout:)];
     }
     return _drag;
 }
 
 - (void)dragDidLayout:(UIView *)view {
-    NSLog(@"%@",NSStringFromCGRect(view.frame));
+    NSLog(@"%@: %@", view.aktName,NSStringFromCGRect(view.frame));
 }
 
 
@@ -90,11 +120,7 @@
         [UIView animateWithDuration:.5 delay:0 usingSpringWithDamping:1 initialSpringVelocity:.1 options:0 animations:^{
             self.drag.y = self.navigationController.navigationBar.height+([UIApplication sharedApplication].statusBarHidden? 0:20);
         } completion:^(BOOL finished) {
-            [self.drag aktLayout:^(AKTLayoutShellAttribute *layout) {
-                layout.centerX.left.equalTo(akt_view(self.view));
-                layout.height.equalTo(akt_value(60));
-                layout.top.equalTo(self.navigationController.navigationBar.akt_bottom);
-            }];
+
         }];
     }];
 }
@@ -102,13 +128,9 @@
 - (void)hide {
     [UIView aktAnimation:^{
         [UIView animateWithDuration:.5 delay:0 usingSpringWithDamping:1 initialSpringVelocity:.1 options:0 animations:^{
-            self.drag.y = self.view.height-self.drag.height-50;
+            self.drag.y = self.view.height-self.drag.height-55;
         } completion:^(BOOL finished) {
-            [self.drag aktLayout:^(AKTLayoutShellAttribute *layout) {
-                layout.centerX.left.equalTo(akt_view(self.view));
-                layout.height.equalTo(akt_value(60));
-                layout.bottom.equalTo(self.view.akt_bottom).offset(-50);
-            }];
+           
         }];
     }];
 }
@@ -126,9 +148,6 @@
     static CGRect startRect;
     if (pan.state == UIGestureRecognizerStateBegan) {
         startRect = view.frame;
-        [view aktLayout:^(AKTLayoutShellAttribute *layout) {
-            layout.left.right.equalTo(akt_view(self.view));
-        }];
     }else if (pan.state == UIGestureRecognizerStateChanged){
         CGFloat y = point.y+startRect.origin.y;
         CGFloat statusBar = [UIApplication sharedApplication].statusBarHidden? 0:20;

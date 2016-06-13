@@ -284,20 +284,20 @@ void createItem(AKTAttributeItemType itemType) {
  */
 CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
     // 更新动态布局信息
-//    void(^layoutInfoFetchBlock)(AKTLayoutShellAttribute *layout) = (__bridge void (^)(AKTLayoutShellAttribute *__strong))(attributeRef->layoutInfoFetchBlock);
-//    if (layoutInfoFetchBlock) {
-//        // 切换上下文
-//        AKTLayoutAttributeRef tempGlobal = attributeRef_global;
-//        attributeRef_global = attributeRef;
-//        attributeRef->layoutDynamicContextBegin = false;
-//        needGetLayoutInfo_sheel = false;
-//        // 获取布局信息的动态部分
-//        layoutInfoFetchBlock(sharedShellAttribute());
-//        // 恢复上下文
-//        attributeRef->layoutDynamicContextBegin = false;
-//        needGetLayoutInfo_sheel = true;
-//        attributeRef_global = tempGlobal;
-//    }
+    void(^layoutInfoFetchBlock)(AKTLayoutShellAttribute *layout) = (__bridge void (^)(AKTLayoutShellAttribute *__strong))(attributeRef->layoutInfoFetchBlock);
+    if (layoutInfoFetchBlock) {
+        // 切换上下文
+        AKTLayoutAttributeRef tempGlobal = attributeRef_global;
+        attributeRef_global = attributeRef;
+        attributeRef->layoutDynamicContextBegin = false;
+        needGetLayoutInfo_sheel = false;
+        // 获取布局信息的动态部分
+        layoutInfoFetchBlock(sharedShellAttribute());
+        // 恢复上下文
+        attributeRef->layoutDynamicContextBegin = false;
+        needGetLayoutInfo_sheel = true;
+        attributeRef_global = tempGlobal;
+    }
     // Filter out invalid layout items
     UIView *bindView = (__bridge UIView *)(attributeRef->bindView);
     if (!attributeRef->check) {

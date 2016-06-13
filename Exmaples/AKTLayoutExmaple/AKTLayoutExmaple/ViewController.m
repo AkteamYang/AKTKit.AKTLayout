@@ -26,11 +26,23 @@ extern const int kLines;
     if (_img == nil) {
         _img = [UIImageView new];
         [self addSubview:_img];
+        AKTWeakOject(weakself, self);
         [_img aktLayout:^(AKTLayoutShellAttribute *layout) {
-            layout.centerY.equalTo(akt_view(self));
-            layout.left.equalTo(akt_view(self)).offset(10);
-            layout.top.equalTo(akt_view(self)).offset(5);
-            layout.whRatio.equalTo(akt_value(1.0));
+            if (weakself.width<mAKT_SCREENHEIGHT) {
+                [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                    layout.centerY.equalTo(akt_view(weakself));
+                    layout.whRatio.equalTo(akt_value(1.0));
+                    layout.left.equalTo(akt_view(weakself)).offset(10);
+                    layout.top.equalTo(akt_view(weakself)).offset(5);
+                }];
+            }else{
+                [layout aktLayoutIdentifier:2 withDynamicAttribute:^{
+                    layout.centerX.equalTo(akt_view(weakself));
+                    layout.whRatio.equalTo(akt_value(1.0));
+                    layout.top.equalTo(akt_view(weakself)).offset(10);
+                    layout.height.equalTo(akt_value(80));
+                }];
+            }
         }];
         // 更新圆角大小
         [_img aktDidLayoutWithComplete:^(UIView *view) {
@@ -47,9 +59,21 @@ extern const int kLines;
     if (_title == nil) {
         _title = [UILabel new];
         [self addSubview:_title];
+        AKTWeakOject(weakself, self);
         [_title aktLayout:^(AKTLayoutShellAttribute *layout) {
-            layout.top.centerY.right.equalTo(akt_view(self));
-            layout.left.equalTo(self.img.akt_right).offset(20);
+            if (weakself.width<mAKT_SCREENHEIGHT) {
+                [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                    layout.top.centerY.right.equalTo(akt_view(self));
+                    layout.left.equalTo(self.img.akt_right).offset(20);
+                }];
+            }else{
+                [layout aktLayoutIdentifier:2 withDynamicAttribute:^{
+                    layout.centerX.equalTo(akt_view(weakself));
+                    layout.whRatio.equalTo(akt_value(1.0));
+                    layout.top.equalTo(akt_view(weakself)).offset(10);
+                    layout.height.equalTo(akt_value(80));
+                }];
+            }
         }];
         [_title setTextColor:mAKT_Color_Text_52];
         [_title setFont:mAKT_Font_16];
@@ -171,7 +195,7 @@ static NSString *const kTitle = @"kTitle";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL b = mAKT_SCREENWITTH>mAKT_SCREENHEIGHT;
-    return b? 80:60;
+    return b? 100:60;
 }
 
 #pragma mark - tableview delegate
