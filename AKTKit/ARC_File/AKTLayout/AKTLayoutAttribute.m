@@ -11,6 +11,7 @@
 
 // import-"models.h"
 #import "UIView+AKTLayout.h"
+#import "AKTLayoutShell.h"
 #import "AKTPublic.h"
 // import-"views & controllers.h"
 
@@ -19,6 +20,7 @@ typedef struct {
     float top, left, bottom, right, width, height, whRatio, centerX, centerY;
 }AKTLayoutParam;
 typedef AKTLayoutParam *AKTLayoutParamRef;
+extern bool needGetLayoutInfo_sheel;
 //-------------------- E.n.d -------------------->Structs statement, globle variables...
 
 #pragma mark - function definition
@@ -34,6 +36,24 @@ typedef AKTLayoutParam *AKTLayoutParamRef;
  *
  */
 bool createItem(AKTAttributeItemType itemType);
+
+/**
+ *  移除无效的布局信息
+ *
+ *  @param attributeRef
+ */
+void removeInvalidAttributeItemFromAttribute(AKTLayoutAttributeRef attributeRef);
+
+/**
+ *  如果配置了edge，计算frame
+ *
+ *  @param bindView
+ *  @param attributeRef
+ *
+ *  @return
+ */
+CGRect calculateRectWithEdgeFromAttribute(UIView *bindView, AKTLayoutAttributeRef attributeRef);
+
 /*
  * Parse layout item to layout param
  */
@@ -78,9 +98,13 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
  *  @param view      需要被布局的视图
  */
 void aktLayoutAttributeInit(UIView *view) {
-    attributeRef_global->itemCount = 0;
+    attributeRef_global->itemCountForStatic = 0;
+    attributeRef_global->itemCountForDynamic = 0;
     attributeRef_global->bindView = (__bridge const void *)(view);
     attributeRef_global->check = false;
+    attributeRef_global->layoutInfoTag = LONG_MAX;
+    attributeRef_global->layoutInfoFetchBlock = NULL;
+    attributeRef_global->layoutDynamicContextBegin = false;
 }
 
 AKTLayoutParam initializedParamInfo() {
@@ -145,42 +169,62 @@ bool __akt__create__centerXY() {
 }
 
 bool __akt__create__edge() {
+    BOOL isDynamic = attributeRef_global->layoutDynamicContextBegin;
+    NSInteger count = isDynamic? attributeRef_global->itemCountForDynamic:attributeRef_global->itemCountForStatic;
     // Check whether out of range
-    if (attributeRef_global->itemCount==kItemMaximum) {
+    if (count==kItemMaximum) {
         UIView *view = (__bridge UIView *)(attributeRef_global->bindView);
-        NSString *description = [NSString stringWithFormat:@"> %@: Out of the range of attributeItem array.\n> \"attributeItem\"数组越界", view.aktName];
+        NSString *description = [NSString stringWithFormat:@"> %@: Out of the range of attributeItem array(%@).\n> \"attributeItem\"数组越界(%@)",isDynamic? @"dynamic part":@"static part", view.aktName, isDynamic? @"动态部分":@"静态部分"];
         NSString *sugget = [NSString stringWithFormat:@"> You add too much reference. For more details, please refer to the error message described in the document. 添加了过多的参照，详情请参考错误信息描述文档"];
         __aktErrorReporter(301, description, sugget);
         return false;
     }
-    AKTAttributeItemRef itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount;
-    aktAttributeItemInit(itemRef);
-    attributeRef_global->itemCount++;
+    // 存入布局数据
+    AKTAttributeItemRef itemRef;
+    if(isDynamic){
+        itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic;
+        aktAttributeItemInit(itemRef);
+        attributeRef_global->itemCountForDynamic++;
+        
+    }else{
+        itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic;
+        aktAttributeItemInit(itemRef);
+        attributeRef_global->itemCountForStatic++;
+    }
     // Set bindView
     itemRef->bindView = attributeRef_global->bindView;
     // Add itemType to item
     itemRef->configuration.referenceEdgeInsert = UIEdgeInsetsMake(0, 0, 0, 0);
-    //    itemRef->typeCount++;
     return true;
 }
 
 bool __akt__create__size() {
+    BOOL isDynamic = attributeRef_global->layoutDynamicContextBegin;
+    NSInteger count = isDynamic? attributeRef_global->itemCountForDynamic:attributeRef_global->itemCountForStatic;
     // Check whether out of range
-    if (attributeRef_global->itemCount==kItemMaximum) {
+    if (count==kItemMaximum) {
         UIView *view = (__bridge UIView *)(attributeRef_global->bindView);
-        NSString *description = [NSString stringWithFormat:@"> %@: Out of the range of attributeItem array.\n> \"attributeItem\"数组越界", view.aktName];
+        NSString *description = [NSString stringWithFormat:@"> %@: Out of the range of attributeItem array(%@).\n> \"attributeItem\"数组越界(%@)",isDynamic? @"dynamic part":@"static part", view.aktName, isDynamic? @"动态部分":@"静态部分"];
         NSString *sugget = [NSString stringWithFormat:@"> You add too much reference. For more details, please refer to the error message described in the document. 添加了过多的参照，详情请参考错误信息描述文档"];
         __aktErrorReporter(301, description, sugget);
         return false;
     }
-    AKTAttributeItemRef itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount;
-    aktAttributeItemInit(itemRef);
-    attributeRef_global->itemCount++;
+    // 存入布局数据
+    AKTAttributeItemRef itemRef;
+    if(isDynamic){
+        itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic;
+        aktAttributeItemInit(itemRef);
+        attributeRef_global->itemCountForDynamic++;
+        
+    }else{
+        itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic;
+        aktAttributeItemInit(itemRef);
+        attributeRef_global->itemCountForStatic++;
+    }
     // Set bindView
     itemRef->bindView = attributeRef_global->bindView;
     // Add itemType to item
     itemRef->configuration.reference.referenceSize = CGSizeMake(0, 0);
-    //    itemRef->typeCount++;
     return true;
 }
 
@@ -193,17 +237,28 @@ bool __akt__create__size() {
  *
  */
 bool createItem(AKTAttributeItemType itemType) {
+    BOOL isDynamic = attributeRef_global->layoutDynamicContextBegin;
+    NSInteger count = isDynamic? attributeRef_global->itemCountForDynamic:attributeRef_global->itemCountForStatic;
     // Check whether out of range
-    if (attributeRef_global->itemCount==kItemMaximum) {
+    if (count==kItemMaximum) {
         UIView *view = (__bridge UIView *)(attributeRef_global->bindView);
-        NSString *description = [NSString stringWithFormat:@"> %@: Out of the range of attributeItem array.\n> \"attributeItem\"数组越界", view.aktName];
+        NSString *description = [NSString stringWithFormat:@"> %@: Out of the range of attributeItem array(%@).\n> \"attributeItem\"数组越界(%@)",isDynamic? @"dynamic part":@"static part", view.aktName, isDynamic? @"动态部分":@"静态部分"];
         NSString *sugget = [NSString stringWithFormat:@"> You add too much reference. For more details, please refer to the error message described in the document. 添加了过多的参照，详情请参考错误信息描述文档"];
         __aktErrorReporter(301, description, sugget);
         return false;
     }
-    AKTAttributeItemRef itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount;
-    aktAttributeItemInit(itemRef);
-    attributeRef_global->itemCount++;
+    // 存入布局数据
+    AKTAttributeItemRef itemRef;
+    if(isDynamic){
+        itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic;
+        aktAttributeItemInit(itemRef);
+        attributeRef_global->itemCountForDynamic++;
+
+    }else{
+        itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic;
+        aktAttributeItemInit(itemRef);
+        attributeRef_global->itemCountForStatic++;
+    }
     // Set bindView
     itemRef->bindView = attributeRef_global->bindView;
     // Add itemType to item
@@ -228,61 +283,39 @@ bool createItem(AKTAttributeItemType itemType) {
  * |_________________|____________________|
  */
 CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
+    // 更新动态布局信息
+    void(^layoutInfoFetchBlock)(AKTLayoutShellAttribute *layout) = (__bridge void (^)(AKTLayoutShellAttribute *__strong))(attributeRef->layoutInfoFetchBlock);
+    if (layoutInfoFetchBlock) {
+        NSLog(@"%p", layoutInfoFetchBlock);
+        // 切换上下文
+        AKTLayoutAttributeRef tempGlobal = attributeRef_global;
+        attributeRef_global = attributeRef;
+        attributeRef->layoutDynamicContextBegin = false;
+        needGetLayoutInfo_sheel = false;
+        // 获取布局信息的动态部分
+        layoutInfoFetchBlock(sharedShellAttribute());
+        // 恢复上下文
+        attributeRef->layoutDynamicContextBegin = false;
+        needGetLayoutInfo_sheel = true;
+        attributeRef_global = tempGlobal;
+    }
     // Filter out invalid layout items
     UIView *bindView = (__bridge UIView *)(attributeRef->bindView);
     if (!attributeRef->check) {
-        if (attributeRef->itemCount == 0) {
+        if (attributeRef->itemCountForStatic == 0 && attributeRef->itemCountForDynamic == 0) {
             NSString *description = [NSString stringWithFormat:@"> %@: Not added any attribute items.\n> 未添加任何参照", bindView.aktName];
             NSString *sugget = [NSString stringWithFormat:@"> For more details, please refer to the error message described in the document. 详情请参考错误信息描述文档"];
             __aktErrorReporter(302, description, sugget);
             return bindView.frame;
         }
-        // 去除无效布局项
-        int valideItemCount = 0;
-        for (int i = 0; i<attributeRef->itemCount; i++) {
-            AKTAttributeItemRef itemRef = attributeRef->itemArray+i;
-            if (itemRef->configuration.reference.referenceValidate == false) {
-                continue;
-            }else{
-                attributeRef->itemArray[valideItemCount] = *itemRef;
-                valideItemCount++;
-            }
-        }
-        attributeRef->itemCount = valideItemCount;
+        // 去除无效布局项 静态信息和动态信息区
+        removeInvalidAttributeItemFromAttribute(attributeRef);
     }
     // 如果定义了edge inset 则忽略其余配置信息
     {
-        // Find which item set the edgeInset
-        UIEdgeInsets edgeInset;
-        UIView *referenceView;
-        AKTAttributeItemRef itemRef = NULL;
-        for (int i = 0; i<attributeRef->itemCount; i++) {
-            itemRef = attributeRef->itemArray+i;
-            edgeInset = itemRef->configuration.referenceEdgeInsert;
-            referenceView = (__bridge UIView *)(itemRef->configuration.reference.referenceView);
-            // Calculate frame
-            if (referenceView && edgeInset.top<FLT_MAX-1) {
-                CGFloat x_i, y_i,w_i,h_i;
-                CGRect viewRec = [bindView.superview convertRect:referenceView.frame fromView:referenceView.superview? referenceView.superview:mAKT_APPDELEGATE.keyWindow];
-                x_i = viewRec.origin.x+calculate(edgeInset.left, itemRef->configuration.referenceMultiple,  itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
-                y_i = viewRec.origin.y+calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
-                w_i = -calculate(edgeInset.left, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.width-calculate(edgeInset.right, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
-                h_i = -calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.height-calculate(edgeInset.bottom, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
-                // If the layout of the first run.
-                // 如果布局首次运行
-                if (!attributeRef->check) {
-                    // Optimization attribute Ref remove redundant data entry.
-                    // 优化attributeRef移除多余的布局项
-                    attributeRef->itemArray[0] = *itemRef;
-                    attributeRef->itemCount = 1;
-                    // Add layout chain
-                    // 添加布局链
-                    UIView *bindView = (__bridge UIView *)(attributeRef->bindView);
-                    [referenceView.layoutChain addObject:bindView.aktContainer];
-                    [bindView.viewsReferenced addObject:referenceView.aktContainer];
-                }
-                return CGRectMake(x_i, y_i, w_i, h_i);
-            }
+        CGRect rect = calculateRectWithEdgeFromAttribute(bindView, attributeRef);
+        if (rect.origin.x<CGFLOAT_MAX-1) {
+            return rect;
         }
     }
     // Filter layout setting information.(size, whRatio, recalculation)
@@ -297,8 +330,15 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
         tempArr = viewReferenceTmp;
     }
     // Get whRatio if exist
-    for (int i = 0; i<attributeRef->itemCount; i++) {
-        AKTAttributeItemRef itemRef = attributeRef->itemArray+i;
+    int count = attributeRef->itemCountForStatic;
+    BOOL isDynamic = NO;
+    for (int i = 0; i<count; i++) {
+        AKTAttributeItemRef itemRef;
+        if (isDynamic) {
+            itemRef = attributeRef->itemArrayForDynamic+i;
+        }else{
+            itemRef = attributeRef->itemArrayForStatic+i;
+        }
         // 获取保存参照视图
         if (!attributeRef->check) {
             // Get layout reference view
@@ -323,6 +363,11 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
             size = itemRef->configuration.reference.referenceSize;
             paramInfo.width = calculate(size.width, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
             paramInfo.height = calculate(size.height, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+            // 切换进入动态信息的遍历
+            if (i==count-1 && !isDynamic) {
+                count = attributeRef->itemCountForDynamic;
+                i = 0;
+            }
             continue;
         }
         // 如果没有设置size则查找是否设置whRatio，后面会根据有无whRatio分别处理
@@ -337,6 +382,11 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
                 }
             }
         }
+        // 切换进入动态信息的遍历
+        if (i==count-1 && !isDynamic) {
+            count = attributeRef->itemCountForDynamic;
+            i = 0;
+        }
     }
     // Add layout chain
     // 添加布局链
@@ -345,13 +395,119 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
             [referenceView.layoutChain addObject:bindView.aktContainer];
             [bindView.viewsReferenced addObject:referenceView.aktContainer];
         }
+        attributeRef_global->check = true;
     }
     // Set other itemtypes: top/left/width.... into paramInfo
-    for (int i = 0; i<attributeRef->itemCount; i++) {
-        AKTAttributeItemRef itemRef = attributeRef->itemArray+i;
+    count = attributeRef->itemCountForStatic;
+    isDynamic = NO;
+    for (int i = 0; i<count; i++) {
+        AKTAttributeItemRef itemRef;
+        if (isDynamic) {
+            itemRef = attributeRef->itemArrayForDynamic+i;
+        }else{
+            itemRef = attributeRef->itemArrayForStatic+i;
+        }
         parseItem(itemRef, &paramInfo);
+        // 切换进入动态信息的遍历
+        if (i==count-1 && !isDynamic) {
+            count = attributeRef->itemCountForDynamic;
+            i = 0;
+        }
     }
     return calculateRect(&paramInfo, attributeRef);
+}
+
+/**
+ *  移除无效的布局信息
+ *
+ *  @param attributeRef
+ */
+void removeInvalidAttributeItemFromAttribute(AKTLayoutAttributeRef attributeRef) {
+    int valideItemCount = 0;
+    for (int i = 0; i<attributeRef->itemCountForStatic; i++) {
+        AKTAttributeItemRef itemRef = attributeRef->itemArrayForStatic+i;
+        if (itemRef->configuration.reference.referenceValidate == false) {
+            continue;
+        }else{
+            attributeRef->itemArrayForStatic[valideItemCount] = *itemRef;
+            valideItemCount++;
+        }
+    }
+    attributeRef->itemCountForStatic = valideItemCount;
+    valideItemCount = 0;
+    for (int i = 0; i<attributeRef->itemCountForDynamic; i++) {
+        AKTAttributeItemRef itemRef = attributeRef->itemArrayForDynamic+i;
+        if (itemRef->configuration.reference.referenceValidate == false) {
+            continue;
+        }else{
+            attributeRef->itemArrayForDynamic[valideItemCount] = *itemRef;
+            valideItemCount++;
+        }
+    }
+    attributeRef->itemCountForDynamic = valideItemCount;
+}
+
+/**
+ *  如果配置了edge，计算frame
+ *
+ *  @param bindView
+ *  @param attributeRef
+ *
+ *  @return
+ */
+CGRect calculateRectWithEdgeFromAttribute(UIView *bindView, AKTLayoutAttributeRef attributeRef) {
+    // Find which item set the edgeInset
+    UIEdgeInsets edgeInset;
+    UIView *referenceView;
+    AKTAttributeItemRef itemRef = NULL;
+    CGRect (^calculateBlock)(BOOL isDynamic) = ^CGRect(BOOL isDynamic){
+        CGFloat x_i, y_i,w_i,h_i;
+        CGRect viewRec = [bindView.superview convertRect:referenceView.frame fromView:referenceView.superview? referenceView.superview:mAKT_APPDELEGATE.keyWindow];
+        x_i = viewRec.origin.x+calculate(edgeInset.left, itemRef->configuration.referenceMultiple,  itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+        y_i = viewRec.origin.y+calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+        w_i = -calculate(edgeInset.left, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.width-calculate(edgeInset.right, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+        h_i = -calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.height-calculate(edgeInset.bottom, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+        // If the layout of the first run.
+        // 如果布局首次运行
+        if (!attributeRef->check) {
+            // Optimization attribute Ref remove redundant data entry.
+            // 优化attributeRef移除多余的布局项
+            if (isDynamic) {
+                attributeRef->itemCountForStatic = 0;
+                attributeRef->itemArrayForDynamic[0] = *itemRef;
+                attributeRef->itemCountForDynamic = 1;
+            }else{
+                attributeRef->itemArrayForStatic[0] = *itemRef;
+                attributeRef->itemCountForStatic = 1;
+            }
+            // Add layout chain
+            // 添加布局链
+            [referenceView.layoutChain addObject:bindView.aktContainer];
+            [bindView.viewsReferenced addObject:referenceView.aktContainer];
+        }
+        return CGRectMake(x_i, y_i, w_i, h_i);
+    };
+    // 静态部分
+    for (int i = 0; i<attributeRef->itemCountForStatic; i++) {
+        itemRef = attributeRef->itemArrayForStatic+i;
+        edgeInset = itemRef->configuration.referenceEdgeInsert;
+        referenceView = (__bridge UIView *)(itemRef->configuration.reference.referenceView);
+        // Calculate frame
+        if (referenceView && edgeInset.top<FLT_MAX-1) {
+            return calculateBlock(NO);
+        }
+    }
+    // 动态部分
+    for (int i = 0; i<attributeRef->itemCountForDynamic; i++) {
+        itemRef = attributeRef->itemArrayForDynamic+i;
+        edgeInset = itemRef->configuration.referenceEdgeInsert;
+        referenceView = (__bridge UIView *)(itemRef->configuration.reference.referenceView);
+        // Calculate frame
+        if (referenceView && edgeInset.top<FLT_MAX-1) {
+            return calculateBlock(YES);
+        }
+    }
+    return CGRectMake(CGFLOAT_MAX, CGFLOAT_MAX, CGFLOAT_MAX, CGFLOAT_MAX);
 }
 
 #pragma mark - aid for frame calculation

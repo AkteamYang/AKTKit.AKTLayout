@@ -29,8 +29,9 @@
     self.view.aktName = @"self.view";
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //                    [self initUI];
-        [self initUIAkt];
+//        [self initUIAkt];
 //        [self initAKTCycleUI];
+        [self dynamicUI];
 //                    [self initUIMas];
     });
 }
@@ -189,6 +190,24 @@
         layout.centerX.width.height.equalTo(akt_view(v1));
         layout.top.equalTo(v.akt_bottom);
     }];
+}
+
+- (void)dynamicUI {
+    UIView*v = [UIView new];
+    [self.view addSubview:v];
+    v.aktName = @"cycle test v";
+    v.backgroundColor = mAKT_Color_Color(101, 89, 155, 1);
+//    [v aktLayout:^(AKTLayoutShellAttribute *layout) {
+//        if (self.view.width>self.view.height) {
+//            aktDynamicContextBegin(1);
+//            layout.edge.equalTo(akt_view(self.view)).offset(10);
+//            aktDynamicContextEnd();
+//        }else{
+//            aktDynamicContextBegin(1);
+//            layout.edge.equalTo(akt_view(self.view)).offset(10);
+//            aktDynamicContextEnd();
+//        }
+//    }];
 }
 
 - (void)initUIMas {

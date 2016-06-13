@@ -34,9 +34,15 @@
         _drag.userInteractionEnabled = YES;
         UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(pan:)];
         [_drag addGestureRecognizer:pan];
+        [_drag aktDidLayoutTarget:self forSelector:@selector(dragDidLayout:)];
     }
     return _drag;
 }
+
+- (void)dragDidLayout:(UIView *)view {
+    NSLog(@"%@",NSStringFromCGRect(view.frame));
+}
+
 
 - (UIView *)container {
     if (_container == nil) {
@@ -50,6 +56,8 @@
     }
     return _container;
 }
+
+
 
 #pragma mark - life cycle
 //|---------------------------------------------------------

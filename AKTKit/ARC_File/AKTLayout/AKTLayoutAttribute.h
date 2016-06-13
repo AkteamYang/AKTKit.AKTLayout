@@ -19,16 +19,22 @@
 
 //--------------------Structs statement, globle variables...--------------------
 typedef struct {
-    // Layout info, array elements are layout items
-    // 布局信息，数组元素是布局项
-    AKTAttributeItem itemArray[kItemMaximum];
-    int itemCount;
-    // The view need to be layout
-    // 需要被布局的view
+    //> 不可变布局信息
+    AKTAttributeItem itemArrayForStatic[kItemMaximum];
+    int itemCountForStatic;
+    //> Layout info, array elements are layout items. 可变布局信息，数组元素是布局项(在满足某种条件时会被重新赋值)
+    AKTAttributeItem itemArrayForDynamic[kItemMaximum];
+    int itemCountForDynamic;
+    //> 需要被布局的view
     const void *bindView;
-    // Whether check
-    // 是否已经检查
+    //> 是否已经检查
     bool check;
+    //> 更新布局信息时生成的tag，用以区分不同的布局信息
+    long layoutInfoTag;
+    //> 获取布局信息（void(^)(AKTLayoutShellAttribute *layout, AKTLayoutShellContext context)）
+    const void *layoutInfoFetchBlock;
+    //> 是否正在更新布局信息
+    bool layoutDynamicContextBegin;
 } AKTLayoutAttribute;
 typedef AKTLayoutAttribute* AKTLayoutAttributeRef;
 // Shared attributeRef

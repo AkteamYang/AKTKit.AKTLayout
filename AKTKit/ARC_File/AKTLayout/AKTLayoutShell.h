@@ -13,6 +13,16 @@
 #import "AKTLayoutAttribute.h"
 // import-"views & controllers.h"
 
+//--------------# Macro & Const #--------------
+#define aktDynamicContextBegin(VALUE) aktDynamicLayoutBeginContextWithIdentifier(VALUE)
+#define aktDynamicContextEnd() aktDynamicLayoutEndContext()
+//--------------# E.n.d #--------------#>Macro
+
+//--------------------Structs statement, globle variables...--------------------
+void aktDynamicLayoutBeginContextWithIdentifier(long identifier);
+void aktDynamicLayoutEndContext();
+//-------------------- E.n.d -------------------->Structs statement, globle variables...
+
 @interface AKTLayoutShellConfigure : NSObject
 /*
  * Multiple and offset

@@ -242,6 +242,10 @@ BOOL screenRotating                     = NO;
 - (void)myDealloc {
     // 移除布局信息\布局参考引用信息
     if(self.attributeRef) {
+        AKTLayoutAttributeRef pt = self.attributeRef;
+        if (pt->layoutInfoFetchBlock) {
+            CFBridgingRelease(pt->layoutInfoFetchBlock);
+        }
         free(self.attributeRef);
     }
     AKTWeakContainer *myContainer = self.aktContainer;

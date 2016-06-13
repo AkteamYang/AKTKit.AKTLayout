@@ -26,6 +26,7 @@ char const kAktDidLayoutComplete;
 AKTLayoutAttributeRef attributeRef_global = NULL;
 BOOL willCommitAnimation = NO;
 extern BOOL screenRotatingAnimationSupport;
+extern bool needGetLayoutInfo_sheel;
 //-------------------- E.n.d -------------------->Structs statement & globle variables
 
 @interface UIView()
@@ -277,6 +278,9 @@ extern BOOL screenRotatingAnimationSupport;
         // Change view's attributRef
         AKTLayoutAttributeRef pt = self.attributeRef;
         if (pt) {
+            if (pt->layoutInfoFetchBlock) {
+                CFBridgingRelease(pt->layoutInfoFetchBlock);
+            }
             free(pt);
         }
         // 移除先前的AKTLayout布局设置关联信息，并更新当前信息
@@ -285,12 +289,14 @@ extern BOOL screenRotatingAnimationSupport;
         }
         [self.viewsReferenced removeAllObjects];
     };
+    
+    
     if(!layout){
         removeLastAttribute();
         self.attributeRef = nil;
         return;
     }
-    
+
     
     // Bug report: 如果A在布局时引用了B并触发了B布局的创建，由于创建布局时attribute是全局的，此时B应该先保存A的布局状态再开始B的布局。
     void *attributeRef_context = NULL;
@@ -313,12 +319,16 @@ extern BOOL screenRotatingAnimationSupport;
         self.adaptiveWidth = @(YES);
         self.adaptiveHeight = @(YES);
     }
-    layout(sharedShellAttribute());
     removeLastAttribute();
-    self.attributeRef = attributeRef_global;
-    // 计算布局并设置frame
+    // 初次获取布局信息并计算布局并设置frame
+    needGetLayoutInfo_sheel = true;
+    layout(sharedShellAttribute());
     CGRect rect = calculateAttribute(attributeRef_global);
-    attributeRef_global->check = true;
+    // 如果存在动态布局信息添加动态布局信息获取Block（layoutInfoTag == CGFloat_MAX）
+    if (attributeRef_global->layoutInfoTag<LONG_MAX-1) {
+        attributeRef_global->layoutInfoFetchBlock = CFBridgingRetain(layout);
+    }
+    self.attributeRef = attributeRef_global;
     self.frame = rect;
     // 恢复原来的布局上下文.
     attributeRef_global = attributeRef_context;

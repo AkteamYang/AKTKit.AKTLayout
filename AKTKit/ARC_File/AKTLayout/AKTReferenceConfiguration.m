@@ -92,7 +92,12 @@ UIEdgeInsets __akt_inset(float top, float left, float bottom, float right) {
  *
  */
 void __akt__add__multiple(CGFloat value) {
-    AKTAttributeItem *itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount-1;
+    AKTAttributeItem *itemRef;
+    if (attributeRef_global->layoutDynamicContextBegin) {
+        itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
+    }else{
+        itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+    }
     itemRef->configuration.referenceMultiple = value;
     return;
 }
@@ -108,7 +113,12 @@ void __akt__add__multiple(CGFloat value) {
  *  @note 最终的结果＝参考对象＊倍数＋偏移值
  */
 void __akt__add__offset(CGFloat value) {
-    AKTAttributeItem *itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount-1;
+    AKTAttributeItem *itemRef;
+    if (attributeRef_global->layoutDynamicContextBegin) {
+        itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
+    }else{
+        itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+    }
     itemRef->configuration.referenceOffset = value;
     return;
 }
@@ -124,7 +134,12 @@ void __akt__add__offset(CGFloat value) {
  *  @note 最终的结果＝(参考对象+系数偏移值)＊倍数＋偏移值
  */
 void __akt__add__coefficientOffset(CGFloat value) {
-    AKTAttributeItem *itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount-1;
+    AKTAttributeItem *itemRef;
+    if (attributeRef_global->layoutDynamicContextBegin) {
+        itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
+    }else{
+        itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+    }
     itemRef->configuration.referenceCoefficientOffset = value;
     return;
 }
@@ -140,7 +155,12 @@ void __akt__add__coefficientOffset(CGFloat value) {
  *  @note 仅仅对添加了"edge"类型的布局项起作用。同时如果此布局项还添加了其它的布局类型，则其它的布局类型将不起作用。
  */
 void __akt__add__edgeInset(UIEdgeInsets inset) {
-    AKTAttributeItem *itemRef = attributeRef_global->itemArray+attributeRef_global->itemCount-1;
+    AKTAttributeItem *itemRef;
+    if (attributeRef_global->layoutDynamicContextBegin) {
+        itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
+    }else{
+        itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+    }
     itemRef->configuration.referenceEdgeInsert = inset;
     return;
 }
