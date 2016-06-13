@@ -257,7 +257,7 @@ BOOL screenRotating                     = NO;
     for (AKTWeakContainer *container in self.viewsReferenced) {
         [container.weakView.layoutChain removeObject:myContainer];
     }
-    mAKT_Log(@"%@ _dealloc",self.aktName);
+    //    mAKT_Log(@"%@ _dealloc",self.aktName);
     [self myDealloc];
 }
 

@@ -40,14 +40,16 @@
         toVc.view.alpha = 1;
         toVc.view.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
-        // 恢复缩放，因为需要还原初始状态，否则手势拖动取消时发生错误
-        toVc.view.transform = CGAffineTransformIdentity;
-        // 必须将fromVC的view位置复位，否则在取消状态下会出现显示错误
-        fromVc.view.frame = CGRectMake(0, 0, fromVc.view.width, fromVc.view.height);
-        if(![transitionContext transitionWasCancelled]){
-//            [fromVc.view removeFromSuperview];
-        }
-        [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+        [UIView aktAnimation:^{
+            // 恢复缩放，因为需要还原初始状态，否则手势拖动取消时发生错误
+            toVc.view.transform = CGAffineTransformIdentity;
+            // 必须将fromVC的view位置复位，否则在取消状态下会出现显示错误
+            fromVc.view.frame = CGRectMake(0, 0, fromVc.view.width, fromVc.view.height);
+            if(![transitionContext transitionWasCancelled]){
+                //            [fromVc.view removeFromSuperview];
+            }
+            [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+        }];
     }];
 }
 @end
