@@ -295,19 +295,17 @@ extern bool needGetLayoutInfo_sheel;
         self.attributeRef = nil;
         return;
     }
-
-    
     // Bug report: 如果A在布局时引用了B并触发了B布局的创建，由于创建布局时attribute是全局的，此时B应该先保存A的布局状态再开始B的布局。
     void *attributeRef_context = NULL;
     // 保存布局状态上下文。
     if(attributeRef_global && attributeRef_global->bindView != (__bridge const void *)(self)){
         attributeRef_context = attributeRef_global;
     }
-    // 设置视图的自适应长度和宽度属性（UILabel、UIImageView未来支持）.
-    if (!(self.adaptiveHeight || self.adaptiveWidth)) {
-        self.adaptiveWidth = @(YES);
-        self.adaptiveHeight = @(YES);
-    }
+//    // 设置视图的自适应长度和宽度属性（UILabel、UIImageView未来支持）.
+//    if (!(self.adaptiveHeight || self.adaptiveWidth)) {
+//        self.adaptiveWidth = @(YES);
+//        self.adaptiveHeight = @(YES);
+//    }
     
     
     // 创建布局信息存储对象
@@ -332,10 +330,8 @@ extern bool needGetLayoutInfo_sheel;
     needGetLayoutInfo_sheel = true;
     layout(sharedShellAttribute());
     CGRect rect = calculateAttribute(attributeRef_global);
-    // 如果存在动态布局信息添加动态布局信息获取Block（layoutInfoTag == CGFloat_MAX）
-    if (attributeRef_global->layoutInfoTag<LONG_MAX-1) {
-        attributeRef_global->layoutInfoFetchBlock = CFBridgingRetain(layout);
-    }
+    // 添加动态布局信息获取Block（layoutInfoTag == CGFloat_MAX）
+    attributeRef_global->layoutInfoFetchBlock = CFBridgingRetain(layout);
     self.attributeRef = attributeRef_global;
     self.frame = rect;
     // 已经布局完成回调

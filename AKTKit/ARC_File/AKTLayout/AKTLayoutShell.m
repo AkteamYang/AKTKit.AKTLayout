@@ -293,12 +293,18 @@ AKTLayoutShellAttribute *sharedShellAttribute() {
 
 - (void)aktLayoutIdentifier:(long)identifier withDynamicAttribute:(void(^)())attribute {
     if (!attribute) return;
-    aktDynamicLayoutBeginContextWithIdentifier(identifier);
-    attribute();
-    aktDynamicLayoutEndContext();
     if(attributeRef_global->layoutInfoFetchBlock){
+        long temp = attributeRef_global->layoutInfoTag;
+        aktDynamicLayoutBeginContextWithIdentifier(identifier);
+        if (temp!=attributeRef_global->layoutInfoTag) {
+            attribute();
+        }
+        aktDynamicLayoutEndContext();
         nil;
     }else{// 首次获取全部布局信息(包括动态和静态布局信息),继续获取剩余的静态布局信息
+        aktDynamicLayoutBeginContextWithIdentifier(identifier);
+        attribute();
+        aktDynamicLayoutEndContext();
         needGetLayoutInfo_sheel = true;
     }
 }

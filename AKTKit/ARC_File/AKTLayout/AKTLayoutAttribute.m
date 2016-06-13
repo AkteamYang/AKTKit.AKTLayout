@@ -298,6 +298,8 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
         needGetLayoutInfo_sheel = true;
         attributeRef_global = tempGlobal;
     }
+    
+    
     // Filter out invalid layout items
     UIView *bindView = (__bridge UIView *)(attributeRef->bindView);
     if (!attributeRef->check) {
@@ -321,16 +323,6 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
     // Filter layout setting information.(size, whRatio, recalculation)
     // 过滤布局设置信息(size, whRatio, recalculation)
     AKTLayoutParam paramInfo = initializedParamInfo();
-    static id tempArr = nil;
-    NSMutableArray *viewReferenceTmp = tempArr;
-    if (viewReferenceTmp) {
-        [viewReferenceTmp removeAllObjects];
-    }else{
-        viewReferenceTmp = [NSMutableArray array];
-        tempArr = viewReferenceTmp;
-    }
-    
-    
     // Get whRatio if exist
     int count = attributeRef->itemCountForStatic;
     BOOL isDynamic = NO;
@@ -353,10 +345,12 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
             UIView *referenceView = nil;
             if(itemRef->configuration.reference.referenceType == AKTRefenceType_View) {
                 referenceView = (__bridge UIView *)(itemRef->configuration.reference.referenceView);
-                if(![viewReferenceTmp containsObject:referenceView]) [viewReferenceTmp addObject:referenceView];
+                [referenceView.layoutChain addObject:bindView.aktContainer];
+                [bindView.viewsReferenced addObject:referenceView.aktContainer];
             }else if (itemRef->configuration.reference.referenceType == AKTRefenceType_ViewAttribute) {
                 referenceView = (__bridge UIView *)(itemRef->configuration.reference.referenceAttribute.referenceView);
-                if(![viewReferenceTmp containsObject:referenceView]) [viewReferenceTmp addObject:referenceView];
+                [referenceView.layoutChain addObject:bindView.aktContainer];
+                [bindView.viewsReferenced addObject:referenceView.aktContainer];
             }
         }
         // If we configured "equaltoSize", set the view's size directly. You can only set size in the chain, set another position constraint is invalid.
@@ -397,15 +391,9 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
             isDynamic = YES;
         }
     }
-    // Add layout chain
-    // 添加布局链
-    if (!attributeRef->check) {
-        for (UIView *referenceView in viewReferenceTmp) {
-            [referenceView.layoutChain addObject:bindView.aktContainer];
-            [bindView.viewsReferenced addObject:referenceView.aktContainer];
-        }
-        attributeRef->check = true;
-    }
+    attributeRef->check = true;
+    
+    
     // Set other itemtypes: top/left/width.... into paramInfo
     count = attributeRef->itemCountForStatic;
     isDynamic = NO;
@@ -488,18 +476,12 @@ CGRect calculateRectWithEdgeFromAttribute(UIView *bindView, AKTLayoutAttributeRe
             // Optimization attribute Ref remove redundant data entry.
             // 优化attributeRef移除多余的布局项
             if (isDynamic) {
-                attributeRef->itemCountForStatic = 0;
                 attributeRef->itemArrayForDynamic[0] = *itemRef;
                 attributeRef->itemCountForDynamic = 1;
             }else{
                 attributeRef->itemArrayForStatic[0] = *itemRef;
                 attributeRef->itemCountForStatic = 1;
                 attributeRef->itemCountForDynamic = 0;
-                const void *block = attributeRef->layoutInfoFetchBlock;
-                if (block) {
-                    CFBridgingRelease(block);
-                    attributeRef->layoutInfoFetchBlock = NULL;
-                }
             }
             // Add layout chain
             // 添加布局链

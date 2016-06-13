@@ -72,13 +72,13 @@ BOOL screenRotating                     = NO;
  *
  *  @return 布局视图的数组
  */
-- (NSMutableArray *)layoutChain {
-    NSMutableArray *arr = objc_getAssociatedObject(self, kLayoutChain);
-    if (!arr) {
-        arr = [NSMutableArray array];
-        objc_setAssociatedObject(self, kLayoutChain, arr, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (NSMutableSet *)layoutChain {
+    NSMutableSet *set = objc_getAssociatedObject(self, kLayoutChain);
+    if (!set) {
+        set = [NSMutableSet set];
+        objc_setAssociatedObject(self, kLayoutChain, set, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    return arr;
+    return set;
 }
 
 /**
@@ -86,13 +86,13 @@ BOOL screenRotating                     = NO;
  *
  *  @return 当前视图所参考的视图的数组
  */
-- (NSMutableArray *)viewsReferenced {
-    NSMutableArray *arr = objc_getAssociatedObject(self, kViewsReferenced);
-    if (!arr) {
-        arr = [NSMutableArray array];
-        objc_setAssociatedObject(self, kViewsReferenced, arr, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (NSMutableSet *)viewsReferenced {
+    NSMutableSet *set = objc_getAssociatedObject(self, kViewsReferenced);
+    if (!set) {
+        set = [NSMutableSet set];
+        objc_setAssociatedObject(self, kViewsReferenced, set, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    return arr;
+    return set;
 }
 
 /**
@@ -149,10 +149,8 @@ BOOL screenRotating                     = NO;
  *  刷新布局子节点（刷新参考了本视图的视图）
  */
 - (void)aktUpdateLayoutChainNode {
-    NSInteger count = self.layoutChain.count;
     // 刷新子节点布局
-    for (int i = 0; i< count;i++) {
-        AKTWeakContainer *container = self.layoutChain[i];
+    for (AKTWeakContainer *container in self.layoutChain) {
         UIView *bindView = container.weakView;
         // 如果bindView的布局更新计数器大于最小刷新阈值，则暂时不必计算布局更新
         NSInteger layoutUpdateCount = bindView.layoutUpdateCount;
