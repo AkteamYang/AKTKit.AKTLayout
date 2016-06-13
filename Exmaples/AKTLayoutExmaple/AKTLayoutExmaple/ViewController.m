@@ -28,7 +28,7 @@ extern const int kLines;
         [self addSubview:_img];
         AKTWeakOject(weakself, self);
         [_img aktLayout:^(AKTLayoutShellAttribute *layout) {
-            if (weakself.width<mAKT_SCREENHEIGHT) {
+            if (mAKT_Portrait) {
                 [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
                     layout.centerY.equalTo(akt_view(weakself));
                     layout.whRatio.equalTo(akt_value(1.0));
@@ -60,23 +60,26 @@ extern const int kLines;
         _title = [UILabel new];
         [self addSubview:_title];
         AKTWeakOject(weakself, self);
+        AKTWeakOject(weakImg, self.img);
         [_title aktLayout:^(AKTLayoutShellAttribute *layout) {
-            if (weakself.width<mAKT_SCREENHEIGHT) {
+            if (mAKT_Portrait) {
                 [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
-                    layout.top.centerY.right.equalTo(akt_view(self));
+                    layout.top.centerY.equalTo(akt_view(self));
                     layout.left.equalTo(self.img.akt_right).offset(20);
                 }];
             }else{
                 [layout aktLayoutIdentifier:2 withDynamicAttribute:^{
                     layout.centerX.equalTo(akt_view(weakself));
-                    layout.whRatio.equalTo(akt_value(1.0));
-                    layout.top.equalTo(akt_view(weakself)).offset(10);
-                    layout.height.equalTo(akt_value(80));
+                    layout.height.equalTo(akt_value(18));
+                    layout.top.equalTo(weakImg.akt_bottom).offset(5);
+                    
                 }];
             }
         }];
         [_title setTextColor:mAKT_Color_Text_52];
         [_title setFont:mAKT_Font_16];
+        [_title setTextAlignment:(NSTextAlignmentCenter)];
+        [_title setMaxWidth:@200];
 //        _title.backgroundColor = mAKT_Color_Random;
         _title.text = @"title";
         _title.aktName = @"title";
@@ -195,7 +198,7 @@ static NSString *const kTitle = @"kTitle";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL b = mAKT_SCREENWITTH>mAKT_SCREENHEIGHT;
-    return b? 100:60;
+    return b? 118:60;
 }
 
 #pragma mark - tableview delegate
