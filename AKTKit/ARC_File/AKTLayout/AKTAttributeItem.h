@@ -53,16 +53,16 @@ void aktAttributeItemInit(AKTAttributeItemRef itemRef);
  *  添加布局项类型.
  *
  */
-bool __andTop_imp__();
-bool __andLeft_imp__();
-bool __andBottom_imp__();
-bool __andRight_imp__();
-bool __andWidth_imp__();
-bool __andHeight_imp__();
-bool __andWHRatio_imp__();
-bool __andCenterX_imp__();
-bool __andCenterY_imp__();
-bool __andCenterXY_imp__();
+void __andTop_imp__();
+void __andLeft_imp__();
+void __andBottom_imp__();
+void __andRight_imp__();
+void __andWidth_imp__();
+void __andHeight_imp__();
+void __andWHRatio_imp__();
+void __andCenterX_imp__();
+void __andCenterY_imp__();
+void __andCenterXY_imp__();
 
 /**
  *  Establish references
@@ -74,7 +74,7 @@ bool __andCenterXY_imp__();
  *  @return Reference configuration object.
  *  @return 参考设置对象
  */
-bool __equalTo_imp__(AKTReference reference);
+void __equalTo_imp__(AKTReference reference);
 #pragma mark - function implementations
 //|---------------------------------------------------------
 /**

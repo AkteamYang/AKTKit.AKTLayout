@@ -17,8 +17,6 @@ extern AKTLayoutAttributeRef attributeRef_global;
 //-------------------- E.n.d -------------------->Structs statement, globle variables...
 
 void aktDynamicLayoutBeginContextWithIdentifier(long identifier) {
-    // 如果时第一次读区数据，不做任何干涉
-    
     attributeRef_global->layoutDynamicContextBegin = true;
     if (identifier == attributeRef_global->layoutInfoTag) {
         // needGetLayoutInfo_sheel = false by default. Will update nothing.
@@ -50,12 +48,14 @@ AKTLayoutShellConfigure *sharedConfigure() {
 - (AKTLayoutShellConfigure *(^)(CGFloat obj))multiple {
     return ^AKTLayoutShellConfigure *(CGFloat obj){
         AKTAttributeItemRef itemRef;
-        if (attributeRef_global->layoutDynamicContextBegin) {
-            itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
-        }else{
-            itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+        if (needGetLayoutInfo_sheel) {
+            if (attributeRef_global->layoutDynamicContextBegin) {
+                itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
+            }else{
+                itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+            }
+            itemRef->configuration.referenceMultiple = obj;
         }
-        itemRef->configuration.referenceMultiple = obj;
         return configure_shell? configure_shell:sharedConfigure();
     };
 }
@@ -63,12 +63,14 @@ AKTLayoutShellConfigure *sharedConfigure() {
 - (AKTLayoutShellConfigure *(^)(CGFloat obj))offset {
     return ^AKTLayoutShellConfigure *(CGFloat obj){
         AKTAttributeItemRef itemRef;
-        if (attributeRef_global->layoutDynamicContextBegin) {
-            itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
-        }else{
-            itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+        if (needGetLayoutInfo_sheel) {
+            if (attributeRef_global->layoutDynamicContextBegin) {
+                itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
+            }else{
+                itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+            }
+            itemRef->configuration.referenceOffset = obj;
         }
-        itemRef->configuration.referenceOffset = obj;
         return configure_shell? configure_shell:sharedConfigure();
     };
 }
@@ -76,12 +78,14 @@ AKTLayoutShellConfigure *sharedConfigure() {
 - (AKTLayoutShellConfigure *(^)(CGFloat obj))coefficientOffset {
     return ^AKTLayoutShellConfigure *(CGFloat obj){
         AKTAttributeItemRef itemRef;
-        if (attributeRef_global->layoutDynamicContextBegin) {
-            itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
-        }else{
-            itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+        if (needGetLayoutInfo_sheel) {
+            if (attributeRef_global->layoutDynamicContextBegin) {
+                itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
+            }else{
+                itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+            }
+            itemRef->configuration.referenceCoefficientOffset = obj;
         }
-        itemRef->configuration.referenceCoefficientOffset = obj;
         return configure_shell? configure_shell:sharedConfigure();
     };
 }
@@ -89,12 +93,14 @@ AKTLayoutShellConfigure *sharedConfigure() {
 - (AKTLayoutShellConfigure *(^)(UIEdgeInsets inset))edgeInset {
     return ^AKTLayoutShellConfigure *(UIEdgeInsets inset){
         AKTAttributeItemRef itemRef;
-        if (attributeRef_global->layoutDynamicContextBegin) {
-            itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
-        }else{
-            itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+        if (needGetLayoutInfo_sheel) {
+            if (attributeRef_global->layoutDynamicContextBegin) {
+                itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
+            }else{
+                itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+            }
+            itemRef->configuration.referenceEdgeInsert = inset;
         }
-        itemRef->configuration.referenceEdgeInsert = inset;
         return configure_shell? configure_shell:sharedConfigure();
     };
 }
@@ -110,59 +116,81 @@ AKTLayoutShellItem *sharedShellItem() {
 
 // Configure layout attribute item
 - (AKTLayoutShellItem *)top {
-    bool b = __andTop_imp__();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    if (needGetLayoutInfo_sheel) {
+        __andTop_imp__();
+    }
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)left {
-    bool b = __andLeft_imp__();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    if (needGetLayoutInfo_sheel) {
+        __andLeft_imp__();
+    }
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)bottom {
-    bool b = __andBottom_imp__();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    if (needGetLayoutInfo_sheel) {
+        __andBottom_imp__();
+    }
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)right {
-    bool b = __andRight_imp__();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    if (needGetLayoutInfo_sheel) {
+        __andRight_imp__();
+    }
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)width {
-    bool b = __andWidth_imp__();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    if (needGetLayoutInfo_sheel) {
+        __andWidth_imp__();
+    }
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)height{
-    bool b = __andHeight_imp__();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    if (needGetLayoutInfo_sheel) {
+        __andHeight_imp__();
+    }
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)whRatio {
-    bool b = __andWHRatio_imp__();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    if (needGetLayoutInfo_sheel) {
+        __andWHRatio_imp__();
+    }
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)centerX {
-    bool b = __andCenterX_imp__();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    if (needGetLayoutInfo_sheel) {
+        __andCenterX_imp__();
+    }
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)centerY {
-    bool b = __andCenterY_imp__();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    if (needGetLayoutInfo_sheel) {
+        __andCenterY_imp__();
+    }
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)centerXY {
-    bool b = __andCenterXY_imp__();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    if (needGetLayoutInfo_sheel) {
+        __andCenterXY_imp__();
+    }
+    return item_shell? item_shell:sharedShellItem();
 }
 
 // End set layout attribute item and set reference object
 - (AKTLayoutShellConfigure *(^)(AKTReference reference))equalTo {
     return ^AKTLayoutShellConfigure *(AKTReference reference) {
-        __equalTo_imp__(reference);
+        if (needGetLayoutInfo_sheel) {
+            __equalTo_imp__(reference);
+        }
         return configure_shell? configure_shell:sharedConfigure();
     };
 }
@@ -180,99 +208,98 @@ AKTLayoutShellAttribute *sharedShellAttribute() {
  * Create layout attribute item
  */
 - (AKTLayoutShellItem *)top {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__top();
     }
-    bool b = __akt__create__top();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)left {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__left();
     }
-    bool b = __akt__create__left();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)bottom {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__bottom();
     }
-    bool b = __akt__create__bottom();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)right {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__right();
     }
-    bool b = __akt__create__right();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)width {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__width();
     }
-    bool b = __akt__create__width();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)height {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__height();
     }
-    bool b = __akt__create__height();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)whRatio {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__whRatio();
     }
-    bool b = __akt__create__whRatio();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)centerX {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__centerX();
     }
-    bool b = __akt__create__centerX();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)centerY {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__centerY();
     }
-    bool b = __akt__create__centerY();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)centerXY {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__centerXY();
     }
-    bool b = __akt__create__centerXY();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)edge {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__edge();
     }
-    bool b = __akt__create__edge();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
 - (AKTLayoutShellItem *)size {
-    if (!needGetLayoutInfo_sheel) {
-        return nil;
+    if (needGetLayoutInfo_sheel) {
+        __akt__create__size();
     }
-    bool b = __akt__create__size();
-    return b? (item_shell? item_shell:sharedShellItem()):nil;
+    return item_shell? item_shell:sharedShellItem();
 }
 
+- (void)aktLayoutIdentifier:(long)identifier withDynamicAttribute:(void(^)())attribute {
+    if (!attribute) return;
+    aktDynamicLayoutBeginContextWithIdentifier(identifier);
+    attribute();
+    aktDynamicLayoutEndContext();
+    if(attributeRef_global->layoutInfoFetchBlock){
+        nil;
+    }else{// 首次获取全部布局信息(包括动态和静态布局信息),继续获取剩余的静态布局信息
+        needGetLayoutInfo_sheel = true;
+    }
+}
 @end

@@ -23,7 +23,7 @@
  *  @param type    Attribute item type.
  *
  */
-bool addItemType(AKTAttributeItemType type);
+void addItemType(AKTAttributeItemType type);
 //-------------------- E.n.d -------------------->Structs statement, globle variables...
 #pragma mark - life cycle
 //|---------------------------------------------------------
@@ -51,44 +51,44 @@ void aktAttributeItemInit(AKTAttributeItemRef itemRef) {
  *  @return layout attribute item added type.
  *  @return 已添加类型的布局项.
  */
-bool __andTop_imp__() {
-    return addItemType(AKTAttributeItemType_Top);
+void __andTop_imp__() {
+    addItemType(AKTAttributeItemType_Top);
 }
 
-bool __andLeft_imp__() {
-    return addItemType(AKTAttributeItemType_Left);
+void __andLeft_imp__() {
+    addItemType(AKTAttributeItemType_Left);
 }
 
-bool __andBottom_imp__() {
-    return addItemType(AKTAttributeItemType_Bottom);
+void __andBottom_imp__() {
+    addItemType(AKTAttributeItemType_Bottom);
 }
 
-bool __andRight_imp__() {
-    return addItemType(AKTAttributeItemType_Right);
+void __andRight_imp__() {
+    addItemType(AKTAttributeItemType_Right);
 }
 
-bool __andWidth_imp__() {
-    return addItemType(AKTAttributeItemType_Width);
+void __andWidth_imp__() {
+    addItemType(AKTAttributeItemType_Width);
 }
 
-bool __andHeight_imp__() {
-    return addItemType(AKTAttributeItemType_Height);
+void __andHeight_imp__() {
+    addItemType(AKTAttributeItemType_Height);
 }
 
-bool __andWHRatio_imp__() {
-    return addItemType(AKTAttributeItemType_WHRatio);
+void __andWHRatio_imp__() {
+    addItemType(AKTAttributeItemType_WHRatio);
 }
 
-bool __andCenterX_imp__() {
-    return addItemType(AKTAttributeItemType_CenterX);
+void __andCenterX_imp__() {
+    addItemType(AKTAttributeItemType_CenterX);
 }
 
-bool __andCenterY_imp__() {
-    return addItemType(AKTAttributeItemType_CenterY);
+void __andCenterY_imp__() {
+    addItemType(AKTAttributeItemType_CenterY);
 }
 
-bool __andCenterXY_imp__() {
-    return addItemType(AKTAttributeItemType_CenterXY);
+void __andCenterXY_imp__() {
+    addItemType(AKTAttributeItemType_CenterXY);
 }
 
 /**
@@ -101,11 +101,11 @@ bool __andCenterXY_imp__() {
  *  @return Reference configuration object.
  *  @return 参考设置对象
  */
-bool __equalTo_imp__(AKTReference reference) {
+void __equalTo_imp__(AKTReference reference) {
     BOOL isDynamic = attributeRef_global->layoutDynamicContextBegin;
     AKTAttributeItemRef itemRef;
     if (isDynamic) {
-        itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+        itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
     }else{
         itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
     }
@@ -114,7 +114,7 @@ bool __equalTo_imp__(AKTReference reference) {
         NSString *description = [NSString stringWithFormat:@"> %@: Refefence infomation invalide! 当前获取的参考信息无效", bindView.aktName];
         NSString *suggest = [NSString stringWithFormat:@"> The correct way to get reference information: akt_size(), akt_value()...,view1.akt_top, view1.akt_height...\n> 正确获取参考信息的方式有：akt_size(), akt_value()...,view1.akt_top, view1.akt_height..."];
         __aktErrorReporter(200, description, suggest);
-        return false;
+        return;
     }
     // If added edgeinset item type, and reference types are: "NSNumber", "NSVale", "AKT ViewAttribute", the reference set is invalid.
     // 如果设置了edgeinset，并且参考类型是："NSNumber", "NSValue", "AKTViewAttribute",则参照设置是无效的
@@ -146,14 +146,14 @@ bool __equalTo_imp__(AKTReference reference) {
             // Add reference view
             if(itemRef->configuration.reference.referenceSize.width<FLT_MAX-1) reference.referenceSize = itemRef->configuration.reference.referenceSize;
             itemRef->configuration.reference = reference;
-            return true;
+            return;
             break;
         case AKTRefenceType_Constant:// value and size
         {
             // If added edgeinset reference type, these references setted are invalid. You must reference to a view.
             // 如果设置了edgeinset参考类型，则设置这些参考是无效的，必须设置一个view为参照
             if (edgeCheck()) {
-                return false;
+                return;
             }
             // 布局项有size类型
             if (itemRef->configuration.reference.referenceSize.width<FLT_MAX-1) {
@@ -163,7 +163,7 @@ bool __equalTo_imp__(AKTReference reference) {
                     NSString *description = [NSString stringWithFormat:@"> %@: Reference types and reference information does not correspond, for setting \"size\" referenced to \"Constant\" or \"ViewAttribute\" makes no sense\n> 参照类型和参照信息不对应,对于size设置参考Constant或者ViewAttribute是没有意义的", bindView.aktName];
                     NSString *sugget = [NSString stringWithFormat:@"> For more details, please refer to the error message described in the document. 详情请参考错误信息描述文档"];
                     __aktErrorReporter(202, description, sugget);
-                    return false;
+                    return;
                 }
             }else{
                 // 设置size参考
@@ -172,22 +172,22 @@ bool __equalTo_imp__(AKTReference reference) {
                     NSString *description = [NSString stringWithFormat:@"> %@: Reference types and reference information does not correspond, for setting \"top、left、bottom...\" referenced to \"size\" makes no sense\n> 参照类型和参照信息不对应,对于top、left、bottom...设置参考size是没有意义的", bindView.aktName];
                     NSString *sugget = [NSString stringWithFormat:@"> For more details, please refer to the error message described in the document. 详情请参考错误信息描述文档"];
                     __aktErrorReporter(203, description, sugget);
-                    return false;
+                    return;
                 }
             }
             // Add reference constant
             itemRef->configuration.reference = reference;
-            return true;
+            return;
         }
             break;
         case AKTRefenceType_ViewAttribute:
             // If added edgeinset and size constraints, these references setted are invalid. You must reference to a view.
             // 如果设置了edgeinset和size约束，则设置这些参考是无效的，必须设置一个view为参照
             if (edgeCheck() || sizeCheck()) {
-                return false;
+                return;
             }
             itemRef->configuration.reference = reference;
-            return true;
+            return;
             break;
         default:
             break;
@@ -201,11 +201,11 @@ bool __equalTo_imp__(AKTReference reference) {
  *  @param type    Attribute item type.
  *
  */
-bool addItemType(AKTAttributeItemType type) {
+void addItemType(AKTAttributeItemType type) {
     BOOL isDynamic = attributeRef_global->layoutDynamicContextBegin;
     AKTAttributeItemRef itemRef;
     if (isDynamic) {
-        itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
+        itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic-1;
     }else{
         itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic-1;
     }
@@ -215,12 +215,12 @@ bool addItemType(AKTAttributeItemType type) {
         NSString *description = [NSString stringWithFormat:@"> %@: Out of the range of attributeItemType array.(%@)\n> \"attributeItemType\"数组越界(%@)",isDynamic? @"dynamic part":@"static part", bindView.aktName, isDynamic? @"动态部分":@"静态部分"];
         NSString *sugget = [NSString stringWithFormat:@"> You add too much reference item at once. For more details, please refer to the error message described in the document. 一次添加了过多的参照项，详情请参考错误信息描述文档"];
         __aktErrorReporter(300, description, sugget);
-        return false;
+        return;
     }
     // Add itemType to itemInfo
     itemRef->typeArray[itemRef->typeCount] = type;
     itemRef->typeCount++;
-    return true;
+    return;
 }
 
 /**

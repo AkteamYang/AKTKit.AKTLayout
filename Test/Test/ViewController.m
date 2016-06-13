@@ -35,6 +35,7 @@
 //                    [self initUIMas];
     });
 }
+
 - (void)tap:(UITapGestureRecognizer *)tap {
     UIViewController *supVC = self.presentingViewController;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -94,6 +95,7 @@
     b = [[NSDate new] timeIntervalSince1970];
     NSLog(@"%lf",b-a);
 }
+
 - (void)initUIAkt {
     double a, b;
     a = [[NSDate new] timeIntervalSince1970];
@@ -104,15 +106,32 @@
         for (int j = 0; j<columns; j++) {
             UIView *v = [[UIView alloc]init];
             [self.view addSubview:v];
+            AKTWeakOject(weakself, self);
+            AKTWeakOject(weakLast, last);
             [v aktLayout:^(AKTLayoutShellAttribute *layout) {
-                if(j == 0){
-                    layout.left.equalTo(akt_view(self.view));
+                if (weakself.view.width<weakself.view.height) {
+                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                        if(j == 0){
+                            layout.left.equalTo(akt_view(weakself.view));
+                        }else{
+                            layout.left.equalTo(weakLast.akt_right);
+                        }
+                        layout.top.equalTo(weakself.view.akt_height).multiple(((float)i)/lines);
+                        layout.width.equalTo(akt_view(weakself.view)).multiple(1.f/columns);
+                        layout.height.equalTo(akt_view(weakself.view)).multiple(1.f/lines);
+                    }];
                 }else{
-                    layout.left.equalTo(last.akt_right);
+                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                        if(j == 0){
+                            layout.left.equalTo(akt_view(weakself.view));
+                        }else{
+                            layout.left.equalTo(weakLast.akt_right);
+                        }
+                        layout.top.equalTo(weakself.view.akt_height).multiple(((float)i)/lines);
+                        layout.width.equalTo(akt_view(weakself.view)).multiple(1.f/columns);
+                        layout.height.equalTo(akt_view(weakself.view)).multiple(1.f/lines);
+                    }];
                 }
-                layout.top.equalTo(self.view.akt_height).multiple(((float)i)/lines);
-                layout.width.equalTo(akt_view(self.view)).multiple(1.f/columns);
-                layout.height.equalTo(akt_view(self.view)).multiple(1.f/lines);
             }];
 //            v.aktName = @"akt_v";
 //            v.tag = (j+1)+(i*columns);
@@ -120,20 +139,41 @@
             UIView *sub = [UIView new];
             [v addSubview:sub];
             sub.backgroundColor = mAKT_Color_Color(171, 64, 98, 1);
+            AKTWeakOject(weakV, v);
             [sub aktLayout:^(AKTLayoutShellAttribute *layout) {
-                layout.centerXY.equalTo(akt_view(v));
-                layout.size.equalTo(akt_view(v)).multiple(.33);
+                if (weakself.view.width<weakself.view.height) {
+                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                        layout.centerXY.equalTo(akt_view(weakV));
+                        layout.size.equalTo(akt_view(weakV)).multiple(.33);
+                    }];
+                }else{
+                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                        layout.centerXY.equalTo(akt_view(weakV));
+                        layout.size.equalTo(akt_view(weakV)).multiple(.33);
+                    }];
+                }
             }];
 //            sub.aktName = @"akt_sub";
 //            sub.tag = (j+1)+(i*columns);
             // 添加一个视图（跨级参考sub）
             UIView*v1 = [UIView new];
             [self.view addSubview:v1];
+            AKTWeakOject(weakSub, sub);
             v1.backgroundColor = mAKT_Color_Color(101, 89, 155, 1);
             [v1 aktLayout:^(AKTLayoutShellAttribute *layout) {
-                layout.top.left.equalTo(akt_view(v));
-                layout.right.equalTo(sub.akt_left);
-                layout.bottom.equalTo(sub.akt_top);
+                if (weakself.view.width<weakself.view.height) {
+                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                        layout.top.left.equalTo(akt_view(weakV));
+                        layout.right.equalTo(weakSub.akt_left);
+                        layout.bottom.equalTo(weakSub.akt_top);
+                    }];
+                }else{
+                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                        layout.top.left.equalTo(akt_view(weakV));
+                        layout.right.equalTo(weakSub.akt_left);
+                        layout.bottom.equalTo(weakSub.akt_top);
+                    }];
+                }
             }];
 //            v1.aktName = @"akt_v1";
 //            v1.tag = (j+1)+(i*columns);
@@ -141,10 +181,21 @@
             UIView*v2 = [UIView new];
             [self.view addSubview:v2];
             v2.backgroundColor = mAKT_Color_Color(0, 89, 155, 1);
+            AKTWeakOject(weakV1, v1);
             [v2 aktLayout:^(AKTLayoutShellAttribute *layout) {
-                layout.top.right.equalTo(akt_view(v));
-                layout.height.equalTo(v1.akt_height);
-                layout.left.equalTo(sub.akt_right);
+                if (weakself.view.width<weakself.view.height) {
+                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                        layout.top.right.equalTo(akt_view(weakV));
+                        layout.height.equalTo(weakV1.akt_height);
+                        layout.left.equalTo(weakSub.akt_right);
+                    }];
+                }else{
+                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                        layout.top.right.equalTo(akt_view(weakV));
+                        layout.height.equalTo(weakV1.akt_height);
+                        layout.left.equalTo(weakSub.akt_right);
+                    }];
+                }
             }];
 //            v2.aktName = @"akt_v2";
 //            v2.tag = (j+1)+(i*columns);
@@ -152,11 +203,23 @@
             UIView*v3 = [UIView new];
             [self.view addSubview:v3];
             v3.backgroundColor = mAKT_Color_Color(101, 0, 155, 1);
+            AKTWeakOject(weakV2, v2);
             [v3 aktLayout:^(AKTLayoutShellAttribute *layout) {
-                layout.top.equalTo(sub.akt_bottom);
-                layout.left.equalTo(v1.akt_right);
-                layout.right.equalTo(v2.akt_left);
-                layout.bottom.equalTo(akt_view(self.view));
+                if (weakself.view.width<weakself.view.height) {
+                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                        layout.top.equalTo(weakSub.akt_bottom);
+                        layout.left.equalTo(weakV1.akt_right);
+                        layout.right.equalTo(weakV2.akt_left);
+                        layout.bottom.equalTo(akt_view(weakself.view));
+                    }];
+                }else{
+                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                        layout.top.equalTo(weakSub.akt_bottom);
+                        layout.left.equalTo(weakV1.akt_right);
+                        layout.right.equalTo(weakV2.akt_left);
+                        layout.bottom.equalTo(akt_view(weakself.view));
+                    }];
+                }
             }];
 //            v3.aktName = @"akt_v3";
 //            v3.tag = (j+1)+(i*columns);
@@ -197,17 +260,19 @@
     [self.view addSubview:v];
     v.aktName = @"cycle test v";
     v.backgroundColor = mAKT_Color_Color(101, 89, 155, 1);
-//    [v aktLayout:^(AKTLayoutShellAttribute *layout) {
-//        if (self.view.width>self.view.height) {
-//            aktDynamicContextBegin(1);
-//            layout.edge.equalTo(akt_view(self.view)).offset(10);
-//            aktDynamicContextEnd();
-//        }else{
-//            aktDynamicContextBegin(1);
-//            layout.edge.equalTo(akt_view(self.view)).offset(10);
-//            aktDynamicContextEnd();
-//        }
-//    }];
+    AKTWeakOject(weakself, self);
+    [v aktLayout:^(AKTLayoutShellAttribute *layout) {
+        layout.centerXY.left.equalTo(akt_view(weakself.view));
+        if (weakself.view.width<weakself.view.height) {
+            [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+                layout.top.equalTo(akt_value(50));
+            }];
+        }else{
+            [layout aktLayoutIdentifier:2 withDynamicAttribute:^{
+                layout.top.equalTo(akt_value(10));
+            }];
+        }
+    }];
 }
 
 - (void)initUIMas {

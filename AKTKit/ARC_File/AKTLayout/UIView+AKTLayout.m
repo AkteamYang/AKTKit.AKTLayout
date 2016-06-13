@@ -264,24 +264,17 @@ extern bool needGetLayoutInfo_sheel;
  */
 - (void)aktLayout:(void(^)(AKTLayoutShellAttribute *layout))layout
 {
-    // 检测视图是否有效，没有父视图的view是无效的
-    if (!self.superview) {
-        NSString *description = [NSString stringWithFormat:@"> %@: Your view should have a superview.\n> 当前视图尚未添加到父视图", self.aktName];
-        NSString *sugget = [NSString stringWithFormat:@"> Before add layout, firstly adding a view to a parent view. For more details, please refer to the error message described in the document. 添加布局前先将视图添加到父视图，详情请参考错误信息描述文档"];
-        __aktErrorReporter(101, description, sugget);
-        return;
-    }
-    
-    
     // 如果layout不存在，移除原有的布局配置信息
-    void(^removeLastAttribute)() = ^(){
+    void(^removeLastAttribute)(BOOL needFree) = ^(BOOL needFree){
         // Change view's attributRef
         AKTLayoutAttributeRef pt = self.attributeRef;
         if (pt) {
             if (pt->layoutInfoFetchBlock) {
                 CFBridgingRelease(pt->layoutInfoFetchBlock);
             }
-            free(pt);
+            if (needFree) {
+                free(pt);
+            }
         }
         // 移除先前的AKTLayout布局设置关联信息，并更新当前信息
         for (AKTWeakContainer *container in self.viewsReferenced) {
@@ -289,10 +282,16 @@ extern bool needGetLayoutInfo_sheel;
         }
         [self.viewsReferenced removeAllObjects];
     };
-    
-    
+    // 检测视图是否有效，没有父视图的view是无效的
+    if (!self.superview) {
+        NSString *description = [NSString stringWithFormat:@"> %@: Your view should have a superview.\n> 当前视图尚未添加到父视图", self.aktName];
+        NSString *sugget = [NSString stringWithFormat:@"> Before add layout, firstly adding a view to a parent view. For more details, please refer to the error message described in the document. 添加布局前先将视图添加到父视图，详情请参考错误信息描述文档"];
+        __aktErrorReporter(101, description, sugget);
+        return;
+    }
+    // 清除布局信息
     if(!layout){
-        removeLastAttribute();
+        removeLastAttribute(YES);
         self.attributeRef = nil;
         return;
     }
@@ -304,22 +303,31 @@ extern bool needGetLayoutInfo_sheel;
     if(attributeRef_global && attributeRef_global->bindView != (__bridge const void *)(self)){
         attributeRef_context = attributeRef_global;
     }
-    attributeRef_global = malloc(sizeof(AKTLayoutAttribute));
-    if (!attributeRef_global) {
-        NSString *description = [NSString stringWithFormat:@"> %@: Malloc AKTLayoutAttribute error!\n> 布局信息体内存开辟失败", self.aktName];
-        NSString *sugget = [NSString stringWithFormat:@"> Please optimize memory allocation. For more details, please refer to the error message described in the document. 请优化内存分配，详情请参考错误信息描述文档"];
-        __aktErrorReporter(303, description, sugget);
-        // 恢复原来的布局上下文.
-        attributeRef_global = attributeRef_context;
-        return;
-    }
-    aktLayoutAttributeInit(self);
     // 设置视图的自适应长度和宽度属性（UILabel、UIImageView未来支持）.
     if (!(self.adaptiveHeight || self.adaptiveWidth)) {
         self.adaptiveWidth = @(YES);
         self.adaptiveHeight = @(YES);
     }
-    removeLastAttribute();
+    
+    
+    // 创建布局信息存储对象
+    if (!self.attributeRef) {
+        attributeRef_global = malloc(sizeof(AKTLayoutAttribute));
+        if (!attributeRef_global) {
+            NSString *description = [NSString stringWithFormat:@"> %@: Malloc AKTLayoutAttribute error!\n> 布局信息体内存开辟失败", self.aktName];
+            NSString *sugget = [NSString stringWithFormat:@"> Please optimize memory allocation. For more details, please refer to the error message described in the document. 请优化内存分配，详情请参考错误信息描述文档"];
+            __aktErrorReporter(303, description, sugget);
+            // 恢复原来的布局上下文.
+            attributeRef_global = attributeRef_context;
+            return;
+        }
+    }else{
+        removeLastAttribute(NO);
+        attributeRef_global = self.attributeRef;
+    }
+    aktLayoutAttributeInit(self);
+    
+    
     // 初次获取布局信息并计算布局并设置frame
     needGetLayoutInfo_sheel = true;
     layout(sharedShellAttribute());
@@ -330,6 +338,10 @@ extern bool needGetLayoutInfo_sheel;
     }
     self.attributeRef = attributeRef_global;
     self.frame = rect;
+    // 已经布局完成回调
+    __aktViewDidLayoutWithView(self);
+    
+    
     // 恢复原来的布局上下文.
     attributeRef_global = attributeRef_context;
     return;

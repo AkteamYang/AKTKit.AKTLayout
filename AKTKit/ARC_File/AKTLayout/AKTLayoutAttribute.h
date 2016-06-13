@@ -60,18 +60,18 @@ void aktLayoutAttributeInit(UIView *view);
  *  创建布局项.
  *
  */
-bool __akt__create__top();
-bool __akt__create__left();
-bool __akt__create__bottom();
-bool __akt__create__right();
-bool __akt__create__width();
-bool __akt__create__height();
-bool __akt__create__whRatio();
-bool __akt__create__centerX();
-bool __akt__create__centerY();
-bool __akt__create__centerXY();
-bool __akt__create__edge();
-bool __akt__create__size();
+void __akt__create__top();
+void __akt__create__left();
+void __akt__create__bottom();
+void __akt__create__right();
+void __akt__create__width();
+void __akt__create__height();
+void __akt__create__whRatio();
+void __akt__create__centerX();
+void __akt__create__centerY();
+void __akt__create__centerXY();
+void __akt__create__edge();
+void __akt__create__size();
 
 #pragma mark - function implementations
 //|---------------------------------------------------------

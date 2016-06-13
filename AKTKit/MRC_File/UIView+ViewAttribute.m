@@ -169,9 +169,11 @@ BOOL screenRotating                     = NO;
             __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
         }else{
             dispatch_async(dispatch_get_main_queue(), ^{
-                CGRect rect = calculateAttribute(bindView.attributeRef);
-                [bindView setNewFrame:rect];
-                __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
+//                if (bindView.superview) {
+                    CGRect rect = calculateAttribute(bindView.attributeRef);
+                    [bindView setNewFrame:rect];
+                    __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
+//                }
             });
             // 模拟设置frame，为了将计算传播下去，真正计算的是上面异步计算frame
             bindView.frame = CGRectMake(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
@@ -255,7 +257,7 @@ BOOL screenRotating                     = NO;
     for (AKTWeakContainer *container in self.viewsReferenced) {
         [container.weakView.layoutChain removeObject:myContainer];
     }
-    //    mAKT_Log(@"%@ _dealloc count:%d",self.aktName, i);
+    mAKT_Log(@"%@ _dealloc",self.aktName);
     [self myDealloc];
 }
 

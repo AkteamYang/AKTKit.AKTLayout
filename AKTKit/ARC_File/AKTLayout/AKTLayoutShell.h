@@ -13,11 +13,6 @@
 #import "AKTLayoutAttribute.h"
 // import-"views & controllers.h"
 
-//--------------# Macro & Const #--------------
-#define aktDynamicContextBegin(VALUE) aktDynamicLayoutBeginContextWithIdentifier(VALUE)
-#define aktDynamicContextEnd() aktDynamicLayoutEndContext()
-//--------------# E.n.d #--------------#>Macro
-
 //--------------------Structs statement, globle variables...--------------------
 void aktDynamicLayoutBeginContextWithIdentifier(long identifier);
 void aktDynamicLayoutEndContext();
@@ -67,4 +62,12 @@ AKTLayoutShellAttribute *sharedShellAttribute();
 - (AKTLayoutShellItem *)centerXY;
 - (AKTLayoutShellItem *)edge;
 - (AKTLayoutShellItem *)size;
+
+/**
+ *  添加动态布局信息
+ *
+ *  @param identifier 标志符，用来区分不同的信息
+ *  @param attribute
+ */
+- (void)aktLayoutIdentifier:(long)identifier withDynamicAttribute:(void(^)())attribute;
 @end

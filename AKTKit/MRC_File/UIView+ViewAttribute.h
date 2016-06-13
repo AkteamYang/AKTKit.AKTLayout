@@ -35,6 +35,13 @@
  *  @param suggest
  */
 void __aktErrorReporter(int errorCode, NSString *description, NSString *suggest);
+
+/**
+ *  已经布局完成回调
+ *
+ *  @param view 当前视图
+ */
+void __aktViewDidLayoutWithView(UIView *view);
 @end
 
 @interface AKTWeakContainer : NSObject
