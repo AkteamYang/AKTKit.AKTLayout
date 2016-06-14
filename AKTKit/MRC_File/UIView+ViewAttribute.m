@@ -150,7 +150,9 @@ BOOL screenRotating                     = NO;
  */
 - (void)aktUpdateLayoutChainNode {
     // 刷新子节点布局
-    for (AKTWeakContainer *container in self.layoutChain) {
+    NSArray *temp = self.layoutChain.allObjects;
+    for (int i = 0; i<temp.count; i++) {
+        AKTWeakContainer *container = temp[i];
         UIView *bindView = container.weakView;
         // 如果bindView的布局更新计数器大于最小刷新阈值，则暂时不必计算布局更新
         NSInteger layoutUpdateCount = bindView.layoutUpdateCount;
@@ -167,11 +169,11 @@ BOOL screenRotating                     = NO;
             __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
         }else{
             dispatch_async(dispatch_get_main_queue(), ^{
-//                if (bindView.superview) {
-                    CGRect rect = calculateAttribute(bindView.attributeRef);
-                    [bindView setNewFrame:rect];
-                    __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
-//                }
+                //                if (bindView.superview) {
+                CGRect rect = calculateAttribute(bindView.attributeRef);
+                [bindView setNewFrame:rect];
+                __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
+                //                }
             });
             // 模拟设置frame，为了将计算传播下去，真正计算的是上面异步计算frame
             bindView.frame = CGRectMake(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
@@ -251,6 +253,10 @@ BOOL screenRotating                     = NO;
     AKTWeakContainer *myContainer = self.aktContainer;
     for (AKTWeakContainer *container in self.layoutChain) {
         [container.weakView.viewsReferenced removeObject:myContainer];
+        AKTLayoutAttributeRef ref = container.weakView.attributeRef;
+        if (ref) {
+            ref->validLayoutAttributeInfo = false;
+        }
     }
     for (AKTWeakContainer *container in self.viewsReferenced) {
         [container.weakView.layoutChain removeObject:myContainer];

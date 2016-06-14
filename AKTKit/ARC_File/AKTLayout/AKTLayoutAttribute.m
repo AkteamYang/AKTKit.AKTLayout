@@ -105,6 +105,7 @@ void aktLayoutAttributeInit(UIView *view) {
     attributeRef_global->layoutInfoTag = LONG_MAX;
     attributeRef_global->layoutInfoFetchBlock = NULL;
     attributeRef_global->layoutDynamicContextBegin = false;
+    attributeRef_global->validLayoutAttributeInfo = true;
 }
 
 AKTLayoutParam initializedParamInfo() {
@@ -253,7 +254,7 @@ void createItem(AKTAttributeItemType itemType) {
         itemRef = attributeRef_global->itemArrayForDynamic+attributeRef_global->itemCountForDynamic;
         aktAttributeItemInit(itemRef);
         attributeRef_global->itemCountForDynamic++;
-
+        
     }else{
         itemRef = attributeRef_global->itemArrayForStatic+attributeRef_global->itemCountForStatic;
         aktAttributeItemInit(itemRef);
@@ -285,7 +286,8 @@ void createItem(AKTAttributeItemType itemType) {
 CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
     // 更新动态布局信息
     void(^layoutInfoFetchBlock)(AKTLayoutShellAttribute *layout) = (__bridge void (^)(AKTLayoutShellAttribute *__strong))(attributeRef->layoutInfoFetchBlock);
-    if (layoutInfoFetchBlock) {
+    bool validLayoutAttributeInfo = attributeRef->validLayoutAttributeInfo;
+    if (layoutInfoFetchBlock && validLayoutAttributeInfo) {
         // 切换上下文
         AKTLayoutAttributeRef tempGlobal = attributeRef_global;
         attributeRef_global = attributeRef;
@@ -302,6 +304,9 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
     
     // Filter out invalid layout items
     UIView *bindView = (__bridge UIView *)(attributeRef->bindView);
+    if (!validLayoutAttributeInfo) {
+        return bindView.frame;
+    }
     if (!attributeRef->check) {
         if (attributeRef->itemCountForStatic == 0 && attributeRef->itemCountForDynamic == 0) {
             NSString *description = [NSString stringWithFormat:@"> %@: Not added any attribute items.\n> 未添加任何参照", bindView.aktName];
@@ -919,12 +924,16 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
     // Set view's height adaptive
     if (horizonCount == 2) {
         bindView.adaptiveWidth = @NO;
+    }else{
+        bindView.adaptiveWidth = @YES;
     }
     rect = horizontalCalculation(paramRef, rect);
     int verticalCount = CheckConfigurationInNoRatio_Vertical();
     // Set view's width adaptive
     if (verticalCount == 2) {
         bindView.adaptiveHeight = @NO;
+    }else{
+        bindView.adaptiveHeight = @YES;
     }
     rect = verticalCalculation(paramRef, rect);
     return rect;
@@ -1022,6 +1031,7 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
     void (^CalculateSum0)() = ^() {
         paramRef->height = rect.size.width/paramRef->whRatio;
         rect = verticalCalculation(paramRef, rect);
+        bindView.adaptiveWidth = bindView.adaptiveHeight = @YES;
     };
     void (^CalculateSum1)() = ^() {
         if (hCount == 1) {
@@ -1033,6 +1043,7 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             paramRef->width = rect.size.height*paramRef->whRatio;
             rect = horizontalCalculation(paramRef, rect);
         }
+        bindView.adaptiveWidth = bindView.adaptiveHeight = @YES;
     };
     void (^CalculateSum2)() = ^() {
         if (hCount == 0) {
@@ -1043,6 +1054,8 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             rect = horizontalCalculation(paramRef, rect);
         }else if (hCount == 1) {
             rect = horizontalCalculation(paramRef, rect);
+            bindView.adaptiveWidth = @YES;
+            bindView.adaptiveHeight = @NO;
             if (paramRef->height<FLT_MAX) {
                 NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: whRatio.\n> 定义了多余参照：whRatio", bindView.aktName];
                 NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];

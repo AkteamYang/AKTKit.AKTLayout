@@ -147,6 +147,21 @@ static NSString *const kTitle = @"kTitle";
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initUI];
+    UIView *v1 = [[UIView alloc]initWithFrame:(CGRectMake(0, 0, 100, 100))];
+    v1.backgroundColor = [UIColor redColor];
+    [self.view addSubview:v1];
+    UIView *v2 = [[UIView alloc]initWithFrame:(CGRectMake(0, 0, 100, 100))];
+    v2.backgroundColor = [UIColor blueColor];
+    [self.view addSubview:v2];
+    AKTWeakOject(weakV1, v1);
+    [v2 aktLayout:^(AKTLayoutShellAttribute *layout) {
+        layout.top.width.height.equalTo(akt_view(weakV1));
+        layout.left.equalTo(weakV1.akt_right);
+    }];
+    [v1 removeFromSuperview];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [v2 setAKTNeedRelayout];
+    });
     // Do any additional setup after loading the view, typically from a nib.
 }
 

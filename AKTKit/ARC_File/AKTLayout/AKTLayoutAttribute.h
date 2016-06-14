@@ -33,8 +33,10 @@ typedef struct {
     long layoutInfoTag;
     //> 获取布局信息（void(^)(AKTLayoutShellAttribute *layout, AKTLayoutShellContext context)）
     const void *layoutInfoFetchBlock;
-    //> 是否正在更新布局信息
+    //> 是否正在获取动态布局信息
     bool layoutDynamicContextBegin;
+    //> 有效的布局信息，当某个参照视图销毁时，布局信息将无效
+    bool validLayoutAttributeInfo;
 } AKTLayoutAttribute;
 typedef AKTLayoutAttribute* AKTLayoutAttributeRef;
 // Shared attributeRef
@@ -79,6 +81,6 @@ void __akt__create__size();
  * Calculate layout with the infor from the attribute items, return CGRect
  * Configurations in AKTLayoutParam, as follows configurations can be divided into vertical and horizontal direction
  * In one direction two configurations in addition to "whRatio" is enough to calculate the frame in that direction. WhRation will be convert to the configuration of width or height
-  */
+ */
 CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef);
 
