@@ -29,9 +29,9 @@
     self.view.aktName = @"self.view";
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //                    [self initUI];
-        [self initUIAkt];
+//        [self initUIAkt];
 //        [self initAKTCycleUI];
-//        [self dynamicUI];
+        [self dynamicUI];
 //                    [self initUIMas];
     });
 }
@@ -262,16 +262,17 @@
     v.backgroundColor = mAKT_Color_Color(101, 89, 155, 1);
     AKTWeakOject(weakself, self);
     [v aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.centerXY.left.equalTo(akt_view(weakself.view));
-        if (weakself.view.width<weakself.view.height) {
-            [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
-                layout.top.equalTo(akt_value(50));
-            }];
-        }else{
-            [layout aktLayoutIdentifier:2 withDynamicAttribute:^{
-                layout.top.equalTo(akt_value(10));
-            }];
-        }
+//        layout.centerXY.left.equalTo(akt_view(weakself.view));
+//        if (weakself.view.width<weakself.view.height) {
+//            [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
+//                layout.top.equalTo(akt_value(50));
+//            }];
+//        }else{
+//            [layout aktLayoutIdentifier:2 withDynamicAttribute:^{
+//                layout.top.equalTo(akt_value(10));
+//            }];
+//        }
+        layout.edge.equalTo(akt_view(self.view)).edgeInset(akt_inset(10, 10, 10, 10));
     }];
 }
 
