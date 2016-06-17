@@ -70,4 +70,13 @@ AKTLayoutShellAttribute *sharedShellAttribute();
  *  @param attribute
  */
 - (void)aktLayoutIdentifier:(long)identifier withDynamicAttribute:(void(^)())attribute;
+
+/**
+ *  Add dynamic layout for view. Layout info will be update when needed.
+ *  @note: When the condition returned YES, attribute will be update to the view's layout info storage.
+ *
+ *  @param condition Condition for updating layout info.
+ *  @param attribute Block for updateing layout info.
+ */
+- (void)addDynamicLayoutInCondition:(BOOL(^)())condition andAttribute:(void(^)())attribute;
 @end

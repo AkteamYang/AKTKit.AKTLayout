@@ -98,6 +98,7 @@ void aktLayoutAttributeInit(UIView *view) {
     attributeRef_global->check = false;
     attributeRef_global->layoutInfoTag = LONG_MAX;
     attributeRef_global->layoutInfoFetchBlock = NULL;
+    attributeRef_global->blockCountForDynamic = 0;
     attributeRef_global->layoutDynamicContextBegin = false;
     attributeRef_global->validLayoutAttributeInfo = true;
 }

@@ -29,9 +29,9 @@
     self.view.aktName = @"self.view";
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //                    [self initUI];
-//        [self initUIAkt];
+        [self initUIAkt];
 //        [self initAKTCycleUI];
-        [self dynamicUI];
+//        [self dynamicUI];
 //                    [self initUIMas];
     });
 }

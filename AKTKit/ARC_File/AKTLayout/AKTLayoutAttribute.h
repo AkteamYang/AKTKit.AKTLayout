@@ -19,6 +19,11 @@
 
 //--------------------Structs statement, globle variables...--------------------
 typedef struct {
+    const void *conditionBlock;
+    const void *attributeBlock;
+} AKTDynamicLayoutBlock;
+
+typedef struct {
     //> 不可变布局信息
     AKTAttributeItem itemArrayForStatic[kItemMaximum];
     int itemCountForStatic;
@@ -33,7 +38,9 @@ typedef struct {
     long layoutInfoTag;
     //> 获取布局信息（void(^)(AKTLayoutShellAttribute *layout, AKTLayoutShellContext context)）
     const void *layoutInfoFetchBlock;
-    //> 是否正在获取动态布局信息
+    AKTDynamicLayoutBlock blockArrayForDynamic[kItemMaximum];
+    int blockCountForDynamic;
+    //> 是否正在获取动态布局信息, 信息将被存储到动态部分
     bool layoutDynamicContextBegin;
     //> 有效的布局信息，当某个参照视图销毁时，布局信息将无效
     bool validLayoutAttributeInfo;
