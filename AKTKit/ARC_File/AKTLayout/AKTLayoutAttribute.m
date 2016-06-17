@@ -277,7 +277,10 @@ void createItem(AKTAttributeItemType itemType) {
  * |    >whRatio<    |      >whRatio<     |
  * |_________________|____________________|
  */
-CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
+CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef, void *referenceViewPtr) {
+    UIView *bindView = (__bridge UIView *)(attributeRef->bindView);
+
+    
     // Get dynamic layout info.
     bool validLayoutAttributeInfo = attributeRef->validLayoutAttributeInfo;
     if (attributeRef->blockCountForDynamic && validLayoutAttributeInfo) {
@@ -299,6 +302,14 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
                     attributeRef->viewReferenced = 0;
                 }else{
                     // 如果不是由当前参照视图驱动
+                    bool isInside = false;
+                    for (int i = 0; i<attributeRef->viewReferenced; i++) {
+                        void **ptr = attributeRef->currentViewReferenced+i;
+                        if (*ptr == referenceViewPtr) {
+                            isInside = true;
+                        }
+                    }
+                    if (!isInside) return bindView.frame;
                 }
             }
         }
@@ -308,7 +319,6 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
     
     
     // Filter out invalid layout items
-    UIView *bindView = (__bridge UIView *)(attributeRef->bindView);
     // One of the view it referenced was dealloced.
     if (!validLayoutAttributeInfo) {
         NSString *description = [NSString stringWithFormat:@"> %@: One of the view it referenced was dealloced.\n> 某个参照的视图已经销毁", bindView.aktName];

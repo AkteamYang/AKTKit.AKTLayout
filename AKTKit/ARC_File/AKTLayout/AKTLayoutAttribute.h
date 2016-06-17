@@ -93,5 +93,5 @@ void __akt__create__size();
  * Configurations in AKTLayoutParam, as follows configurations can be divided into vertical and horizontal direction
  * In one direction two configurations in addition to "whRatio" is enough to calculate the frame in that direction. WhRation will be convert to the configuration of width or height
  */
-CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef);
+CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef, void *referenceViewPtr);
 
