@@ -26,7 +26,6 @@ char const kAktDidLayoutComplete;
 AKTLayoutAttributeRef attributeRef_global = NULL;
 BOOL willCommitAnimation = NO;
 extern BOOL screenRotatingAnimationSupport;
-extern bool needGetLayoutInfo_sheel;
 //-------------------- E.n.d -------------------->Structs statement & globle variables
 
 @interface UIView()
@@ -301,11 +300,6 @@ extern bool needGetLayoutInfo_sheel;
     if(attributeRef_global && attributeRef_global->bindView != (__bridge const void *)(self)){
         attributeRef_context = attributeRef_global;
     }
-//    // 设置视图的自适应长度和宽度属性（UILabel、UIImageView未来支持）.
-//    if (!(self.adaptiveHeight || self.adaptiveWidth)) {
-//        self.adaptiveWidth = @(YES);
-//        self.adaptiveHeight = @(YES);
-//    }
     
     
     // 创建布局信息存储对象
@@ -326,12 +320,10 @@ extern bool needGetLayoutInfo_sheel;
     aktLayoutAttributeInit(self);
     
     
-    // 初次获取布局信息并计算布局并设置frame
-    needGetLayoutInfo_sheel = true;
+    // 获取布局信息并计算布局并设置frame
     layout(sharedShellAttribute());
     CGRect rect = calculateAttribute(attributeRef_global);
     // 添加动态布局信息获取Block（layoutInfoTag == CGFloat_MAX）
-    attributeRef_global->layoutInfoFetchBlock = CFBridgingRetain(layout);
     self.attributeRef = attributeRef_global;
     self.frame = rect;
     // 已经布局完成回调

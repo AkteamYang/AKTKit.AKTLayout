@@ -20,7 +20,6 @@ typedef struct {
     float top, left, bottom, right, width, height, whRatio, centerX, centerY;
 }AKTLayoutParam;
 typedef AKTLayoutParam *AKTLayoutParamRef;
-extern bool needGetLayoutInfo_sheel;
 //-------------------- E.n.d -------------------->Structs statement, globle variables...
 
 #pragma mark - function definition
@@ -95,12 +94,12 @@ void aktLayoutAttributeInit(UIView *view) {
     attributeRef_global->itemCountForStatic = 0;
     attributeRef_global->itemCountForDynamic = 0;
     attributeRef_global->bindView = (__bridge const void *)(view);
-    attributeRef_global->check = false;
+    attributeRef_global->currentLayoutInfoDidCheck = false;
     attributeRef_global->layoutInfoTag = LONG_MAX;
-    attributeRef_global->layoutInfoFetchBlock = NULL;
     attributeRef_global->blockCountForDynamic = 0;
     attributeRef_global->layoutDynamicContextBegin = false;
     attributeRef_global->validLayoutAttributeInfo = true;
+    attributeRef_global->viewReferenced = 0;
 }
 
 AKTLayoutParam initializedParamInfo() {
@@ -279,20 +278,31 @@ void createItem(AKTAttributeItemType itemType) {
  * |_________________|____________________|
  */
 CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
-    // 更新动态布局信息
-    void(^layoutInfoFetchBlock)(AKTLayoutShellAttribute *layout) = (__bridge void (^)(AKTLayoutShellAttribute *__strong))(attributeRef->layoutInfoFetchBlock);
+    // Get dynamic layout info.
     bool validLayoutAttributeInfo = attributeRef->validLayoutAttributeInfo;
-    if (layoutInfoFetchBlock && validLayoutAttributeInfo) {
+    if (attributeRef->blockCountForDynamic && validLayoutAttributeInfo) {
         // 切换上下文
         AKTLayoutAttributeRef tempGlobal = attributeRef_global;
         attributeRef_global = attributeRef;
-        attributeRef->layoutDynamicContextBegin = false;
-        needGetLayoutInfo_sheel = false;
-        // 获取布局信息的动态部分
-        layoutInfoFetchBlock(sharedShellAttribute());
+        for (int i=0; i<attributeRef->blockCountForDynamic; i++) {
+            AKTDynamicLayoutBlock *block = attributeRef->blockArrayForDynamic+i;
+            BOOL (^condition)() = (__bridge BOOL (^)())(block->conditionBlock);
+            if (condition()) {
+                if (attributeRef->layoutInfoTag!=i) {// 布局信息变化
+                    attributeRef->layoutInfoTag = i;
+                    attributeRef->itemCountForDynamic = 0;
+                    attributeRef->layoutDynamicContextBegin = true;
+                    void(^attribute)() = (__bridge void (^)())(block->attributeBlock);
+                    attribute();
+                    attributeRef->layoutDynamicContextBegin = false;
+                    attributeRef->currentLayoutInfoDidCheck = NO;
+                    attributeRef->viewReferenced = 0;
+                }else{
+                    // 如果不是由当前参照视图驱动
+                }
+            }
+        }
         // 恢复上下文
-        attributeRef->layoutDynamicContextBegin = false;
-        needGetLayoutInfo_sheel = true;
         attributeRef_global = tempGlobal;
     }
     
@@ -306,14 +316,14 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
         __aktErrorReporter(205, description, sugget);
         return bindView.frame;
     }
-    if (!attributeRef->check) {
+    if (!attributeRef->currentLayoutInfoDidCheck) {
         if (attributeRef->itemCountForStatic == 0 && attributeRef->itemCountForDynamic == 0) {
             NSString *description = [NSString stringWithFormat:@"> %@: Not added any attribute items.\n> 未添加任何参照", bindView.aktName];
             NSString *sugget = [NSString stringWithFormat:@"> For more details, please refer to the error message described in the document. 详情请参考错误信息描述文档"];
             __aktErrorReporter(302, description, sugget);
             return bindView.frame;
         }
-        // 去除无效布局项 静态信息和动态信息区
+        // 去除无效布局信息
         removeInvalidAttributeItemFromAttribute(attributeRef);
     }
 
@@ -324,7 +334,7 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
     int count = attributeRef->itemCountForStatic;
     BOOL isDynamic = NO;
     if (count==0) {
-        // 切换进入动态信息的遍历
+        // Switch to traverse the dynamic layout item.
         count = attributeRef->itemCountForDynamic;
         isDynamic = YES;
     }
@@ -340,20 +350,21 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
         }
         
         
-        // 获取保存参照视图
-        if (!attributeRef->check) {
+        // Save views referened by current view.
+        if (!attributeRef->currentLayoutInfoDidCheck) {
             // Get layout reference view
-            // 获取布局参考视图
             UIView *referenceView = nil;
             if(itemRef->configuration.reference.referenceType == AKTRefenceType_View) {
                 referenceView = (__bridge UIView *)(itemRef->configuration.reference.referenceView);
                 referenceViewEdge = referenceView;
-                [referenceView.layoutChain addObject:bindView.aktContainer];
-                [bindView.viewsReferenced addObject:referenceView.aktContainer];
             }else if (itemRef->configuration.reference.referenceType == AKTRefenceType_ViewAttribute) {
                 referenceView = (__bridge UIView *)(itemRef->configuration.reference.referenceAttribute.referenceView);
-                [referenceView.layoutChain addObject:bindView.aktContainer];
-                [bindView.viewsReferenced addObject:referenceView.aktContainer];
+            }
+            // 保存到当前布局参照视图数组中
+            if (referenceView) {
+                void **ptr = attributeRef->currentViewReferenced+attributeRef->viewReferenced;
+                *ptr = itemRef->configuration.reference.referenceAttribute.referenceView;
+                attributeRef->viewReferenced++;
             }
         }else{
             if(itemRef->configuration.reference.referenceType == AKTRefenceType_View) {
@@ -362,15 +373,13 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
         }
         
         
+        // Special handle the situation: set edge or size.
         // Get edge info and calculation the frame if the edge setting exist.
         edgeInset = itemRef->configuration.referenceEdgeInsert;
         if(edgeInset.top<FLT_MAX-1 && referenceViewEdge){
             return calculateRectWithEdgeFromAttribute(bindView, attributeRef, referenceViewEdge, itemRef, edgeInset, isDynamic);
         }
-        
-        
-        // If we configured "equaltoSize", set the view's size directly. You can only set size in the chain, set another position constraint is invalid.
-        // 如果是设置了size,则直接设置view的size,在设置size的链中只能设置size，设置其它位置约束是无效的
+        // If we configured "equaltoSize", set the view's size directly.
         CGSize size = itemRef->configuration.reference.referenceSize;
         if(size.width<FLT_MAX-1) {
             if (itemRef->configuration.reference.referenceType == AKTRefenceType_View) {
@@ -380,7 +389,7 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
             size = itemRef->configuration.reference.referenceSize;
             paramInfo.width = calculate(size.width, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
             paramInfo.height = calculate(size.height, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
-            // 切换进入动态信息的遍历
+            // Switch to traverse the dynamic layout item.
             if (i==count-1 && !isDynamic) {
                 count = attributeRef->itemCountForDynamic;
                 i = -1;
@@ -390,8 +399,7 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
         }
         
         
-        // 如果没有设置size则查找是否设置whRatio，后面会根据有无whRatio分别处理
-        // Get whRatio if exist
+        // Get whRatio if exist，According to the value of "whRatio" we'll calculation layout in different way.
         for (int j = 0; j<itemRef->typeCount; j++) {
             int num = itemRef->typeArray[j];
             if (num == AKTAttributeItemType_WHRatio) {
@@ -403,21 +411,21 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
                 }
             }
         }
-        // 切换进入动态信息的遍历
+        // Switch to traverse the dynamic layout item.
         if (i==count-1 && !isDynamic) {
             count = attributeRef->itemCountForDynamic;
             i = -1;
             isDynamic = YES;
         }
     }
-    attributeRef->check = true;
+    attributeRef->currentLayoutInfoDidCheck = true;
     
     
     // Set other itemtypes: top/left/width.... into paramInfo
     count = attributeRef->itemCountForStatic;
     isDynamic = NO;
     if (count==0) {
-        // 切换进入动态信息的遍历
+        // Switch to traverse the dynamic layout item.
         count = attributeRef->itemCountForDynamic;
         isDynamic = YES;
     }
@@ -429,7 +437,7 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
             itemRef = attributeRef->itemArrayForStatic+i;
         }
         parseItem(itemRef, &paramInfo, bindView);
-        // 切换进入动态信息的遍历
+        // Switch to traverse the dynamic layout item.
         if (i==count-1 && !isDynamic) {
             count = attributeRef->itemCountForDynamic;
             i = -1;
@@ -440,7 +448,7 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef) {
 }
 
 /**
- *  移除无效的布局信息
+ *  Remove invalid layout info.
  *
  *  @param attributeRef
  */
@@ -470,7 +478,7 @@ void removeInvalidAttributeItemFromAttribute(AKTLayoutAttributeRef attributeRef)
 }
 
 /**
- *  如果配置了edge，计算frame
+ *  Calculate frame with edge.
  */
 CGRect calculateRectWithEdgeFromAttribute(UIView *bindView, AKTLayoutAttributeRef attributeRef, UIView *referenceView, AKTAttributeItemRef itemRef, UIEdgeInsets edgeInset, BOOL isDynamic) {
         CGFloat x_i, y_i,w_i,h_i;
@@ -479,11 +487,9 @@ CGRect calculateRectWithEdgeFromAttribute(UIView *bindView, AKTLayoutAttributeRe
         y_i = viewRec.origin.y+calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
         w_i = -calculate(edgeInset.left, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.width-calculate(edgeInset.right, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
         h_i = -calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.height-calculate(edgeInset.bottom, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
-        // If the layout of the first run.
-        // 如果布局首次运行
-        if (!attributeRef->check) {
-            // Optimization attribute Ref remove redundant data entry.
-            // 优化attributeRef移除多余的布局项
+        // If the layout info was not filtered.
+        if (!attributeRef->currentLayoutInfoDidCheck) {
+            // Optimization attribute Ref remove redundant layout info.
             if (isDynamic) {
                 attributeRef->itemArrayForDynamic[0] = *itemRef;
                 attributeRef->itemCountForDynamic = 1;
@@ -492,11 +498,11 @@ CGRect calculateRectWithEdgeFromAttribute(UIView *bindView, AKTLayoutAttributeRe
                 attributeRef->itemCountForStatic = 1;
                 attributeRef->itemCountForDynamic = 0;
             }
-            // Add layout chain
-            // 添加布局链
+            // 将当前视图添加到参照视图的布局更新链数组中,
+            // 同时将参照视图添加到当前视图的视图参照视图数组中。
             [referenceView.layoutChain addObject:bindView.aktContainer];
             [bindView.viewsReferenced addObject:referenceView.aktContainer];
-            attributeRef->check = true;
+            attributeRef->currentLayoutInfoDidCheck = true;
         }
         return CGRectMake(x_i, y_i, w_i, h_i);
 }

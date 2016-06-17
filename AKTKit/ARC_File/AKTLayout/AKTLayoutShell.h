@@ -13,11 +13,6 @@
 #import "AKTLayoutAttribute.h"
 // import-"views & controllers.h"
 
-//--------------------Structs statement, globle variables...--------------------
-void aktDynamicLayoutBeginContextWithIdentifier(long identifier);
-void aktDynamicLayoutEndContext();
-//-------------------- E.n.d -------------------->Structs statement, globle variables...
-
 @interface AKTLayoutShellConfigure : NSObject
 /*
  * Multiple and offset
@@ -62,14 +57,6 @@ AKTLayoutShellAttribute *sharedShellAttribute();
 - (AKTLayoutShellItem *)centerXY;
 - (AKTLayoutShellItem *)edge;
 - (AKTLayoutShellItem *)size;
-
-/**
- *  添加动态布局信息
- *
- *  @param identifier 标志符，用来区分不同的信息
- *  @param attribute
- */
-- (void)aktLayoutIdentifier:(long)identifier withDynamicAttribute:(void(^)())attribute;
 
 /**
  *  Add dynamic layout for view. Layout info will be update when needed.
