@@ -164,13 +164,13 @@ BOOL screenRotating                     = NO;
         }
         // 是否需要同步运算（需要动画时、需要旋转时 或者 视图是UITableView 、 UICollectionView）
         if (willCommitAnimation || (screenRotatingAnimationSupport && screenRotating) || [bindView isKindOfClass:[UITableView class]] || [bindView isKindOfClass:[UICollectionView class]]) {
-            CGRect rect = calculateAttribute(bindView.attributeRef);
+            CGRect rect = calculateAttribute(bindView.attributeRef, self);
             [bindView setFrame:rect];
             __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
         }else{
             dispatch_async(dispatch_get_main_queue(), ^{
                 //                if (bindView.superview) {
-                CGRect rect = calculateAttribute(bindView.attributeRef);
+                CGRect rect = calculateAttribute(bindView.attributeRef, self);
                 [bindView setNewFrame:rect];
                 __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
                 //                }
@@ -245,10 +245,7 @@ BOOL screenRotating                     = NO;
     // 移除布局信息\布局参考引用信息
     if(self.attributeRef) {
         AKTLayoutAttributeRef pt = self.attributeRef;
-        if (pt->layoutInfoFetchBlock) {
-            CFBridgingRelease(pt->layoutInfoFetchBlock);
-        }
-        free(self.attributeRef);
+        aktLayoutAttributeDealloc(pt, true);
     }
     AKTWeakContainer *myContainer = self.aktContainer;
     for (AKTWeakContainer *container in self.layoutChain) {
@@ -261,7 +258,7 @@ BOOL screenRotating                     = NO;
     for (AKTWeakContainer *container in self.viewsReferenced) {
         [container.weakView.layoutChain removeObject:myContainer];
     }
-    //    mAKT_Log(@"%@ _dealloc",self.aktName);
+//        mAKT_Log(@"%@ _dealloc",self.aktName);
     [self myDealloc];
 }
 

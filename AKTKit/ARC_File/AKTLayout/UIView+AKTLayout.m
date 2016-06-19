@@ -268,12 +268,7 @@ extern BOOL screenRotatingAnimationSupport;
         // Change view's attributRef
         AKTLayoutAttributeRef pt = self.attributeRef;
         if (pt) {
-            if (pt->layoutInfoFetchBlock) {
-                CFBridgingRelease(pt->layoutInfoFetchBlock);
-            }
-            if (needFree) {
-                free(pt);
-            }
+            aktLayoutAttributeDealloc(pt, needFree);
         }
         // 移除先前的AKTLayout布局设置关联信息，并更新当前信息
         for (AKTWeakContainer *container in self.viewsReferenced) {
@@ -322,7 +317,7 @@ extern BOOL screenRotatingAnimationSupport;
     
     // 获取布局信息并计算布局并设置frame
     layout(sharedShellAttribute());
-    CGRect rect = calculateAttribute(attributeRef_global);
+    CGRect rect = calculateAttribute(attributeRef_global, NULL);
     // 添加动态布局信息获取Block（layoutInfoTag == CGFloat_MAX）
     self.attributeRef = attributeRef_global;
     self.frame = rect;
@@ -340,7 +335,7 @@ extern BOOL screenRotatingAnimationSupport;
  *  @备注：一般在更改了view的size需要立刻执行布局刷新时调用
  */
 - (void)setAKTNeedRelayout {
-    if (self.attributeRef) self.frame = calculateAttribute(self.attributeRef);
+    if (self.attributeRef) self.frame = calculateAttribute(self.attributeRef, NULL);
 }
 
 /*

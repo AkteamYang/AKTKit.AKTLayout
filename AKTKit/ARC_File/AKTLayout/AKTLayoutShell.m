@@ -225,7 +225,7 @@ AKTLayoutShellAttribute *sharedShellAttribute() {
  *  @param condition Condition for updating layout info.
  *  @param attribute Block for updateing layout info.
  */
-- (void)addDynamicLayoutInCondition:(BOOL(^)())condition andAttribute:(void(^)())attribute {
+- (void)addDynamicLayoutInCondition:(BOOL(^)())condition andAttribute:(void(^)(AKTLayoutShellAttribute *dynamicLayout))attribute {
     if (!condition || !attribute || attributeRef_global->blockCountForDynamic>=kItemMaximum) {
         return;
     }

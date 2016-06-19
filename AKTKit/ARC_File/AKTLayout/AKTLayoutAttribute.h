@@ -45,7 +45,7 @@ typedef struct {
     AKTDynamicLayoutBlock blockArrayForDynamic[kItemMaximum];
     int blockCountForDynamic;
     
-    // 当前参照视图的集合NSMutableSet
+    // 当前参照视图的集合
     void *currentViewReferenced[kItemMaximum*2];
     int viewReferenced;
 } AKTLayoutAttribute;
@@ -66,6 +66,12 @@ extern AKTLayoutAttributeRef attributeRef_global;
  */
 void aktLayoutAttributeInit(UIView *view);
 
+/**
+ *  AKTLayoutAttribute deallock
+ *
+ *  @param attributeRef
+ */
+void aktLayoutAttributeDealloc(AKTLayoutAttributeRef attributeRef, bool freeMemory);
 #pragma mark - create item
 //|---------------------------------------------------------
 /**
@@ -93,5 +99,5 @@ void __akt__create__size();
  * Configurations in AKTLayoutParam, as follows configurations can be divided into vertical and horizontal direction
  * In one direction two configurations in addition to "whRatio" is enough to calculate the frame in that direction. WhRation will be convert to the configuration of width or height
  */
-CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef, void *referenceViewPtr);
+CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef, const void *referenceViewPtr);
 
