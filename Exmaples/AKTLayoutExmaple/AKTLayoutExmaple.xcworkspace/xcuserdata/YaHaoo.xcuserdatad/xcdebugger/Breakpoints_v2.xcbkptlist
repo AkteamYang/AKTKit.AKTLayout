@@ -9,13 +9,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AKTLayoutExmaple/ExamplePlayer.m"
-            timestampString = "487380812.52594"
+            filePath = "AKTLayoutExmaple/ViewController.m"
+            timestampString = "488074669.126337"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
-            landmarkName = "-hide"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
+            landmarkName = "-descriptionLabel"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AKTLayoutExmaple/ViewController.m"
+            timestampString = "488074670.71822"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
+            landmarkName = "-descriptionLabel"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

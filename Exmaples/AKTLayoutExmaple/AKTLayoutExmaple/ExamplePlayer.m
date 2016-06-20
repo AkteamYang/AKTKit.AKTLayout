@@ -29,32 +29,30 @@
         AKTWeakOject(weakdrag, _drag);
         [_drag aktLayout:^(AKTLayoutShellAttribute *layout) {
             layout.centerX.left.equalTo(akt_view(weakself.view));
-            if (weakself.view.width<weakself.view.height) {// 竖屏
-                if (weakdrag.y<64+1) {// 吸附在上方
-                    [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
-                        layout.top.equalTo(weakself.navigationController.navigationBar.akt_bottom);
-                        layout.height.equalTo(akt_value(45));
-                    }];
-                }else{
-                    [layout aktLayoutIdentifier:2 withDynamicAttribute:^{
-                        layout.bottom.equalTo(weakself.view.akt_bottom).offset(-55);
-                        layout.height.equalTo(akt_value(45));
-                    }];
-                }
-            }else{
-                if (weakdrag.y<64+1) {// 吸附在上方
-                    [layout aktLayoutIdentifier:3 withDynamicAttribute:^{
-                        layout.top.equalTo(weakself.navigationController.navigationBar.akt_bottom);
-                        layout.height.equalTo(akt_value(30));
-                    }];
-                }else{
-                    [layout aktLayoutIdentifier:4 withDynamicAttribute:^{
-                        layout.bottom.equalTo(weakself.view.akt_bottom).offset(-55);
-                        layout.height.equalTo(akt_value(30));
-                    }];
-                }
-            }
-            
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return (weakself.view.width<weakself.view.height)&&(weakdrag.y<64+1);
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                dynamicLayout.top.equalTo(weakself.navigationController.navigationBar.akt_bottom);
+                dynamicLayout.height.equalTo(akt_value(45));
+            }];
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return (weakself.view.width<weakself.view.height)&&(weakdrag.y>=64+1);
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                dynamicLayout.bottom.equalTo(weakself.view.akt_bottom).offset(-55);
+                dynamicLayout.height.equalTo(akt_value(45));
+            }];
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return (weakself.view.width>=weakself.view.height)&&(weakdrag.y<64+1);
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                dynamicLayout.top.equalTo(weakself.navigationController.navigationBar.akt_bottom);
+                dynamicLayout.height.equalTo(akt_value(30));
+            }];
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return (weakself.view.width>=weakself.view.height)&&(weakdrag.y>=64+1);
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                dynamicLayout.bottom.equalTo(weakself.view.akt_bottom).offset(-55);
+                dynamicLayout.height.equalTo(akt_value(30));
+            }];
         }];
         _drag.text = @"Drag the slider";
         [_drag setTextAlignment:(NSTextAlignmentCenter)];

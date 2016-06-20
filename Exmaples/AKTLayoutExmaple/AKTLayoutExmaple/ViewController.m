@@ -17,6 +17,7 @@ extern const int kLines;
 @interface AKTCell: UITableViewCell
 @property (strong, nonatomic) UIImageView *img;
 @property (strong, nonatomic) UILabel *title;
+@property (strong, nonatomic) UILabel *descriptionLabel;
 @property (strong, nonatomic) NSString *classString;
 @end
 @implementation AKTCell
@@ -28,21 +29,22 @@ extern const int kLines;
         [self addSubview:_img];
         AKTWeakOject(weakself, self);
         [_img aktLayout:^(AKTLayoutShellAttribute *layout) {
-            if (mAKT_Portrait) {
-                [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
-                    layout.centerY.equalTo(akt_view(weakself));
-                    layout.whRatio.equalTo(akt_value(1.0));
-                    layout.left.equalTo(akt_view(weakself)).offset(10);
-                    layout.top.equalTo(akt_view(weakself)).offset(5);
-                }];
-            }else{
-                [layout aktLayoutIdentifier:2 withDynamicAttribute:^{
-                    layout.centerX.equalTo(akt_view(weakself));
-                    layout.whRatio.equalTo(akt_value(1.0));
-                    layout.top.equalTo(akt_view(weakself)).offset(10);
-                    layout.height.equalTo(akt_value(80));
-                }];
-            }
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return mAKT_Portrait;
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                dynamicLayout.centerY.equalTo(akt_view(weakself));
+                dynamicLayout.whRatio.equalTo(akt_value(1.0));
+                dynamicLayout.left.equalTo(akt_view(weakself)).offset(10);
+                dynamicLayout.top.equalTo(akt_view(weakself)).offset(5);
+            }];
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return !mAKT_Portrait;
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                dynamicLayout.centerY.equalTo(akt_view(weakself));
+                dynamicLayout.whRatio.equalTo(akt_value(1.0));
+                dynamicLayout.left.equalTo(akt_view(weakself)).offset(20);
+                dynamicLayout.top.equalTo(akt_view(weakself)).offset(10);
+            }];
         }];
         // 更新圆角大小
         [_img aktDidLayoutWithComplete:^(UIView *view) {
@@ -62,19 +64,18 @@ extern const int kLines;
         AKTWeakOject(weakself, self);
         AKTWeakOject(weakImg, self.img);
         [_title aktLayout:^(AKTLayoutShellAttribute *layout) {
-            if (mAKT_Portrait) {
-                [layout aktLayoutIdentifier:1 withDynamicAttribute:^{
-                    layout.top.centerY.equalTo(akt_view(self));
-                    layout.left.equalTo(self.img.akt_right).offset(20);
-                }];
-            }else{
-                [layout aktLayoutIdentifier:2 withDynamicAttribute:^{
-                    layout.centerX.equalTo(akt_view(weakself));
-                    layout.height.equalTo(akt_value(18));
-                    layout.top.equalTo(weakImg.akt_bottom).offset(5);
-                    
-                }];
-            }
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return mAKT_Portrait;
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                dynamicLayout.top.centerY.equalTo(akt_view(weakself));
+                dynamicLayout.left.equalTo(weakself.img.akt_right).offset(20);
+            }];
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return !mAKT_Portrait;
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                dynamicLayout.top.equalTo(akt_view(weakImg)).offset(10);
+                dynamicLayout.left.equalTo(weakImg.akt_right).offset(20);
+            }];
         }];
         [_title setTextColor:mAKT_Color_Text_52];
         [_title setFont:mAKT_Font_16];
@@ -86,6 +87,38 @@ extern const int kLines;
     }
     return _title;
 }
+
+- (UILabel* )descriptionLabel {
+    if (_descriptionLabel == nil) {
+        _descriptionLabel = [UILabel new];
+        [self addSubview:_descriptionLabel];
+        AKTWeakOject(weakself, self);
+        AKTWeakOject(weakTitle, self.title);
+        [_descriptionLabel aktLayout:^(AKTLayoutShellAttribute *layout) {
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return mAKT_Portrait;
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                dynamicLayout.width.height.equalTo(akt_value(0));
+            }];
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return !mAKT_Portrait;
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                dynamicLayout.left.equalTo(weakTitle.akt_left);
+                dynamicLayout.right.equalTo(weakself.akt_right).offset(-150);
+                dynamicLayout.top.equalTo(weakTitle.akt_bottom).offset(10);
+            }];
+        }];
+        [_descriptionLabel setTextColor:mAKT_Color_Text_154];
+        [_descriptionLabel setLineBreakMode:(NSLineBreakByTruncatingTail)];
+        [_descriptionLabel setFont:mAKT_Font_14];
+        [_descriptionLabel setNumberOfLines:0];
+        [_descriptionLabel setMaxHeight:@36];
+//        _descriptionLabel.backgroundColor = mAKT_Color_Random;
+        _descriptionLabel.text = @"title";
+        _descriptionLabel.aktName = @"title";
+    }
+    return _descriptionLabel;
+}
 @end
 
 //--------------------Structs statement, globle variables...--------------------
@@ -93,6 +126,7 @@ static NSString *const cellIdentifier = @"cellIdentifier";
 static NSString *const kClass = @"kClass";
 static NSString *const kImg = @"kImg";
 static NSString *const kTitle = @"kTitle";
+static NSString *const kDescription = @"kDescription";
 //-------------------- E.n.d -------------------->Structs statement, globle variables...
 
 @interface ViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -147,21 +181,6 @@ static NSString *const kTitle = @"kTitle";
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initUI];
-    UIView *v1 = [[UIView alloc]initWithFrame:(CGRectMake(0, 0, 100, 100))];
-    v1.backgroundColor = [UIColor redColor];
-    [self.view addSubview:v1];
-    UIView *v2 = [[UIView alloc]initWithFrame:(CGRectMake(0, 0, 100, 100))];
-    v2.backgroundColor = [UIColor blueColor];
-    [self.view addSubview:v2];
-    AKTWeakOject(weakV1, v1);
-    [v2 aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.top.width.height.equalTo(akt_view(weakV1));
-        layout.left.equalTo(weakV1.akt_right);
-    }];
-    [v1 removeFromSuperview];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [v2 setAKTNeedRelayout];
-    });
     // Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -193,10 +212,10 @@ static NSString *const kTitle = @"kTitle";
     // Tableview
     [self.tableView registerClass:[AKTCell class] forCellReuseIdentifier:cellIdentifier];
     [self.data addObjectsFromArray:@[
-                                     @{kClass:@"ExampleMasonry",kImg:@"AKT_Test1",kTitle:[NSString stringWithFormat:@"Masonry Test x%d",kColumns*kLines*5]},
-                                     @{kClass:@"ExampleAKTLayout",kImg:@"AKT_Test2",kTitle:[NSString stringWithFormat:@"AKTLayout Test x%d",kColumns*kLines*5]},
-                                     @{kClass:@"ExamplePlayer",kImg:@"AKT_Example",kTitle:@"Interactive page"},
-                                     @{kClass:@"ExampleAnima",kImg:@"AKT_Anima",kTitle:@"Animation show"},
+                                     @{kClass:@"ExampleMasonry",kImg:@"AKT_Test1",kTitle:[NSString stringWithFormat:@"Masonry Test x%d",kColumns*kLines*5],kDescription:@"Masonry is a light-weight layout framework which wraps AutoLayout with a nicer syntax."},
+                                     @{kClass:@"ExampleAKTLayout",kImg:@"AKT_Test2",kTitle:[NSString stringWithFormat:@"AKTLayout Test x%d",kColumns*kLines*5],kDescription:@"AKTLayout is a high Performance Dynamic Auto Layout Framework."},
+                                     @{kClass:@"ExamplePlayer",kImg:@"AKT_Example",kTitle:@"Interactive page", kDescription:@"In this demo, we will show it's more powerful feature: dynamic layout."},
+                                     @{kClass:@"ExampleAnima",kImg:@"AKT_Anima",kTitle:@"Animation show", kDescription:@"Creat animation is easy and no different from previous ways"},
                                      ]];
 }
 
@@ -234,5 +253,6 @@ static NSString *const kTitle = @"kTitle";
     myCell.img.image = mAKT_Image(dic[kImg]);
     myCell.classString = dic[kClass];
     myCell.title.text = dic[kTitle];
+    myCell.descriptionLabel.text = dic[kDescription];
 }
 @end
