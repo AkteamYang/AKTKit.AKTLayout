@@ -30,7 +30,7 @@ extern const int kLines;
         [_img aktDidLayoutWithComplete:^(UIView *view) {
             view.layer.cornerRadius = view.height/2;
         }];
-        AKTWeakOject(weakself, self);
+        AKTWeakView(weakself, self);
         [_img aktLayout:^(AKTLayoutShellAttribute *layout) {
             [layout addDynamicLayoutInCondition:^BOOL{
                 return mAKT_Portrait;
@@ -60,8 +60,8 @@ extern const int kLines;
     if (_title == nil) {
         _title = [UILabel new];
         [self addSubview:_title];
-        AKTWeakOject(weakself, self);
-        AKTWeakOject(weakImg, self.img);
+        AKTWeakView(weakself, self);
+        AKTWeakView(weakImg, self.img);
         [_title aktLayout:^(AKTLayoutShellAttribute *layout) {
             [layout addDynamicLayoutInCondition:^BOOL{
                 return mAKT_Portrait;
@@ -91,8 +91,8 @@ extern const int kLines;
     if (_descriptionLabel == nil) {
         _descriptionLabel = [UILabel new];
         [self addSubview:_descriptionLabel];
-        AKTWeakOject(weakself, self);
-        AKTWeakOject(weakTitle, self.title);
+        AKTWeakView(weakself, self);
+        AKTWeakView(weakTitle, self.title);
         [_descriptionLabel aktLayout:^(AKTLayoutShellAttribute *layout) {
             [layout addDynamicLayoutInCondition:^BOOL{
                 return mAKT_Portrait;

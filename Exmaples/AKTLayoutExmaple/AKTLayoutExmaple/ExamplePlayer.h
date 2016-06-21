@@ -9,13 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface ExamplePlayer : UIViewController
-@property (strong, nonatomic) UILabel *drag;
-@property (strong, nonatomic) UIView *container;
-
-// Player UI controls
-@property (strong, nonatomic) UIImageView *coverLittle;
-@end
-
-@interface ExamplePlayer()
 
 @end

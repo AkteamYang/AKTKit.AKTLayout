@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D049C1C50305D0613A137A5C /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 905A3BC90D86EEBC9B9AE7B0 /* libPods.a */; };
+		756EFF6939ACB342907968C0 /* libPods-AKTLayoutExmaple.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64F9204C84F8D09940161507 /* libPods-AKTLayoutExmaple.a */; };
 		F86356171CF5204C00F53E7B /* ExamplePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F86356161CF5204C00F53E7B /* ExamplePlayer.m */; };
 		F86AD9091D18B921004F2BA7 /* Cover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F86AD9071D18B921004F2BA7 /* Cover@2x.png */; };
 		F86AD90A1D18B921004F2BA7 /* Over the Horizon.m4a in Resources */ = {isa = PBXBuildFile; fileRef = F86AD9081D18B921004F2BA7 /* Over the Horizon.m4a */; };
@@ -43,8 +43,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		003B80F1A46BF0E3C2394774 /* Pods-AKTLayoutExmaple.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AKTLayoutExmaple.release.xcconfig"; path = "Pods/Target Support Files/Pods-AKTLayoutExmaple/Pods-AKTLayoutExmaple.release.xcconfig"; sourceTree = "<group>"; };
+		47BD98B923EF45412E016D75 /* Pods-AKTLayoutExmaple.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AKTLayoutExmaple.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AKTLayoutExmaple/Pods-AKTLayoutExmaple.debug.xcconfig"; sourceTree = "<group>"; };
 		5D8C10023D4D96680828AA7E /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		64F9204C84F8D09940161507 /* libPods-AKTLayoutExmaple.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AKTLayoutExmaple.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		905A3BC90D86EEBC9B9AE7B0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A854ADB41D194852009AF44C /* ExamplePlayerPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePlayerPrivate.h; sourceTree = "<group>"; };
 		BACC56A6C3FD220F67982F4A /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		F86356151CF5204C00F53E7B /* ExamplePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePlayer.h; sourceTree = "<group>"; };
 		F86356161CF5204C00F53E7B /* ExamplePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExamplePlayer.m; sourceTree = "<group>"; };
@@ -52,7 +56,6 @@
 		F86AD9081D18B921004F2BA7 /* Over the Horizon.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Over the Horizon.m4a"; sourceTree = "<group>"; };
 		F86AD90B1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExamplePlayer+UIControls.h"; sourceTree = "<group>"; };
 		F86AD90C1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExamplePlayer+UIControls.m"; sourceTree = "<group>"; };
-		F86AD90F1D18BADD004F2BA7 /* ExamplePlayerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePlayerProtocol.h; sourceTree = "<group>"; };
 		F8BDB7601CF1936000E31155 /* AKTLayoutExmaple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AKTLayoutExmaple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8BDB7641CF1936000E31155 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F8BDB7661CF1936000E31155 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -95,7 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D049C1C50305D0613A137A5C /* libPods.a in Frameworks */,
+				756EFF6939ACB342907968C0 /* libPods-AKTLayoutExmaple.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				905A3BC90D86EEBC9B9AE7B0 /* libPods.a */,
+				64F9204C84F8D09940161507 /* libPods-AKTLayoutExmaple.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -115,6 +119,8 @@
 			children = (
 				BACC56A6C3FD220F67982F4A /* Pods.debug.xcconfig */,
 				5D8C10023D4D96680828AA7E /* Pods.release.xcconfig */,
+				47BD98B923EF45412E016D75 /* Pods-AKTLayoutExmaple.debug.xcconfig */,
+				003B80F1A46BF0E3C2394774 /* Pods-AKTLayoutExmaple.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -122,7 +128,7 @@
 		F86AD90E1D18B9C2004F2BA7 /* ExamplePlayer */ = {
 			isa = PBXGroup;
 			children = (
-				F86AD90F1D18BADD004F2BA7 /* ExamplePlayerProtocol.h */,
+				A854ADB41D194852009AF44C /* ExamplePlayerPrivate.h */,
 				F86356151CF5204C00F53E7B /* ExamplePlayer.h */,
 				F86356161CF5204C00F53E7B /* ExamplePlayer.m */,
 				F86AD90B1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.h */,
@@ -216,12 +222,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F8BDB7771CF1936000E31155 /* Build configuration list for PBXNativeTarget "AKTLayoutExmaple" */;
 			buildPhases = (
-				E7C7C6D878D1C3CEF402F012 /* Check Pods Manifest.lock */,
+				E7C7C6D878D1C3CEF402F012 /* [CP] Check Pods Manifest.lock */,
 				F8BDB75C1CF1936000E31155 /* Sources */,
 				F8BDB75D1CF1936000E31155 /* Frameworks */,
 				F8BDB75E1CF1936000E31155 /* Resources */,
-				2807E058BABE4DD2F2633EE3 /* Embed Pods Frameworks */,
-				1542ED5A081258BFAB1DFA53 /* Copy Pods Resources */,
+				2807E058BABE4DD2F2633EE3 /* [CP] Embed Pods Frameworks */,
+				1542ED5A081258BFAB1DFA53 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -299,44 +305,44 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1542ED5A081258BFAB1DFA53 /* Copy Pods Resources */ = {
+		1542ED5A081258BFAB1DFA53 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AKTLayoutExmaple/Pods-AKTLayoutExmaple-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2807E058BABE4DD2F2633EE3 /* Embed Pods Frameworks */ = {
+		2807E058BABE4DD2F2633EE3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AKTLayoutExmaple/Pods-AKTLayoutExmaple-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E7C7C6D878D1C3CEF402F012 /* Check Pods Manifest.lock */ = {
+		E7C7C6D878D1C3CEF402F012 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -468,7 +474,7 @@
 		};
 		F8BDB7781CF1936000E31155 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BACC56A6C3FD220F67982F4A /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 47BD98B923EF45412E016D75 /* Pods-AKTLayoutExmaple.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -489,7 +495,7 @@
 		};
 		F8BDB7791CF1936000E31155 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5D8C10023D4D96680828AA7E /* Pods.release.xcconfig */;
+			baseConfigurationReference = 003B80F1A46BF0E3C2394774 /* Pods-AKTLayoutExmaple.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;

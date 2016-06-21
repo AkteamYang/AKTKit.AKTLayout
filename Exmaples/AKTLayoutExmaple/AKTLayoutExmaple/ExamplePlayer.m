@@ -12,31 +12,31 @@
 
 // Function Module
 #import "ExamplePlayer+UIControls.h"
+#import "ExamplePlayerPrivate.h"
 // import-"models.h"
 
 // import-"views..."
 
 // import-"aid.h"
-#import "ExamplePlayerProtocol.h"
 
-@interface ExamplePlayer ()<ExamplePlayerProtocol>
+@interface ExamplePlayer ()<ExamplePlayerPrivate>
 
 @end
 @implementation ExamplePlayer
 @synthesize drag = _drag;
-@synthesize container = _container;
 @synthesize coverLittle = _coverLittle;
+@synthesize container = _container;
+@synthesize list = _list;
 #pragma mark - property settings
 - (UILabel *)drag {
     if (_drag == nil) {
         _drag = [UILabel new];
         [self.view addSubview:_drag];
-        [_drag aktDidLayoutTarget:self forSelector:@selector(dragDidLayout:)];
         static int i = 0;
         _drag.aktName = [NSString stringWithFormat:@"akt%d", i];
         i++;
-        AKTWeakOject(weakself, self);
-        AKTWeakOject(weakdrag, _drag);
+        AKTWeakView(weakself, self);
+        AKTWeakView(weakdrag, _drag);
         [_drag aktLayout:^(AKTLayoutShellAttribute *layout) {
             layout.centerX.left.equalTo(akt_view(weakself.view));
             [layout addDynamicLayoutInCondition:^BOOL{
@@ -79,11 +79,6 @@
     return _drag;
 }
 
-- (void)dragDidLayout:(UIView *)view {
-//    NSLog(@"%@: %@", view.aktName,NSStringFromCGRect(view.frame));
-}
-
-
 - (UIView *)container {
     if (_container == nil) {
         _container = [UIView new];
@@ -93,11 +88,10 @@
             layout.left.bottom.right.equalTo(akt_view(self.view));
         }];
         [_container setBackgroundColor:mAKT_Color_Text_52];
+        [_container setClipsToBounds:YES];
     }
     return _container;
 }
-
-
 
 #pragma mark - life cycle
 - (void)viewDidLoad {
@@ -121,6 +115,7 @@
     // UI控件
     _drag = self.drag;
     _container = self.container;
+    [self initUIForContainer];
 }
 
 - (void)show {

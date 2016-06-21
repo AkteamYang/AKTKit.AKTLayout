@@ -46,9 +46,9 @@
 // 弱引用
 #define AKTLyoutVersion 12
 #if __has_feature(objc_arc)
-#define AKTWeakOject(VAR, OBJ) __weak typeof(OBJ) VAR = OBJ
+#define AKTWeakView(VAR, OBJ) __weak typeof(OBJ) VAR = OBJ
 #else
-#define AKTWeakOject(VAR, OBJ) __block typeof(OBJ) VAR = OBJ
+#define AKTWeakView(VAR, OBJ) __block typeof(OBJ) VAR = OBJ
 #endif
 //--------------# E.n.d #--------------#>System related
 

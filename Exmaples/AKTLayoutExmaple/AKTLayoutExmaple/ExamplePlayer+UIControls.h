@@ -7,8 +7,9 @@
 //
 
 #import "ExamplePlayer.h"
-#import "ExamplePlayerProtocol.h"
+#import "ExamplePlayerPrivate.h"
 
-@interface ExamplePlayer (UIControls)
+@interface ExamplePlayer (UIControls)<ExamplePlayerPrivate>
+- (void)initUIForContainer;
 
 @end

@@ -106,8 +106,8 @@
         for (int j = 0; j<columns; j++) {
             UIView *v = [[UIView alloc]init];
             [self.view addSubview:v];
-            AKTWeakOject(weakself, self);
-            AKTWeakOject(weakLast, last);
+            AKTWeakView(weakself, self);
+            AKTWeakView(weakLast, last);
             [v aktLayout:^(AKTLayoutShellAttribute *layout) {
                 [layout addDynamicLayoutInCondition:^BOOL{
                     return mAKT_Portrait;
@@ -140,7 +140,7 @@
             UIView *sub = [UIView new];
             [v addSubview:sub];
             sub.backgroundColor = mAKT_Color_Color(171, 64, 98, 1);
-            AKTWeakOject(weakV, v);
+            AKTWeakView(weakV, v);
             [sub aktLayout:^(AKTLayoutShellAttribute *layout) {
                 [layout addDynamicLayoutInCondition:^BOOL{
                     return 1;
@@ -154,7 +154,7 @@
             // 添加一个视图（跨级参考sub）
             UIView*v1 = [UIView new];
             [self.view addSubview:v1];
-            AKTWeakOject(weakSub, sub);
+            AKTWeakView(weakSub, sub);
             v1.backgroundColor = mAKT_Color_Color(101, 89, 155, 1);
             [v1 aktLayout:^(AKTLayoutShellAttribute *layout) {
                 [layout addDynamicLayoutInCondition:^BOOL{
@@ -171,7 +171,7 @@
             UIView*v2 = [UIView new];
             [self.view addSubview:v2];
             v2.backgroundColor = mAKT_Color_Color(0, 89, 155, 1);
-            AKTWeakOject(weakV1, v1);
+            AKTWeakView(weakV1, v1);
             [v2 aktLayout:^(AKTLayoutShellAttribute *layout) {
                 [layout addDynamicLayoutInCondition:^BOOL{
                     return 1;
@@ -187,7 +187,7 @@
             UIView*v3 = [UIView new];
             [self.view addSubview:v3];
             v3.backgroundColor = mAKT_Color_Color(101, 0, 155, 1);
-            AKTWeakOject(weakV2, v2);
+            AKTWeakView(weakV2, v2);
             [v3 aktLayout:^(AKTLayoutShellAttribute *layout) {
                 [layout addDynamicLayoutInCondition:^BOOL{
                     return 1;
@@ -249,8 +249,8 @@
     [self.view addSubview:v];
     v.aktName = @"cycle test v";
     v.backgroundColor = mAKT_Color_Color(101, 89, 155, 1);
-    AKTWeakOject(weakV1, v1);
-    AKTWeakOject(weakV2, v2);
+    AKTWeakView(weakV1, v1);
+    AKTWeakView(weakV2, v2);
     [v aktLayout:^(AKTLayoutShellAttribute *layout) {
         layout.edge.equalTo(akt_view(self.view)).edgeInset(akt_inset(10, 10, 10, 10));
 //        [layout addDynamicLayoutInCondition:^BOOL{
