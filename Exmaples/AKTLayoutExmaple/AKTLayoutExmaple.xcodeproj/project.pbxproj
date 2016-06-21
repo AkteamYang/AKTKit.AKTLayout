@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		D049C1C50305D0613A137A5C /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 905A3BC90D86EEBC9B9AE7B0 /* libPods.a */; };
 		F86356171CF5204C00F53E7B /* ExamplePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F86356161CF5204C00F53E7B /* ExamplePlayer.m */; };
+		F86AD9091D18B921004F2BA7 /* Cover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F86AD9071D18B921004F2BA7 /* Cover@2x.png */; };
+		F86AD90A1D18B921004F2BA7 /* Over the Horizon.m4a in Resources */ = {isa = PBXBuildFile; fileRef = F86AD9081D18B921004F2BA7 /* Over the Horizon.m4a */; };
+		F86AD90D1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.m in Sources */ = {isa = PBXBuildFile; fileRef = F86AD90C1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.m */; };
 		F8BDB7651CF1936000E31155 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB7641CF1936000E31155 /* main.m */; };
 		F8BDB7681CF1936000E31155 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB7671CF1936000E31155 /* AppDelegate.m */; };
 		F8BDB76B1CF1936000E31155 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB76A1CF1936000E31155 /* ViewController.m */; };
@@ -45,6 +48,11 @@
 		BACC56A6C3FD220F67982F4A /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		F86356151CF5204C00F53E7B /* ExamplePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePlayer.h; sourceTree = "<group>"; };
 		F86356161CF5204C00F53E7B /* ExamplePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExamplePlayer.m; sourceTree = "<group>"; };
+		F86AD9071D18B921004F2BA7 /* Cover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Cover@2x.png"; sourceTree = "<group>"; };
+		F86AD9081D18B921004F2BA7 /* Over the Horizon.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Over the Horizon.m4a"; sourceTree = "<group>"; };
+		F86AD90B1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExamplePlayer+UIControls.h"; sourceTree = "<group>"; };
+		F86AD90C1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExamplePlayer+UIControls.m"; sourceTree = "<group>"; };
+		F86AD90F1D18BADD004F2BA7 /* ExamplePlayerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePlayerProtocol.h; sourceTree = "<group>"; };
 		F8BDB7601CF1936000E31155 /* AKTLayoutExmaple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AKTLayoutExmaple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8BDB7641CF1936000E31155 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F8BDB7661CF1936000E31155 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -111,6 +119,18 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		F86AD90E1D18B9C2004F2BA7 /* ExamplePlayer */ = {
+			isa = PBXGroup;
+			children = (
+				F86AD90F1D18BADD004F2BA7 /* ExamplePlayerProtocol.h */,
+				F86356151CF5204C00F53E7B /* ExamplePlayer.h */,
+				F86356161CF5204C00F53E7B /* ExamplePlayer.m */,
+				F86AD90B1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.h */,
+				F86AD90C1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.m */,
+			);
+			name = ExamplePlayer;
+			sourceTree = "<group>";
+		};
 		F8BDB7571CF1936000E31155 = {
 			isa = PBXGroup;
 			children = (
@@ -143,8 +163,7 @@
 				F8BDB78F1CF2079800E31155 /* ExampleAKTLayout.m */,
 				F8BDB7911CF20B3300E31155 /* ExampleAnima.h */,
 				F8BDB7921CF20B3300E31155 /* ExampleAnima.m */,
-				F86356151CF5204C00F53E7B /* ExamplePlayer.h */,
-				F86356161CF5204C00F53E7B /* ExamplePlayer.m */,
+				F86AD90E1D18B9C2004F2BA7 /* ExamplePlayer */,
 				F8BDB76C1CF1936000E31155 /* Main.storyboard */,
 				F8BDB76F1CF1936000E31155 /* Assets.xcassets */,
 				F8BDB7711CF1936000E31155 /* LaunchScreen.storyboard */,
@@ -165,6 +184,8 @@
 		F8BDB77A1CF1967B00E31155 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				F86AD9071D18B921004F2BA7 /* Cover@2x.png */,
+				F86AD9081D18B921004F2BA7 /* Over the Horizon.m4a */,
 				F8DCF1971D079314001651F3 /* CH_Last@2x.png */,
 				F8DCF1981D079314001651F3 /* CH_ListBig@2x.png */,
 				F8DCF1991D079314001651F3 /* CH_ListLittle@2x.png */,
@@ -250,6 +271,7 @@
 			files = (
 				F8BDB7881CF1AA4C00E31155 /* AKT_Header@2x.png in Resources */,
 				F8BDB77F1CF1990400E31155 /* P_Back@2x.png in Resources */,
+				F86AD90A1D18B921004F2BA7 /* Over the Horizon.m4a in Resources */,
 				F8DCF1A11D079314001651F3 /* CH_Last@2x.png in Resources */,
 				F8DCF1A81D079314001651F3 /* CH_PauseLittle.png in Resources */,
 				F8BDB7731CF1936000E31155 /* LaunchScreen.storyboard in Resources */,
@@ -266,6 +288,7 @@
 				F8BDB7841CF1A1BD00E31155 /* AKT_Anima@2x.png in Resources */,
 				F8BDB7851CF1A1BD00E31155 /* AKT_Test1@2x.png in Resources */,
 				F8DCF1A41D079314001651F3 /* CH_Mode0@2x.png in Resources */,
+				F86AD9091D18B921004F2BA7 /* Cover@2x.png in Resources */,
 				F8BDB77C1CF1967B00E31155 /* AKT_Example@2x.png in Resources */,
 				F8BDB78D1CF2008200E31155 /* P_Rotate@2x.png in Resources */,
 				F8BDB7861CF1A1BD00E31155 /* AKT_Test2@2x.png in Resources */,
@@ -331,6 +354,7 @@
 				F8BDB78B1CF1FB0D00E31155 /* ExampleMasonry.m in Sources */,
 				F8BDB7901CF2079800E31155 /* ExampleAKTLayout.m in Sources */,
 				F8BDB76B1CF1936000E31155 /* ViewController.m in Sources */,
+				F86AD90D1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.m in Sources */,
 				F8BDB7931CF20B3300E31155 /* ExampleAnima.m in Sources */,
 				F8BDB7681CF1936000E31155 /* AppDelegate.m in Sources */,
 				F8BDB7651CF1936000E31155 /* main.m in Sources */,

@@ -6,32 +6,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AKTLayoutExmaple/ViewController.m"
-            timestampString = "488074669.126337"
+            filePath = "Pods/AKTLayout/AKTKit/ARC_File/AKTCategory/UIkit+Akt/UILabel+Akt.m"
+            timestampString = "488155276.493294"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
-            landmarkName = "-descriptionLabel"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AKTLayoutExmaple/ViewController.m"
-            timestampString = "488074670.71822"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
-            landmarkName = "-descriptionLabel"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "-aktText:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

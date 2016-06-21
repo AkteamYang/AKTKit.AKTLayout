@@ -299,7 +299,7 @@ void createItem(AKTAttributeItemType itemType) {
  */
 CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef, const void *referenceViewPtr) {
     UIView *bindView = (__bridge UIView *)(attributeRef->bindView);
-
+    
     
     // Get dynamic layout info.
     bool validLayoutAttributeInfo = attributeRef->validLayoutAttributeInfo;
@@ -338,21 +338,21 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef, const void *refere
                     break;
                 }
             }
-            if (!isDynamicChanged) {
-                // 配置默认的tag，未找到合适的动态布局时.
-                if (attributeRef->layoutInfoTag>LONG_MAX-1) attributeRef->layoutInfoTag = -1;
-                if (referenceViewPtr) {
-                    // If this layout calculation was not drived by a reference view in current view referencd array, we don't need to calculate.
-                    bool isInside = false;
-                    for (int i = 0; i<attributeRef->viewReferenced; i++) {
-                        void **ptr = attributeRef->currentViewReferenced+i;
-                        if (*ptr == referenceViewPtr) {
-                            isInside = true;
-                            break;
-                        }
+        }
+        if (!isDynamicChanged) {
+            // 配置默认的tag，未找到合适的动态布局时.
+            if (attributeRef->layoutInfoTag>LONG_MAX-1) attributeRef->layoutInfoTag = -1;
+            if (referenceViewPtr) {
+                // If this layout calculation was not drived by a reference view in current view referencd array, we don't need to calculate.
+                bool isInside = false;
+                for (int i = 0; i<attributeRef->viewReferenced; i++) {
+                    void **ptr = attributeRef->currentViewReferenced+i;
+                    if (*ptr == referenceViewPtr) {
+                        isInside = true;
+                        break;
                     }
-                    if (!isInside) return bindView.frame;
                 }
+                if (!isInside) return bindView.frame;
             }
         }
         // 恢复上下文
@@ -373,7 +373,7 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef, const void *refere
         // 去除动态信息中的无效布局信息，静态的已经移除过
         removeInvalidAttributeItemFromAttribute(attributeRef, true);
     }
-
+    
     
     // Filter layout setting information.(size, whRatio, recalculation)
     // 过滤布局设置信息(size, whRatio, recalculation)
@@ -558,30 +558,30 @@ void removeInvalidAttributeItemFromAttribute(AKTLayoutAttributeRef attributeRef,
  *  Calculate frame with edge.
  */
 CGRect calculateRectWithEdgeFromAttribute(UIView *bindView, AKTLayoutAttributeRef attributeRef, UIView *referenceView, AKTAttributeItemRef itemRef, UIEdgeInsets edgeInset, BOOL isDynamic) {
-        CGFloat x_i, y_i,w_i,h_i;
-        CGRect viewRec = [bindView.superview convertRect:referenceView.frame fromView:referenceView.superview? referenceView.superview:mAKT_APPDELEGATE.keyWindow];
-        x_i = viewRec.origin.x+calculate(edgeInset.left, itemRef->configuration.referenceMultiple,  itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
-        y_i = viewRec.origin.y+calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
-        w_i = -calculate(edgeInset.left, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.width-calculate(edgeInset.right, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
-        h_i = -calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.height-calculate(edgeInset.bottom, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
-        // If the layout info was not filtered.
-        if (!attributeRef->currentLayoutInfoDidCheck) {
-            // Optimization attribute Ref remove redundant layout info.
-            if (isDynamic) {
-                attributeRef->itemArrayForDynamic[0] = *itemRef;
-                attributeRef->itemCountForDynamic = 1;
-            }else{
-                attributeRef->itemArrayForStatic[0] = *itemRef;
-                attributeRef->itemCountForStatic = 1;
-                attributeRef->itemCountForDynamic = 0;
-            }
-            // 将当前视图添加到参照视图的布局更新链数组中,
-            // 同时将参照视图添加到当前视图的视图参照视图数组中。
-            [referenceView.layoutChain addObject:bindView.aktContainer];
-            [bindView.viewsReferenced addObject:referenceView.aktContainer];
-            attributeRef->currentLayoutInfoDidCheck = true;
+    CGFloat x_i, y_i,w_i,h_i;
+    CGRect viewRec = [bindView.superview convertRect:referenceView.frame fromView:referenceView.superview? referenceView.superview:mAKT_APPDELEGATE.keyWindow];
+    x_i = viewRec.origin.x+calculate(edgeInset.left, itemRef->configuration.referenceMultiple,  itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+    y_i = viewRec.origin.y+calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+    w_i = -calculate(edgeInset.left, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.width-calculate(edgeInset.right, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+    h_i = -calculate(edgeInset.top, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset)+viewRec.size.height-calculate(edgeInset.bottom, itemRef->configuration.referenceMultiple, itemRef->configuration.referenceCoefficientOffset, itemRef->configuration.referenceOffset);
+    // If the layout info was not filtered.
+    if (!attributeRef->currentLayoutInfoDidCheck) {
+        // Optimization attribute Ref remove redundant layout info.
+        if (isDynamic) {
+            attributeRef->itemArrayForDynamic[0] = *itemRef;
+            attributeRef->itemCountForDynamic = 1;
+        }else{
+            attributeRef->itemArrayForStatic[0] = *itemRef;
+            attributeRef->itemCountForStatic = 1;
+            attributeRef->itemCountForDynamic = 0;
         }
-        return CGRectMake(x_i, y_i, w_i, h_i);
+        // 将当前视图添加到参照视图的布局更新链数组中,
+        // 同时将参照视图添加到当前视图的视图参照视图数组中。
+        [referenceView.layoutChain addObject:bindView.aktContainer];
+        [bindView.viewsReferenced addObject:referenceView.aktContainer];
+        attributeRef->currentLayoutInfoDidCheck = true;
+    }
+    return CGRectMake(x_i, y_i, w_i, h_i);
 }
 
 void getWHRatio(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef) {
@@ -949,7 +949,6 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
         }
         if (paramRef->width<FLT_MAX) {
             hCount++;
-            bindView.adaptiveWidth = @NO;
             if (hCount>2) {
                 paramRef->width = FLT_MAX;
                 hCount--;
@@ -1014,7 +1013,7 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
     // Redundant configurations will be abandoned after perform the following operations, otherwise a lack of configurations
     int horizonCount = CheckConfigurationInNoRatio_Horizontal();
     // Set view's height adaptive
-    if (horizonCount == 2) {
+    if (horizonCount == 2 || paramRef->width<FLT_MAX) {
         bindView.adaptiveWidth = @NO;
     }else{
         bindView.adaptiveWidth = @YES;
@@ -1022,7 +1021,7 @@ CGRect rectNoWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attribute
     rect = horizontalCalculation(paramRef, rect);
     int verticalCount = CheckConfigurationInNoRatio_Vertical();
     // Set view's width adaptive
-    if (verticalCount == 2) {
+    if (verticalCount == 2 || paramRef->height<FLT_MAX) {
         bindView.adaptiveHeight = @NO;
     }else{
         bindView.adaptiveHeight = @YES;
@@ -1135,7 +1134,11 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             paramRef->width = rect.size.height*paramRef->whRatio;
             rect = horizontalCalculation(paramRef, rect);
         }
-        bindView.adaptiveWidth = bindView.adaptiveHeight = @YES;
+        if (paramRef->width<FLT_MAX || paramRef->height<FLT_MAX) {
+            bindView.adaptiveWidth = bindView.adaptiveHeight = @NO;
+        }else{
+            bindView.adaptiveWidth = bindView.adaptiveHeight = @YES;
+        }
     };
     void (^CalculateSum2)() = ^() {
         if (hCount == 0) {
@@ -1146,7 +1149,7 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             rect = horizontalCalculation(paramRef, rect);
         }else if (hCount == 1) {
             rect = horizontalCalculation(paramRef, rect);
-            bindView.adaptiveWidth = @YES;
+            bindView.adaptiveWidth = paramRef->width<FLT_MAX? @NO:@YES;
             bindView.adaptiveHeight = @NO;
             if (paramRef->height<FLT_MAX) {
                 NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: whRatio.\n> 定义了多余参照：whRatio", bindView.aktName];

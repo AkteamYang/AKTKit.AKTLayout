@@ -16,7 +16,6 @@
 
 @implementation ExampleAnima
 #pragma mark - life cycle
-//|---------------------------------------------------------
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initUI];
@@ -29,7 +28,6 @@
 }
 
 #pragma mark - view settings
-//|---------------------------------------------------------
 - (void)initUI {
     self.view.backgroundColor = [UIColor whiteColor];
     // 设置导航
@@ -123,7 +121,6 @@
     }];
 }
 #pragma mark - click events
-//|---------------------------------------------------------
 - (void)back {
     [self.navigationController popViewControllerAnimated:YES];
 }

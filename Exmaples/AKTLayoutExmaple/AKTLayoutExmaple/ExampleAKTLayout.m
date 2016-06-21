@@ -20,7 +20,6 @@ extern const int kLines;
 
 @implementation ExampleAKTLayout
 #pragma mark - life cycle
-//|---------------------------------------------------------
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initUI];
@@ -33,7 +32,6 @@ extern const int kLines;
 }
 
 #pragma mark - view settings
-//|---------------------------------------------------------
 - (void)initUI {
     self.view.backgroundColor = [UIColor whiteColor];
     // 设置导航
@@ -122,7 +120,6 @@ extern const int kLines;
 }
 
 #pragma mark - click events
-//|---------------------------------------------------------
 - (void)back {
     [UIView aktScreenRotatingAnimationSupport:YES];
     [self.navigationController popViewControllerAnimated:YES];

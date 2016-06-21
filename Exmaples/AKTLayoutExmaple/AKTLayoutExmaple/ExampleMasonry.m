@@ -26,7 +26,6 @@
 
 @implementation ExampleMasonry
 #pragma mark - property settings
-//|---------------------------------------------------------
 - (UIActivityIndicatorView *)indicator {
     if (_indicator == nil) {
         _indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:(UIActivityIndicatorViewStyleGray)];
@@ -40,7 +39,6 @@
 }
 
 #pragma mark - life cycle
-//|---------------------------------------------------------
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initUI];
@@ -53,7 +51,6 @@
 }
 
 #pragma mark - view settings
-//|---------------------------------------------------------
 - (void)initUI {
     self.view.backgroundColor = [UIColor whiteColor];
     // 设置导航
@@ -140,7 +137,6 @@
     NSLog(@"%lf",b-a);
 }
 #pragma mark - click events
-//|---------------------------------------------------------
 - (void)back {
     [self.navigationController popViewControllerAnimated:YES];
 }

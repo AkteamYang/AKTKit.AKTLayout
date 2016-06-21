@@ -8,15 +8,25 @@
 
 #import "ExamplePlayer.h"
 #import "AKTKit.h"
+// import-<frameworks.h>
 
-@interface ExamplePlayer ()
-@property (strong, nonatomic) UILabel *drag;
-@property (strong, nonatomic) UIView *container;
+// Function Module
+#import "ExamplePlayer+UIControls.h"
+// import-"models.h"
+
+// import-"views..."
+
+// import-"aid.h"
+#import "ExamplePlayerProtocol.h"
+
+@interface ExamplePlayer ()<ExamplePlayerProtocol>
+
 @end
-
 @implementation ExamplePlayer
+@synthesize drag = _drag;
+@synthesize container = _container;
+@synthesize coverLittle = _coverLittle;
 #pragma mark - property settings
-//|---------------------------------------------------------
 - (UILabel *)drag {
     if (_drag == nil) {
         _drag = [UILabel new];
@@ -62,13 +72,15 @@
         [_drag setNumberOfLines:3];
         _drag.userInteractionEnabled = YES;
         UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(pan:)];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tap:)];
+        [_drag addGestureRecognizer:tap];
         [_drag addGestureRecognizer:pan];
     }
     return _drag;
 }
 
 - (void)dragDidLayout:(UIView *)view {
-    NSLog(@"%@: %@", view.aktName,NSStringFromCGRect(view.frame));
+//    NSLog(@"%@: %@", view.aktName,NSStringFromCGRect(view.frame));
 }
 
 
@@ -88,7 +100,6 @@
 
 
 #pragma mark - life cycle
-//|---------------------------------------------------------
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initUI];
@@ -101,7 +112,6 @@
 }
 
 #pragma mark - view settings
-//|---------------------------------------------------------
 - (void)initUI {
     self.view.backgroundColor = [UIColor whiteColor];
     // 设置导航
@@ -134,7 +144,6 @@
 }
 
 #pragma mark - click events
-//|---------------------------------------------------------
 - (void)back {
     [UIView aktScreenRotatingAnimationSupport:YES];
     [self.navigationController popViewControllerAnimated:YES];
@@ -165,4 +174,11 @@
     }
 }
 
+- (void)tap:(UITapGestureRecognizer *)tap {
+    if (self.drag.y<64+1) {
+        [self hide];
+    }else{
+        [self show];
+    }
+}
 @end

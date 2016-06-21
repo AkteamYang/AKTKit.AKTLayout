@@ -22,11 +22,14 @@ extern const int kLines;
 @end
 @implementation AKTCell
 #pragma mark - property settings
-//|---------------------------------------------------------
 - (UIImageView *)img {
     if (_img == nil) {
         _img = [UIImageView new];
         [self addSubview:_img];
+        // 更新圆角大小
+        [_img aktDidLayoutWithComplete:^(UIView *view) {
+            view.layer.cornerRadius = view.height/2;
+        }];
         AKTWeakOject(weakself, self);
         [_img aktLayout:^(AKTLayoutShellAttribute *layout) {
             [layout addDynamicLayoutInCondition:^BOOL{
@@ -45,10 +48,6 @@ extern const int kLines;
                 dynamicLayout.left.equalTo(akt_view(weakself)).offset(20);
                 dynamicLayout.top.equalTo(akt_view(weakself)).offset(10);
             }];
-        }];
-        // 更新圆角大小
-        [_img aktDidLayoutWithComplete:^(UIView *view) {
-            view.layer.cornerRadius = view.height/2;
         }];
         _img.layer.masksToBounds = YES;
         _img.aktName = @"img";
@@ -137,7 +136,6 @@ static NSString *const kDescription = @"kDescription";
 
 @implementation ViewController
 #pragma mark - property settings
-//|---------------------------------------------------------
 - (UITableView *)tableView {
     if (_tableView == nil) {
         _tableView = [[UITableView alloc]initWithFrame:(CGRectZero) style:(UITableViewStylePlain)];
@@ -177,7 +175,6 @@ static NSString *const kDescription = @"kDescription";
     return _header;
 }
 #pragma mark - life cycle
-//|---------------------------------------------------------
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initUI];
@@ -190,18 +187,16 @@ static NSString *const kDescription = @"kDescription";
 }
 
 #pragma mark - super methods
-//|---------------------------------------------------------
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     // Header 改变了必须重新设置一遍才能生效
     dispatch_async(dispatch_get_main_queue(), ^{
         self.tableView.tableHeaderView = self.tableView.tableHeaderView;
+        [self.tableView reloadData];
     });
-    [self.tableView reloadData];
 }
 
 #pragma mark - view settings
-//|---------------------------------------------------------
 - (void)initUI {
     // 设置导航
     [self.navigationController.navigationBar setBackgroundImage:mAKT_Image(@"P_Navi") forBarMetrics:(UIBarMetricsDefault)];
@@ -220,7 +215,6 @@ static NSString *const kDescription = @"kDescription";
 }
 
 #pragma mark - tableview datasourcce
-//|---------------------------------------------------------
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.data.count;
 }
@@ -236,7 +230,6 @@ static NSString *const kDescription = @"kDescription";
 }
 
 #pragma mark - tableview delegate
-//|---------------------------------------------------------
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     // Push view controller
