@@ -42,28 +42,16 @@
         [_drag aktLayout:^(AKTLayoutShellAttribute *layout) {
             layout.centerX.left.equalTo(akt_view(weakself.view));
             [layout addDynamicLayoutInCondition:^BOOL{
-                return (weakself.view.width<weakself.view.height)&&(weakdrag.y<64+1);
+                return (weakdrag.y<64+1);
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
                 dynamicLayout.top.equalTo(weakself.navigationController.navigationBar.akt_bottom);
                 dynamicLayout.height.equalTo(akt_value(45));
             }];
             [layout addDynamicLayoutInCondition:^BOOL{
-                return (weakself.view.width<weakself.view.height)&&(weakdrag.y>=64+1);
+                return (weakdrag.y>=64+1);
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
                 dynamicLayout.bottom.equalTo(weakself.view.akt_bottom).offset(-55);
                 dynamicLayout.height.equalTo(akt_value(45));
-            }];
-            [layout addDynamicLayoutInCondition:^BOOL{
-                return (weakself.view.width>=weakself.view.height)&&(weakdrag.y<64+1);
-            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                dynamicLayout.top.equalTo(weakself.navigationController.navigationBar.akt_bottom);
-                dynamicLayout.height.equalTo(akt_value(30));
-            }];
-            [layout addDynamicLayoutInCondition:^BOOL{
-                return (weakself.view.width>=weakself.view.height)&&(weakdrag.y>=64+1);
-            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                dynamicLayout.bottom.equalTo(weakself.view.akt_bottom).offset(-55);
-                dynamicLayout.height.equalTo(akt_value(30));
             }];
         }];
         _drag.text = @"Drag the slider";
