@@ -15,6 +15,7 @@
 - (void)initUIForContainer {
     [self coverLittleMake];
     [self listMake];
+    [self playMake];
 }
 
 #pragma mark - UICreations
@@ -62,6 +63,35 @@
                 dynamicLayout.width.equalTo(akt_value(img.size.width));
                 dynamicLayout.right.equalTo(weakContainer.akt_right).offset(-19);
                 dynamicLayout.top.bottom.equalTo(akt_view(weakContainer));
+            }];
+        }];
+    }
+}
+
+- (void)playMake {
+    if (!self.play) {
+        self.play = [UIButton buttonWithType:(UIButtonTypeCustom)];
+        [self.container addSubview:self.play];
+        UIImage *img = mAKT_Image_Origin(@"CH_PlayBig");
+        [self.play setImage:img forState:(UIControlStateNormal)];
+        [self.play setImage:mAKT_Image_Origin(@"CH_PauseBig") forState:(UIControlStateSelected)];
+        AKTWeakView(weakContainer, self.container);
+        [self.play aktLayout:^(AKTLayoutShellAttribute *layout) {
+            __block BOOL flag = YES;
+            layout.top.left.equalTo(akt_view(weakContainer));
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return flag;
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                flag = !flag;
+                dynamicLayout.whRatio.equalTo(akt_value(1));
+                dynamicLayout.height.equalTo(akt_value(30)).multiple((weakContainer.height-55)/(mAKT_SCREENHEIGHT-64)).offset(35);
+            }];
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return !flag;
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                flag = !flag;
+                dynamicLayout.whRatio.equalTo(akt_value(1));
+                dynamicLayout.height.equalTo(akt_value(30)).multiple((weakContainer.height-55)/(mAKT_SCREENHEIGHT-64)).offset(35);
             }];
         }];
     }

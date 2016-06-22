@@ -24,9 +24,11 @@
 @end
 @implementation ExamplePlayer
 @synthesize drag = _drag;
-@synthesize coverLittle = _coverLittle;
 @synthesize container = _container;
-@synthesize list = _list;
+@synthesize coverLittle;
+@synthesize list;
+@synthesize play;
+
 #pragma mark - property settings
 - (UILabel *)drag {
     if (_drag == nil) {
