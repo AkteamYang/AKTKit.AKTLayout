@@ -342,18 +342,18 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef, const void *refere
         if (!isDynamicChanged) {
             // 配置默认的tag，未找到合适的动态布局时.
             if (attributeRef->layoutInfoTag>LONG_MAX-1) attributeRef->layoutInfoTag = -1;
-            if (referenceViewPtr) {
-                // If this layout calculation was not drived by a reference view in current view referencd array, we don't need to calculate.
-                bool isInside = false;
-                for (int i = 0; i<attributeRef->viewReferenced; i++) {
-                    void **ptr = attributeRef->currentViewReferenced+i;
-                    if (*ptr == referenceViewPtr) {
-                        isInside = true;
-                        break;
-                    }
-                }
-                if (!isInside) return bindView.frame;
-            }
+            //            if (referenceViewPtr) {
+            //                // If this layout calculation was not drived by a reference view in current view referencd array, we don't need to calculate.
+            //                bool isInside = false;
+            //                for (int i = 0; i<attributeRef->viewReferenced; i++) {
+            //                    void **ptr = attributeRef->currentViewReferenced+i;
+            //                    if (*ptr == referenceViewPtr) {
+            //                        isInside = true;
+            //                        break;
+            //                    }
+            //                }
+            //                if (!isInside) return bindView.frame;
+            //            }
         }
         // 恢复上下文
         attributeRef_global = tempGlobal;
@@ -364,12 +364,12 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef, const void *refere
     
     // Filter out invalid layout items
     if (!attributeRef->currentLayoutInfoDidCheck) {
-        if (attributeRef->itemCountForStatic == 0 && attributeRef->itemCountForDynamic == 0) {
-            NSString *description = [NSString stringWithFormat:@"> %@: Not added any attribute items.\n> 未添加任何参照", bindView.aktName];
-            NSString *sugget = [NSString stringWithFormat:@"> For more details, please refer to the error message described in the document. 详情请参考错误信息描述文档"];
-            __aktErrorReporter(302, description, sugget);
-            return bindView.frame;
-        }
+        //        if (attributeRef->itemCountForStatic == 0 && attributeRef->itemCountForDynamic == 0) {
+        //            NSString *description = [NSString stringWithFormat:@"> %@: Not added any attribute items.\n> 未添加任何参照", bindView.aktName];
+        //            NSString *sugget = [NSString stringWithFormat:@"> For more details, please refer to the error message described in the document. 详情请参考错误信息描述文档"];
+        //            __aktErrorReporter(302, description, sugget);
+        //            return bindView.frame;
+        //        }
         // 去除动态信息中的无效布局信息，静态的已经移除过
         removeInvalidAttributeItemFromAttribute(attributeRef, true);
     }

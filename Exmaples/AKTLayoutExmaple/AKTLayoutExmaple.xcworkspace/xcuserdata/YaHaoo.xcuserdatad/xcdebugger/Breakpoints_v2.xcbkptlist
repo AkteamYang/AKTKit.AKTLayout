@@ -25,14 +25,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AKTLayoutExmaple/ExamplePlayer+UIControls.m"
-            timestampString = "488247228.371859"
+            filePath = "Pods/AKTLayout/AKTKit/ARC_File/AKTLayout/AKTLayoutAttribute.m"
+            timestampString = "488332501.081065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "86"
-            endingLineNumber = "86"
-            landmarkName = "-playMake"
-            landmarkType = "5">
+            startingLineNumber = "315"
+            endingLineNumber = "315"
+            landmarkName = "calculateAttribute()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -41,14 +41,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AKTLayoutExmaple/ExamplePlayer+UIControls.m"
-            timestampString = "488247618.066349"
+            filePath = "Pods/AKTLayout/AKTKit/ARC_File/AKTLayout/AKTLayoutAttribute.m"
+            timestampString = "488332505.173333"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
-            landmarkName = "-playMake"
-            landmarkType = "5">
+            startingLineNumber = "491"
+            endingLineNumber = "491"
+            landmarkName = "getAllOfTheReferencedView()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -57,46 +57,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AKTLayoutExmaple/ExamplePlayer+UIControls.m"
-            timestampString = "488247618.066349"
+            filePath = "Pods/AKTLayout/AKTKit/ARC_File/AKTLayout/AKTLayoutAttribute.m"
+            timestampString = "488332508.267996"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
-            landmarkName = "-playMake"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__37-[ExamplePlayer(UIControls) playMake]_block_invoke"
-                  moduleName = "AKTLayoutExmaple"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/YaHaoo/Desktop/Git%20Project/AKTLayout/Exmaples/AKTLayoutExmaple/AKTLayoutExmaple/ExamplePlayer+UIControls.m"
-                  timestampString = "488247618.117955"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "82"
-                  endingLineNumber = "82"
-                  offsetFromSymbolStart = "360">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__37-[ExamplePlayer(UIControls) playMake]_block_invoke_2"
-                  moduleName = "AKTLayoutExmaple"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/YaHaoo/Desktop/Git%20Project/AKTLayout/Exmaples/AKTLayoutExmaple/AKTLayoutExmaple/ExamplePlayer+UIControls.m"
-                  timestampString = "488247618.118138"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "82"
-                  endingLineNumber = "82"
-                  offsetFromSymbolStart = "8">
-               </Location>
-            </Locations>
+            startingLineNumber = "512"
+            endingLineNumber = "512"
+            landmarkName = "getAllOfTheReferencedView()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

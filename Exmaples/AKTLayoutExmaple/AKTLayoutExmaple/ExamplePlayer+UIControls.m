@@ -16,6 +16,8 @@
     [self coverLittleMake];
     [self listMake];
     [self playMake];
+    
+    [self playLayout];
 }
 
 #pragma mark - UICreations
@@ -72,41 +74,44 @@
     if (!self.play) {
         self.play = [UIButton buttonWithType:(UIButtonTypeCustom)];
         [self.container addSubview:self.play];
-        UIImage *img = mAKT_Image_Origin(@"CH_PlayBig");
-        [self.play setImage:img forState:(UIControlStateNormal)];
-        AKTWeakView(weakContainer, self.container);
-        AKTWeakView(weakList, self.list);
-        AKTWeakView(weakPlay, self.play);
-        [self.play aktLayout:^(AKTLayoutShellAttribute *layout) {
-            [layout addDynamicLayoutInCondition:^BOOL{
-                return weakContainer.height>55;
-            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                [weakPlay setImage:mAKT_Image_Origin(@"CH_PlayBig") forState:(UIControlStateNormal)];
-                [weakPlay setImage:mAKT_Image_Origin(@"CH_PauseBig") forState:(UIControlStateSelected)];
-
-                // Delta between state.
-                CGFloat deltaCenterX = mAKT_SCREENWITTH/2-(mAKT_SCREENWITTH-(19+25+16+15));
-                CGFloat deltaContainerHeight = mAKT_SCREENHEIGHT-64-45-55;
-                CGFloat deltaHeight = 65-30;
-                CGFloat deltaBottom = (mAKT_SCREENHEIGHT-64-45-25)-(55-(55-30)/2);
-                
-                dynamicLayout.height.width.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(deltaHeight/deltaContainerHeight).offset(30);
-                dynamicLayout.centerX.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(deltaCenterX/deltaContainerHeight).offset(mAKT_SCREENWITTH-(19+25+16+15));
-                dynamicLayout.bottom.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(deltaBottom/deltaContainerHeight).offset(55-(55-30)/2);
-            }];
-            [layout addDynamicLayoutInCondition:^BOOL{
-                return weakContainer.height<=55;
-            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                [weakPlay setImage:mAKT_Image_Origin(@"CH_PlayLittle") forState:(UIControlStateNormal)];
-                [weakPlay setImage:mAKT_Image_Origin(@"CH_PauseBig") forState:(UIControlStateSelected)];
-
-                dynamicLayout.width.equalTo(akt_value(30));
-                dynamicLayout.height.equalTo(weakContainer.akt_height).offset(-(55-30));
-                dynamicLayout.centerY.equalTo(weakContainer.akt_centerY);
-                dynamicLayout.right.equalTo(weakList.akt_left).offset(-16);
-            }];
-        }];
     }
+}
+
+#pragma mark - view settings
+- (void)playLayout {
+    AKTWeakView(weakContainer, self.container);
+    AKTWeakView(weakList, self.list);
+    AKTWeakView(weakPlay, self.play);
+    AKTWeakView(weakDrag, self.drag);
+    [self.play aktLayout:^(AKTLayoutShellAttribute *layout) {
+        [layout addDynamicLayoutInCondition:^BOOL{
+            return weakContainer.height>55;
+        } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+            [weakPlay setImage:mAKT_Image_Origin(@"CH_PlayBig") forState:(UIControlStateNormal)];
+            [weakPlay setImage:mAKT_Image_Origin(@"CH_PauseBig") forState:(UIControlStateSelected)];
+            
+            // Delta between state.
+            CGFloat deltaCenterX = mAKT_SCREENWITTH/2-(mAKT_SCREENWITTH-(19+25+16+15));
+            CGFloat deltaContainerHeight = mAKT_SCREENHEIGHT-64-weakDrag.height-55;
+            CGFloat deltaHeight = 65-30;
+            CGFloat deltaBottom = (mAKT_SCREENHEIGHT-64-weakDrag.height-25)-(55-(55-30)/2);
+            
+            dynamicLayout.height.width.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(deltaHeight/deltaContainerHeight).offset(30);
+            dynamicLayout.centerX.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(deltaCenterX/deltaContainerHeight).offset(mAKT_SCREENWITTH-(19+25+16+15));
+            dynamicLayout.bottom.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(deltaBottom/deltaContainerHeight).offset(55-(55-30)/2);
+        }];
+        [layout addDynamicLayoutInCondition:^BOOL{
+            return weakContainer.height<=55;
+        } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+            [weakPlay setImage:mAKT_Image_Origin(@"CH_PlayLittle") forState:(UIControlStateNormal)];
+            [weakPlay setImage:mAKT_Image_Origin(@"CH_PauseBig") forState:(UIControlStateSelected)];
+            
+            dynamicLayout.width.equalTo(akt_value(30));
+            dynamicLayout.whRatio.equalTo(akt_view(self.coverLittle));
+            dynamicLayout.centerY.equalTo(weakContainer.akt_centerY);
+            dynamicLayout.right.equalTo(weakList.akt_left).offset(-16);
+        }];
+    }];
 }
 
 @end

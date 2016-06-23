@@ -45,19 +45,19 @@
                 return (weakdrag.y<64+1);
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
                 dynamicLayout.top.equalTo(weakself.navigationController.navigationBar.akt_bottom);
-                dynamicLayout.height.equalTo(akt_value(45));
+                dynamicLayout.height.equalTo(akt_value(40));
             }];
             [layout addDynamicLayoutInCondition:^BOOL{
                 return (weakdrag.y>=64+1);
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
                 dynamicLayout.bottom.equalTo(weakself.view.akt_bottom).offset(-55);
-                dynamicLayout.height.equalTo(akt_value(45));
+                dynamicLayout.height.equalTo(akt_value(40));
             }];
         }];
         _drag.text = @"Drag the slider";
         [_drag setTextAlignment:(NSTextAlignmentCenter)];
-        _drag.backgroundColor = mAKT_Color_Background_204;
-        _drag.textColor = mAKT_Color_Text_52;
+        _drag.backgroundColor = mAKT_Color_Background_230;
+        _drag.textColor = mAKT_Color_Text_102;
         _drag.font = mAKT_Font_12;
         [_drag setNumberOfLines:3];
         _drag.userInteractionEnabled = YES;
@@ -77,7 +77,7 @@
             layout.top.equalTo(self.drag.akt_bottom);
             layout.left.bottom.right.equalTo(akt_view(self.view));
         }];
-        [_container setBackgroundColor:mAKT_Color_Text_52];
+        [_container setBackgroundColor:mAKT_Color_White];
         [_container setClipsToBounds:YES];
     }
     return _container;
@@ -111,7 +111,7 @@
 - (void)show {
     [UIView aktAnimation:^{
         [UIView animateWithDuration:.5 delay:0 usingSpringWithDamping:1 initialSpringVelocity:.1 options:0 animations:^{
-            self.drag.y = self.navigationController.navigationBar.height+([UIApplication sharedApplication].statusBarHidden? 0:20);
+            self.drag.y = 64;
         } completion:^(BOOL finished) {
 
         }];
