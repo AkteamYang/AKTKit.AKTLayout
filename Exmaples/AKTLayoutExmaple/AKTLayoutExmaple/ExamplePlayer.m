@@ -26,8 +26,12 @@
 @synthesize drag = _drag;
 @synthesize container = _container;
 @synthesize coverLittle;
+@synthesize musicName;
+@synthesize artist;
 @synthesize list;
 @synthesize play;
+@synthesize nextMusic;
+@synthesize lastMusic;
 
 #pragma mark - property settings
 - (UILabel *)drag {
@@ -65,6 +69,7 @@
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tap:)];
         [_drag addGestureRecognizer:tap];
         [_drag addGestureRecognizer:pan];
+        _drag.aktName = @"_drag";
     }
     return _drag;
 }
@@ -79,6 +84,7 @@
         }];
         [_container setBackgroundColor:mAKT_Color_White];
         [_container setClipsToBounds:YES];
+        _container.aktName = @"_container";
     }
     return _container;
 }

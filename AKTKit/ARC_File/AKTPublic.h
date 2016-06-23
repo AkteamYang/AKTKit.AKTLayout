@@ -57,6 +57,7 @@
 // UIimage
 #define mAKT_Image(Name) [UIImage imageNamed:Name]
 #define mAKT_Image_Origin(Name) ([mAKT_Image(Name) imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)])
+#define mAKT_Image_Tint(Name) ([mAKT_Image(Name) imageWithRenderingMode:(UIImageRenderingModeAlwaysTemplate)])
 
 // Font
 #define mAKT_FontRegular(S) [UIFont systemFontOfSize:S]
