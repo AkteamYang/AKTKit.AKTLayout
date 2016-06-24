@@ -36,6 +36,7 @@
     if (!self.coverLittle) {
         self.coverLittle = [[UIImageView alloc]initWithImage:mAKT_Image(@"Cover")];
         [self.container addSubview:self.coverLittle];
+        self.coverLittle.aktName = @"coverLittle";
     }
 }
 
@@ -43,6 +44,7 @@
     if (!self.musicName) {
         self.musicName = [UILabel new];
         [self.container addSubview:self.musicName];
+        self.musicName.aktName = @"musicName";
         AKTWeakView(__cover, self.coverLittle);
         [self.musicName aktLayout:^(AKTLayoutShellAttribute *layout) {
             layout.top.equalTo(__cover.akt_top).offset(8);
@@ -60,6 +62,7 @@
     if (!self.artist) {
         self.artist = [UILabel new];
         [self.container addSubview:self.artist];
+        self.artist.aktName = @"artist";
         AKTWeakView(__cover, self.coverLittle);
         AKTWeakView(__musicName, self.musicName);
         [self.artist aktLayout:^(AKTLayoutShellAttribute *layout) {

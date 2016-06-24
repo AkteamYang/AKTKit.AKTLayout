@@ -169,11 +169,9 @@ BOOL screenRotating                     = NO;
             __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
         }else{
             dispatch_async(dispatch_get_main_queue(), ^{
-                //                if (bindView.superview) {
                 CGRect rect = calculateAttribute(bindView.attributeRef, self);
                 [bindView setNewFrame:rect];
                 __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
-                //                }
             });
             // 模拟设置frame，为了将计算传播下去，真正计算的是上面异步计算frame
             bindView.frame = CGRectMake(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
@@ -216,26 +214,29 @@ BOOL screenRotating                     = NO;
 - (void)setNewFrame:(CGRect)frame {
     CGRect old = self.frame;
     CGRect new = frame;
-    if (![self setViewWithFrame:frame]) return;
+    BOOL frameNeedChange = [self setViewWithFrame:frame];
     if(self.layoutChain.count<=0) return;
     
     
     // 设置相关视图的布局更新计数器
     // @备注：如果当前视图是触发布局更新的事件源，则需要设置参考了当前视图的视图的更新计数器
+    BOOL isDriverView = NO;
     if (self.layoutUpdateCount==0) {
-        //        NSLog(@"%@",self.aktName);
+        if(!frameNeedChange) return;
+//        NSLog(@"%@ %p tag：%ld",self.aktName, self, self.tag);
+        isDriverView = YES;
         self.layoutUpdateCount = 1;// @备注：为符合整体处理逻辑，事件源视图布局计数加一，等待相关布局更新完成后减一
         NSMutableArray *pathArr = __aktGetPathArray();
         [pathArr addObject:self];
         [self aktSetLayoutUpdateCountWithPath:pathArr];
         __aktGetPathArray(); // @备注：路径跟踪数组清空
         screenRotating = (mAKT_EQ(old.size.width, mAKT_SCREENWITTH) || mAKT_EQ(old.size.width, mAKT_SCREENHEIGHT)) && mAKT_EQ(old.size.width, new.size.height) && mAKT_EQ(old.size.height, new.size.width);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.layoutUpdateCount = 0;
-        });
     }
     // 更新布局链节点布局
     [self aktUpdateLayoutChainNode];
+    if(isDriverView) {
+        self.layoutUpdateCount = 0;
+    }
 }
 
 /**

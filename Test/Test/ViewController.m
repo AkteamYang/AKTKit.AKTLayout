@@ -29,9 +29,9 @@
     self.view.aktName = @"self.view";
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //                    [self initUI];
-//        [self initUIAkt];
-//        [self initAKTCycleUI];
-        [self dynamicUI];
+        [self initUIAkt];
+        //        [self initAKTCycleUI];
+//        [self dynamicUI];
 //                    [self initUIMas];
     });
 }
@@ -134,8 +134,8 @@
                     dynamicLayout.height.equalTo(akt_view(weakself.view)).multiple(1.f/lines);
                 }];
             }];
-//            v.aktName = @"akt_v";
-//            v.tag = (j+1)+(i*columns);
+            v.aktName = @"akt_v";
+            v.tag = (j+1)+(i*columns);
             // 添加内部子视图
             UIView *sub = [UIView new];
             [v addSubview:sub];

@@ -79,8 +79,12 @@
         _container = [UIView new];
         [self.view addSubview:_container];
         [_container aktLayout:^(AKTLayoutShellAttribute *layout) {
-            layout.top.equalTo(self.drag.akt_bottom);
-            layout.left.bottom.right.equalTo(akt_view(self.view));
+            [layout addDynamicLayoutInCondition:^BOOL{
+                return YES;
+            } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+                dynamicLayout.top.equalTo(self.drag.akt_bottom);
+                dynamicLayout.left.bottom.right.equalTo(akt_view(self.view));
+            }];
         }];
         [_container setBackgroundColor:mAKT_Color_White];
         [_container setClipsToBounds:YES];
