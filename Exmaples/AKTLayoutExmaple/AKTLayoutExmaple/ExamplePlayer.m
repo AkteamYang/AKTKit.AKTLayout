@@ -29,18 +29,26 @@
 @synthesize musicName;
 @synthesize artist;
 @synthesize list;
+@synthesize mode;
 @synthesize play;
 @synthesize nextMusic;
 @synthesize lastMusic;
+@synthesize slider;
+@synthesize currentTime;
+@synthesize duration;
+@synthesize cover;
+@synthesize topMusicName;
+@synthesize topArtist;
 
 #pragma mark - property settings
 - (UILabel *)drag {
     if (_drag == nil) {
         _drag = [UILabel new];
         [self.view addSubview:_drag];
-        static int i = 0;
-        _drag.aktName = [NSString stringWithFormat:@"akt%d", i];
-        i++;
+//        static int i = 0;
+//        _drag.aktName = [NSString stringWithFormat:@"akt%d", i];
+//        i++;
+        _drag.y = 200;
         AKTWeakView(weakself, self);
         AKTWeakView(weakdrag, _drag);
         [_drag aktLayout:^(AKTLayoutShellAttribute *layout) {

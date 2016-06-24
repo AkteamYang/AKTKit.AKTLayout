@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		756EFF6939ACB342907968C0 /* libPods-AKTLayoutExmaple.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64F9204C84F8D09940161507 /* libPods-AKTLayoutExmaple.a */; };
 		A854ADB71D1A940C009AF44C /* NavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = A854ADB61D1A940C009AF44C /* NavigationController.m */; };
+		A854ADBA1D1D26E0009AF44C /* ExampleCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = A854ADB91D1D26E0009AF44C /* ExampleCoverView.m */; };
+		A854ADBC1D1D3455009AF44C /* slider@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A854ADBB1D1D3455009AF44C /* slider@2x.png */; };
+		A854ADBE1D1D4260009AF44C /* over.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A854ADBD1D1D4260009AF44C /* over.jpg */; };
 		F86356171CF5204C00F53E7B /* ExamplePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F86356161CF5204C00F53E7B /* ExamplePlayer.m */; };
 		F86AD9091D18B921004F2BA7 /* Cover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F86AD9071D18B921004F2BA7 /* Cover@2x.png */; };
 		F86AD90A1D18B921004F2BA7 /* Over the Horizon.m4a in Resources */ = {isa = PBXBuildFile; fileRef = F86AD9081D18B921004F2BA7 /* Over the Horizon.m4a */; };
@@ -52,6 +55,10 @@
 		A854ADB41D194852009AF44C /* ExamplePlayerPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePlayerPrivate.h; sourceTree = "<group>"; };
 		A854ADB51D1A940C009AF44C /* NavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationController.h; sourceTree = "<group>"; };
 		A854ADB61D1A940C009AF44C /* NavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationController.m; sourceTree = "<group>"; };
+		A854ADB81D1D26E0009AF44C /* ExampleCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleCoverView.h; sourceTree = "<group>"; };
+		A854ADB91D1D26E0009AF44C /* ExampleCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleCoverView.m; sourceTree = "<group>"; };
+		A854ADBB1D1D3455009AF44C /* slider@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider@2x.png"; sourceTree = "<group>"; };
+		A854ADBD1D1D4260009AF44C /* over.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = over.jpg; sourceTree = "<group>"; };
 		BACC56A6C3FD220F67982F4A /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		F86356151CF5204C00F53E7B /* ExamplePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePlayer.h; sourceTree = "<group>"; };
 		F86356161CF5204C00F53E7B /* ExamplePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExamplePlayer.m; sourceTree = "<group>"; };
@@ -136,6 +143,8 @@
 				F86356161CF5204C00F53E7B /* ExamplePlayer.m */,
 				F86AD90B1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.h */,
 				F86AD90C1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.m */,
+				A854ADB81D1D26E0009AF44C /* ExampleCoverView.h */,
+				A854ADB91D1D26E0009AF44C /* ExampleCoverView.m */,
 			);
 			name = ExamplePlayer;
 			sourceTree = "<group>";
@@ -195,9 +204,11 @@
 		F8BDB77A1CF1967B00E31155 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				A854ADBD1D1D4260009AF44C /* over.jpg */,
 				F86AD9071D18B921004F2BA7 /* Cover@2x.png */,
 				F86AD9081D18B921004F2BA7 /* Over the Horizon.m4a */,
 				F8DCF1971D079314001651F3 /* CH_Last@2x.png */,
+				A854ADBB1D1D3455009AF44C /* slider@2x.png */,
 				F8DCF1981D079314001651F3 /* CH_ListBig@2x.png */,
 				F8DCF1991D079314001651F3 /* CH_ListLittle@2x.png */,
 				F8DCF19A1D079314001651F3 /* CH_Mode0@2x.png */,
@@ -283,6 +294,7 @@
 			files = (
 				F8BDB7881CF1AA4C00E31155 /* AKT_Header@2x.png in Resources */,
 				F8BDB77F1CF1990400E31155 /* P_Back@2x.png in Resources */,
+				A854ADBC1D1D3455009AF44C /* slider@2x.png in Resources */,
 				F86AD90A1D18B921004F2BA7 /* Over the Horizon.m4a in Resources */,
 				F8DCF1A11D079314001651F3 /* CH_Last@2x.png in Resources */,
 				F8DCF1A81D079314001651F3 /* CH_PauseLittle.png in Resources */,
@@ -291,6 +303,7 @@
 				F8BDB7951CF20F3200E31155 /* P_Stop@2x.png in Resources */,
 				F8DCF1A71D079314001651F3 /* CH_PauseBig@2x.png in Resources */,
 				F8DCF1A61D079314001651F3 /* CH_Next@2x.png in Resources */,
+				A854ADBE1D1D4260009AF44C /* over.jpg in Resources */,
 				F8DCF1A31D079314001651F3 /* CH_ListLittle@2x.png in Resources */,
 				F8BDB7801CF1990400E31155 /* P_Navi.png in Resources */,
 				F8DCF1A91D079314001651F3 /* CH_PlayBig@2x.png in Resources */,
@@ -387,6 +400,7 @@
 				F8BDB7681CF1936000E31155 /* AppDelegate.m in Sources */,
 				F8BDB7651CF1936000E31155 /* main.m in Sources */,
 				F86356171CF5204C00F53E7B /* ExamplePlayer.m in Sources */,
+				A854ADBA1D1D26E0009AF44C /* ExampleCoverView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
