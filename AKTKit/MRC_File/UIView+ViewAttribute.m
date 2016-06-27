@@ -157,7 +157,10 @@ BOOL screenRotating                     = NO;
         // 如果bindView的布局更新计数器大于最小刷新阈值，则暂时不必计算布局更新
         NSInteger layoutUpdateCount = bindView.layoutUpdateCount;
         //        NSLog(@"%@",bindView.aktName);
-        if (layoutUpdateCount<=0) continue;
+        if (layoutUpdateCount<=0){// 当在“__aktViewDidLayoutWithView”中更新布局时可能出现，布局提前被运算的情况
+            layoutUpdateCount ++;
+            bindView.layoutUpdateCount = layoutUpdateCount;
+        }
         if (layoutUpdateCount>1) {
             bindView.layoutUpdateCount = layoutUpdateCount-1;
             continue;
