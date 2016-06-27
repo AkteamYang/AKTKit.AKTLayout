@@ -23,7 +23,6 @@
 
 @interface ExampleCoverView()
 @property (strong, nonatomic) UIImageView *coverImg;
-@property (weak, nonatomic) NSTimer *timer;
 @end
 @implementation ExampleCoverView
 #pragma mark - property settings
@@ -33,6 +32,10 @@
         [self addSubview:_coverImg];
         _coverImg.image = mAKT_Image(@"over.jpg");
         _coverImg.layer.masksToBounds = YES;
+        AKTWeakView(weakself, self);
+        [_coverImg aktLayout:^(AKTLayoutShellAttribute *layout) {
+            layout.edge.equalTo(akt_view(weakself));
+        }];
     }
     return _coverImg;
 }
@@ -47,47 +50,10 @@
     return self;
 }
 
-#pragma mark - super methods
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    if (self.timer) {
-        return;
-    }
-    self.coverImg.transform = CGAffineTransformIdentity;
-    self.coverImg.frame = CGRectMake(0, 0, self.width*.96, self.height*.96);
-    self.coverImg.center = CGPointMake(self.width/2, self.height/2);
-    self.coverImg.layer.cornerRadius = self.coverImg.width/2;
-    self.layer.cornerRadius = self.width/2;
-}
-
 #pragma mark - view settings
 - (void)initUI {
     self.layer.masksToBounds = YES;
     self.backgroundColor = kExampleTint1;
     _coverImg = self.coverImg;
-}
-
-#pragma mark - click events
-- (void)timer:(NSTimer *)timer {
-    self.coverImg.transform = CGAffineTransformRotate(self.coverImg.transform, (M_PI/(1000)));
-}
-
-#pragma mark - function implementations
-/**
- *  Set cover image rotate or not.
- *
- *  @param rotate
- */
-- (void)rotate:(BOOL)rotate {
-    if (rotate) {
-        if (!self.timer) {
-            NSInvocation *invocation = [[NSInvocation alloc]init];
-            [invocation setTarget:self];
-            [invocation setSelector:@selector(timer:)];
-            self.timer = [NSTimer scheduledTimerWithTimeInterval:1/60.0 target:self selector:@selector(timer:) userInfo:nil repeats:YES];
-        }
-    }else{
-        [self.timer invalidate];
-    }
 }
 @end

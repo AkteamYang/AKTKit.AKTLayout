@@ -14,7 +14,6 @@
 		A854ADBE1D1D4260009AF44C /* over.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A854ADBD1D1D4260009AF44C /* over.jpg */; };
 		F86356171CF5204C00F53E7B /* ExamplePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F86356161CF5204C00F53E7B /* ExamplePlayer.m */; };
 		F86AD9091D18B921004F2BA7 /* Cover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F86AD9071D18B921004F2BA7 /* Cover@2x.png */; };
-		F86AD90A1D18B921004F2BA7 /* Over the Horizon.m4a in Resources */ = {isa = PBXBuildFile; fileRef = F86AD9081D18B921004F2BA7 /* Over the Horizon.m4a */; };
 		F86AD90D1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.m in Sources */ = {isa = PBXBuildFile; fileRef = F86AD90C1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.m */; };
 		F8BDB7651CF1936000E31155 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB7641CF1936000E31155 /* main.m */; };
 		F8BDB7681CF1936000E31155 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB7671CF1936000E31155 /* AppDelegate.m */; };
@@ -63,7 +62,6 @@
 		F86356151CF5204C00F53E7B /* ExamplePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExamplePlayer.h; sourceTree = "<group>"; };
 		F86356161CF5204C00F53E7B /* ExamplePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExamplePlayer.m; sourceTree = "<group>"; };
 		F86AD9071D18B921004F2BA7 /* Cover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Cover@2x.png"; sourceTree = "<group>"; };
-		F86AD9081D18B921004F2BA7 /* Over the Horizon.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Over the Horizon.m4a"; sourceTree = "<group>"; };
 		F86AD90B1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExamplePlayer+UIControls.h"; sourceTree = "<group>"; };
 		F86AD90C1D18B9B9004F2BA7 /* ExamplePlayer+UIControls.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExamplePlayer+UIControls.m"; sourceTree = "<group>"; };
 		F8BDB7601CF1936000E31155 /* AKTLayoutExmaple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AKTLayoutExmaple.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -206,7 +204,6 @@
 			children = (
 				A854ADBD1D1D4260009AF44C /* over.jpg */,
 				F86AD9071D18B921004F2BA7 /* Cover@2x.png */,
-				F86AD9081D18B921004F2BA7 /* Over the Horizon.m4a */,
 				F8DCF1971D079314001651F3 /* CH_Last@2x.png */,
 				A854ADBB1D1D3455009AF44C /* slider@2x.png */,
 				F8DCF1981D079314001651F3 /* CH_ListBig@2x.png */,
@@ -295,7 +292,6 @@
 				F8BDB7881CF1AA4C00E31155 /* AKT_Header@2x.png in Resources */,
 				F8BDB77F1CF1990400E31155 /* P_Back@2x.png in Resources */,
 				A854ADBC1D1D3455009AF44C /* slider@2x.png in Resources */,
-				F86AD90A1D18B921004F2BA7 /* Over the Horizon.m4a in Resources */,
 				F8DCF1A11D079314001651F3 /* CH_Last@2x.png in Resources */,
 				F8DCF1A81D079314001651F3 /* CH_PauseLittle.png in Resources */,
 				F8BDB7731CF1936000E31155 /* LaunchScreen.storyboard in Resources */,

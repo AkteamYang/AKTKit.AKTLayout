@@ -8,6 +8,7 @@
 
 #import "ExamplePlayer+UIControls.h"
 #import "AKTKit.h"
+#import <AVFoundation/AVFoundation.h>
 
 //--------------# Macro & Const #--------------
 #define kExampleTint mAKT_Color_Color(80, 128, 215, 1)
@@ -322,9 +323,15 @@
 - (void)modeLayout {
     UIImage *img = mAKT_Image_Tint(@"CH_Mode0");
     AKTWeakView(weakPlay, self.play);
+    AKTWeakView(container, self.container);
     [self.mode aktLayout:^(AKTLayoutShellAttribute *layout) {
         layout.centerY.equalTo(weakPlay.akt_centerY);
         layout.size.equalTo(akt_size(img.size.width, img.size.height));
+        [layout addDynamicLayoutInCondition:^BOOL{
+            return container.height<=55;
+        } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+            dynamicLayout.left.equalTo(container.akt_left).offset(12);
+        }];
     }];
 }
 
@@ -418,15 +425,14 @@
         CGFloat height = percent*deltaHeight+30;
         CGFloat top = percent*deltaTop+(55-30)/2.0f;
         self.play.frame = CGRectMake(centerX-height/2.0f, top, height, height);
+        
         // CoverSmall
         self.coverLittle.x = percent*-55;
-        [self.coverLittle setAKTNeedRelayout];
         // ListButton
-        CGFloat deltaLeft = -22-(-12);
+        CGFloat deltaLeft = -15-(-12);
         self.list.frame = CGRectMake(percent*deltaLeft+mAKT_SCREENWITTH-12-self.list.width, self.list.y, self.list.width, self.list.height);
-        [self.list setAKTNeedRelayout];
         // ModeButton
-        self.mode.x = percent*22;
+        self.mode.x = percent*15;
         // CurrentTime
         self.currentTime.x = (50-6)*percent+(-self.currentTime.width);
         // Duration
@@ -434,13 +440,14 @@
     }
     
     // Cover layout
-//    CGFloat coverMaxHeight = self.slider.y-self.topArtist.y-self.topArtist.height;
-//    if (ABS(coverMaxHeight)>mAKT_SCREENWITTH) {
-//        self.cover.width = mAKT_SCREENWITTH*.8;
-//    }else{
-//        self.cover.width = coverMaxHeight*.8;
-//    }
-//    [self.cover setAKTNeedRelayout];
+    CGFloat coverMaxHeight = self.slider.y-self.topArtist.y-self.topArtist.height;
+    if (ABS(coverMaxHeight)>mAKT_SCREENWITTH) {
+        self.cover.width = mAKT_SCREENWITTH*.9;
+    }else{
+        self.cover.width = coverMaxHeight*.9;
+    }
+    self.cover.y = (self.slider.y+self.topArtist.y+self.topArtist.height)/2-(self.cover.width)/2;
+    [self.cover setNeedAKTLayout];
 }
 
 - (void)list:(UIButton *)btn {
@@ -453,7 +460,6 @@
     }else{
         
     }
-    [self.cover rotate:!btn.isSelected];
     [btn setSelected:!btn.isSelected];
 }
 

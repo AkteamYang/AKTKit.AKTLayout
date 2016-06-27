@@ -9,10 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface ExampleCoverView : UIView
-/**
- *  Set cover image rotate or not.
- *
- *  @param rotate 
- */
-- (void)rotate:(BOOL)rotate;
+
 @end
