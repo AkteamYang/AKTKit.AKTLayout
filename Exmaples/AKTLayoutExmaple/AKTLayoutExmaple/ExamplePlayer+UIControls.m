@@ -12,6 +12,10 @@
 //--------------# Macro & Const #--------------
 #define kExampleTint mAKT_Color_Color(80, 128, 215, 1)
 //--------------# E.n.d #--------------#>Macro
+@interface ExamplePlayer()
+@property (assign, nonatomic) BOOL coverHeight;
+@end
+
 @implementation ExamplePlayer (UIControls)
 #pragma mark - view settings
 - (void)initUIForContainer {
@@ -98,10 +102,11 @@
     if (!self.list) {
         self.list = [UIButton buttonWithType:(UIButtonTypeSystem)];
         [self.container addSubview:self.list];
-        UIImage *img = mAKT_Image(@"CH_ListLittle");
+        UIImage *img = mAKT_Image(@"CH_ListBig");
         [self.list setImage:img forState:(UIControlStateNormal)];
         self.list.aktName = @"listButton";
         [self.list setTintColor:kExampleTint];
+        self.list.frame = CGRectMake(0, 0, img.size.width, img.size.height);
         [self.list addTarget:self action:@selector(list:) forControlEvents:(UIControlEventTouchUpInside)];
     }
 }
@@ -123,6 +128,7 @@
         self.nextMusic.aktName = @"nextMusicButton";
         [self.nextMusic setTintColor:kExampleTint];
         [self.nextMusic addTarget:self action:@selector(nextMusic:) forControlEvents:(UIControlEventTouchUpInside)];
+        self.nextMusic.alpha = 0;
     }
 }
 
@@ -133,6 +139,7 @@
         self.lastMusic.aktName = @"lastMusicButton";
         [self.lastMusic setTintColor:kExampleTint];
         [self.lastMusic addTarget:self action:@selector(lastMusic:) forControlEvents:(UIControlEventTouchUpInside)];
+        self.lastMusic.alpha = 0;
     }
 }
 
@@ -145,6 +152,7 @@
         self.mode.aktName = @"modeButton";
         [self.mode setTintColor:kExampleTint];
         [self.mode addTarget:self action:@selector(mode:) forControlEvents:(UIControlEventTouchUpInside)];
+        self.mode.alpha = 0;
     }
 }
 
@@ -158,6 +166,7 @@
         [self.slider setThumbImage:mAKT_Image_Tint(@"slider") forState:(UIControlStateNormal)];
         self.slider.value = 0.0;
         [self.slider addTarget:self action:@selector(slider:) forControlEvents:(UIControlEventValueChanged)];
+        self.slider.alpha = 0;
     }
 }
 
@@ -170,6 +179,7 @@
         self.currentTime.textColor = mAKT_Color_Text_52;
         self.currentTime.font = mAKT_Font_12;
         self.currentTime.numberOfLines = 1;
+        self.currentTime.alpha = 0;
     }
 }
 
@@ -182,6 +192,7 @@
         self.duration.textColor = mAKT_Color_Text_52;
         self.duration.font = mAKT_Font_12;
         self.duration.numberOfLines = 1;
+        self.duration.alpha = 0;
     }
 }
 
@@ -194,6 +205,7 @@
         self.topMusicName.textColor = kExampleTint;
         self.topMusicName.font = mAKT_Font_18;
         self.topMusicName.numberOfLines = 1;
+        self.topMusicName.alpha = 0;
     }
 }
 
@@ -206,14 +218,15 @@
         self.topArtist.textColor = self.artist.textColor;
         self.topArtist.font = mAKT_Font_14;
         self.topArtist.numberOfLines = 1;
+        self.topArtist.alpha = 0;
     }
 }
 
 - (void)coverMake {
     if (!self.cover) {
         self.cover = [ExampleCoverView new];
-        self.cover.frame = CGRectMake(0, 0, mAKT_SCREENWITTH*.8, mAKT_SCREENWITTH*.8);
         [self.container addSubview:self.cover];
+        self.cover.alpha = 0;
     }
 }
 
@@ -222,44 +235,14 @@
     // The view you'll reference to will be declared as weak reference.
     AKTWeakView(weakContainer, self.container);
     AKTWeakView(weakPlay, self.play);
-    AKTWeakView(weakDrag, self.drag);
     AKTWeakView(weakCover, self.coverLittle);
-    AKTWeakView(weakNext, self.nextMusic);
-    AKTWeakView(weakLast, self.lastMusic);
-    AKTWeakView(weakMode, self.mode);
-    AKTWeakView(slider, self.slider);
-    AKTWeakView(currentTime, self.currentTime);
-    AKTWeakView(duration, self.duration);
-    AKTWeakView(topMusicName, self.topMusicName);
-    AKTWeakView(topArtist, self.topArtist);
-    AKTWeakView(cover, self.cover);
     [self.play aktLayout:^(AKTLayoutShellAttribute *layout) {
-        CGFloat deltaContainerHeight = mAKT_SCREENHEIGHT-64-weakDrag.height-55;
         // Add dynamic layout for different conditions.
         [layout addDynamicLayoutInCondition:^BOOL{
-            // Set next and last music buttons show or hide. If the condition is satisfied(return Yes!), the block will be invoked every times before layout chaged.
-            topMusicName.alpha
-            = topArtist.alpha
-            = cover.alpha
-            = duration.alpha
-            = currentTime.alpha
-            = slider.alpha
-            = weakMode.alpha
-            = weakNext.alpha
-            = weakLast.alpha
-            = (weakContainer.height-55-200)/(deltaContainerHeight-200);
             return weakContainer.height>55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
             [weakPlay setImage:mAKT_Image_Tint(@"CH_PlayBig") forState:(UIControlStateNormal)];
             [weakPlay setImage:mAKT_Image_Tint(@"CH_PauseBig") forState:(UIControlStateSelected)];
-            // Value changed between the state of container view show and hide.
-            CGFloat deltaCenterX = mAKT_SCREENWITTH/2-(mAKT_SCREENWITTH-(19+25+16+15));
-            CGFloat deltaHeight = 65-30;
-            CGFloat deltaBottom = (mAKT_SCREENHEIGHT-64-weakDrag.height-35)-(55-(55-30)/2);
-            
-            dynamicLayout.height.width.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(deltaHeight/deltaContainerHeight).offset(30);
-            dynamicLayout.centerX.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(deltaCenterX/deltaContainerHeight).offset(mAKT_SCREENWITTH-(19+25+16+15));
-            dynamicLayout.bottom.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(deltaBottom/deltaContainerHeight).offset(55-(55-30)/2);
         }];
         
         [layout addDynamicLayoutInCondition:^BOOL{
@@ -277,28 +260,20 @@
 }
 
 - (void)listLayout {
-    UIImage *img = mAKT_Image_Origin(@"CH_ListLittle");
     AKTWeakView(weakContainer, self.container);
     AKTWeakView(weakCover, self.coverLittle);
     AKTWeakView(weakPlayer, self.play);
-    AKTWeakView(weakDrag, self.drag);
     [self.list aktLayout:^(AKTLayoutShellAttribute *layout) {
         [layout addDynamicLayoutInCondition:^BOOL{
             return weakContainer.height>55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-            CGFloat deltaRight = -22-(-19);
-            CGFloat deltaContainerHeight = mAKT_SCREENHEIGHT-64-weakDrag.height-55;
-            
-            dynamicLayout.size.equalTo(akt_size(img.size.width, img.size.height));
-            dynamicLayout.right.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(deltaRight/deltaContainerHeight).offset(mAKT_SCREENWITTH-22);
             dynamicLayout.centerY.equalTo(weakPlayer.akt_centerY);
         }];
         [layout addDynamicLayoutInCondition:^BOOL{
             return weakContainer.height<=55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-            dynamicLayout.width.equalTo(akt_value(img.size.width));
             dynamicLayout.whRatio.equalTo(akt_view(weakCover));
-            dynamicLayout.right.equalTo(weakContainer.akt_right).offset(-19);
+            dynamicLayout.right.equalTo(weakContainer.akt_right).offset(-12);
             dynamicLayout.centerY.equalTo(akt_view(weakContainer));
         }];
     }];
@@ -306,20 +281,16 @@
 
 - (void)coverLittleLayout {
     AKTWeakView(weakContainer, self.container);
-    AKTWeakView(weakMusicName, self.musicName);
-    AKTWeakView(weakArtist, self.artist);
     [self.coverLittle aktLayout:^(AKTLayoutShellAttribute *layout) {
         layout.bottom.equalTo(weakContainer.akt_bottom);
         layout.width.equalTo(akt_value(55));
         [layout addDynamicLayoutInCondition:^BOOL{
-            weakArtist.alpha = weakMusicName.alpha = 1.0-(weakContainer.height-55)/100.f;
-            return weakContainer.height>=55;
+            return weakContainer.height>55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
             dynamicLayout.height.equalTo(akt_value(55));
-            dynamicLayout.left.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(-(55.f/150));
         }];
         [layout addDynamicLayoutInCondition:^BOOL{
-            return weakContainer.height<55;
+            return weakContainer.height<=55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
             dynamicLayout.left.top.equalTo(akt_view(weakContainer));
         }];
@@ -351,15 +322,9 @@
 - (void)modeLayout {
     UIImage *img = mAKT_Image_Tint(@"CH_Mode0");
     AKTWeakView(weakPlay, self.play);
-    AKTWeakView(weakDrag, self.drag);
-    AKTWeakView(weakContainer, self.container);
     [self.mode aktLayout:^(AKTLayoutShellAttribute *layout) {
-        CGFloat deltaLeft = 22-(0);
-        CGFloat deltaContainerHeight = mAKT_SCREENHEIGHT-64-weakDrag.height-55;
-        
         layout.centerY.equalTo(weakPlay.akt_centerY);
         layout.size.equalTo(akt_size(img.size.width, img.size.height));
-        layout.left.equalTo(weakContainer.akt_height).coefficientOffset(-55).multiple(deltaLeft/deltaContainerHeight).offset(0);
     }];
 }
 
@@ -376,18 +341,28 @@
 
 - (void)currentTimeLayout {
     AKTWeakView(slider, self.slider);
+    AKTWeakView(container, self.container);
     [self.currentTime aktLayout:^(AKTLayoutShellAttribute *layout) {
         layout.centerY.equalTo(akt_view(slider));
-        layout.right.equalTo(slider.akt_left).offset(-6);
+        [layout addDynamicLayoutInCondition:^BOOL{
+            return container.height<=55;
+        } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+            dynamicLayout.right.equalTo(slider.akt_left).offset(-50);
+        }];
     }];
     self.currentTime.text = self.currentTime.text;
 }
 
 - (void)durationLayout {
     AKTWeakView(slider, self.slider);
+    AKTWeakView(container, self.container);
     [self.duration aktLayout:^(AKTLayoutShellAttribute *layout) {
         layout.centerY.equalTo(akt_view(slider));
-        layout.left.equalTo(slider.akt_right).offset(6);
+        [layout addDynamicLayoutInCondition:^BOOL{
+            return container.height<=55;
+        } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
+            dynamicLayout.left.equalTo(slider.akt_right).offset(50);
+        }];
     }];
     self.duration.text = self.duration.text;
 }
@@ -412,18 +387,60 @@
 
 - (void)coverLayout {
     AKTWeakView(container, self.container);
-    AKTWeakView(topArtist, self.topArtist);
-
     [self.cover aktLayout:^(AKTLayoutShellAttribute *layout) {
         layout.whRatio.equalTo(akt_value(1));
         layout.centerX.equalTo(akt_view(container));
-        layout.top.equalTo(topArtist.akt_bottom).offset(20);
     }];
 }
 
 #pragma mark - click events
 - (void)containerDidLayout:(UIView *)view {
+    CGFloat percent = (view.height -55)/(mAKT_SCREENHEIGHT-64-self.drag.height-55);
+    self.topMusicName.alpha
+    = self.topArtist.alpha
+    = self.cover.alpha
+    = self.duration.alpha
+    = self.currentTime.alpha
+    = self.slider.alpha
+    = self.mode.alpha
+    = self.nextMusic.alpha
+    = self.lastMusic.alpha
+    = percent*2-1;
     
+    self.artist.alpha = self.musicName.alpha = 1.0-(view.height-55)/100.f;
+    if (view.height>55) {
+        // Play button layout.
+        CGFloat deltaCenterX = mAKT_SCREENWITTH/2-(mAKT_SCREENWITTH-(19+25+16+15));
+        CGFloat deltaHeight = 65-30;
+        CGFloat deltaTop = (mAKT_SCREENHEIGHT-64-self.drag.height-35-65)-(55-30)/2.0f;
+        
+        CGFloat centerX = percent*deltaCenterX+mAKT_SCREENWITTH-(19+25+16+15);
+        CGFloat height = percent*deltaHeight+30;
+        CGFloat top = percent*deltaTop+(55-30)/2.0f;
+        self.play.frame = CGRectMake(centerX-height/2.0f, top, height, height);
+        // CoverSmall
+        self.coverLittle.x = percent*-55;
+        [self.coverLittle setAKTNeedRelayout];
+        // ListButton
+        CGFloat deltaLeft = -22-(-12);
+        self.list.frame = CGRectMake(percent*deltaLeft+mAKT_SCREENWITTH-12-self.list.width, self.list.y, self.list.width, self.list.height);
+        [self.list setAKTNeedRelayout];
+        // ModeButton
+        self.mode.x = percent*22;
+        // CurrentTime
+        self.currentTime.x = (50-6)*percent+(-self.currentTime.width);
+        // Duration
+        self.duration.x = -(50-6)*percent+mAKT_SCREENWITTH;
+    }
+    
+    // Cover layout
+//    CGFloat coverMaxHeight = self.slider.y-self.topArtist.y-self.topArtist.height;
+//    if (ABS(coverMaxHeight)>mAKT_SCREENWITTH) {
+//        self.cover.width = mAKT_SCREENWITTH*.8;
+//    }else{
+//        self.cover.width = coverMaxHeight*.8;
+//    }
+//    [self.cover setAKTNeedRelayout];
 }
 
 - (void)list:(UIButton *)btn {

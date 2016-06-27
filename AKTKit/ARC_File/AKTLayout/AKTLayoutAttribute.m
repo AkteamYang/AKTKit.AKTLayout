@@ -320,11 +320,12 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef, const void *refere
         AKTLayoutAttributeRef tempGlobal = attributeRef_global;
         attributeRef_global = attributeRef;
         // 查找符合条件的动态布局
-        BOOL isDynamicChanged = NO;
+        BOOL meetCondition = NO;
         for (int i=0; i<attributeRef->blockCountForDynamic; i++) {
             AKTDynamicLayoutBlock *block = attributeRef->blockArrayForDynamic+i;
             BOOL (^condition)() = (__bridge BOOL (^)())(block->conditionBlock);
             if (condition()) {
+                meetCondition = YES;
                 if (attributeRef->layoutInfoTag!=i) {// Layout info will be changed.
                     attributeRef->layoutInfoTag = i;
                     attributeRef->itemCountForDynamic = 0;
@@ -334,26 +335,16 @@ CGRect calculateAttribute(AKTLayoutAttributeRef attributeRef, const void *refere
                     attributeRef->layoutDynamicContextBegin = false;
                     attributeRef->currentLayoutInfoDidCheck = NO;
                     attributeRef->viewReferenced = 0;
-                    isDynamicChanged = YES;
                     break;
                 }
             }
         }
-        if (!isDynamicChanged) {
+        if (!meetCondition) {
             // 配置默认的tag，未找到合适的动态布局时.
-            if (attributeRef->layoutInfoTag>LONG_MAX-1) attributeRef->layoutInfoTag = -1;
-            //            if (referenceViewPtr) {
-            //                // If this layout calculation was not drived by a reference view in current view referencd array, we don't need to calculate.
-            //                bool isInside = false;
-            //                for (int i = 0; i<attributeRef->viewReferenced; i++) {
-            //                    void **ptr = attributeRef->currentViewReferenced+i;
-            //                    if (*ptr == referenceViewPtr) {
-            //                        isInside = true;
-            //                        break;
-            //                    }
-            //                }
-            //                if (!isInside) return bindView.frame;
-            //            }
+            if (attributeRef->layoutInfoTag>=0) {
+                attributeRef->itemCountForDynamic = 0;
+                attributeRef->layoutInfoTag = -1;
+            }
         }
         // 恢复上下文
         attributeRef_global = tempGlobal;

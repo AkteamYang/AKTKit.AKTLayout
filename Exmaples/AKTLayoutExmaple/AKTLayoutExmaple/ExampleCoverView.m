@@ -17,6 +17,10 @@
 
 // import-"aid.h"
 
+//--------------# Macro & Const #--------------
+#define kExampleTint1 mAKT_Color_Color(80, 128, 215, .5)
+//--------------# E.n.d #--------------#>Macro
+
 @interface ExampleCoverView()
 @property (strong, nonatomic) UIImageView *coverImg;
 @property (weak, nonatomic) NSTimer *timer;
@@ -50,7 +54,7 @@
         return;
     }
     self.coverImg.transform = CGAffineTransformIdentity;
-    self.coverImg.frame = CGRectMake(0, 0, self.width-16, self.height-16);
+    self.coverImg.frame = CGRectMake(0, 0, self.width*.96, self.height*.96);
     self.coverImg.center = CGPointMake(self.width/2, self.height/2);
     self.coverImg.layer.cornerRadius = self.coverImg.width/2;
     self.layer.cornerRadius = self.width/2;
@@ -59,13 +63,13 @@
 #pragma mark - view settings
 - (void)initUI {
     self.layer.masksToBounds = YES;
-    self.backgroundColor = mAKT_Color_Background_230;
+    self.backgroundColor = kExampleTint1;
     _coverImg = self.coverImg;
 }
 
 #pragma mark - click events
 - (void)timer:(NSTimer *)timer {
-    self.coverImg.transform = CGAffineTransformRotate(self.coverImg.transform, (M_PI/(1800)));
+    self.coverImg.transform = CGAffineTransformRotate(self.coverImg.transform, (M_PI/(1000)));
 }
 
 #pragma mark - function implementations

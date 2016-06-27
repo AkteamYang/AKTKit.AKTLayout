@@ -157,7 +157,7 @@ BOOL screenRotating                     = NO;
         // 如果bindView的布局更新计数器大于最小刷新阈值，则暂时不必计算布局更新
         NSInteger layoutUpdateCount = bindView.layoutUpdateCount;
         //        NSLog(@"%@",bindView.aktName);
-        
+        if (layoutUpdateCount<=0) continue;
         if (layoutUpdateCount>1) {
             bindView.layoutUpdateCount = layoutUpdateCount-1;
             continue;
@@ -166,11 +166,13 @@ BOOL screenRotating                     = NO;
         if (willCommitAnimation || (screenRotatingAnimationSupport && screenRotating) || [bindView isKindOfClass:[UITableView class]] || [bindView isKindOfClass:[UICollectionView class]]) {
             CGRect rect = calculateAttribute(bindView.attributeRef, self);
             [bindView setFrame:rect];
+            // Perform method after all of the layout did complete.
             __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
         }else{
             dispatch_async(dispatch_get_main_queue(), ^{
                 CGRect rect = calculateAttribute(bindView.attributeRef, self);
                 [bindView setNewFrame:rect];
+                // Perform method after all of the layout did complete.
                 __aktViewDidLayoutWithView(bindView);// 通知target当前视图布局完成
             });
             // 模拟设置frame，为了将计算传播下去，真正计算的是上面异步计算frame
@@ -223,7 +225,7 @@ BOOL screenRotating                     = NO;
     BOOL isDriverView = NO;
     if (self.layoutUpdateCount==0) {
         if(!frameNeedChange) return;
-//        NSLog(@"%@ %p tag：%ld",self.aktName, self, self.tag);
+        //        NSLog(@"%@ %p tag：%ld",self.aktName, self, self.tag);
         isDriverView = YES;
         self.layoutUpdateCount = 1;// @备注：为符合整体处理逻辑，事件源视图布局计数加一，等待相关布局更新完成后减一
         NSMutableArray *pathArr = __aktGetPathArray();
@@ -259,7 +261,7 @@ BOOL screenRotating                     = NO;
     for (AKTWeakContainer *container in self.viewsReferenced) {
         [container.weakView.layoutChain removeObject:myContainer];
     }
-//        mAKT_Log(@"%@ _dealloc",self.aktName);
+    //        mAKT_Log(@"%@ _dealloc",self.aktName);
     [self myDealloc];
 }
 
