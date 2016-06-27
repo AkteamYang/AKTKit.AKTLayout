@@ -603,7 +603,7 @@ void setSizeIfExist(AKTAttributeItemRef itemRef, AKTLayoutParamRef paramRef, boo
     }
 }
 
-#pragma mark - aid for frame calculation
+#pragma mark - for frame calculation
 //|---------------------------------------------------------
 /*
  * Parse layout item to layout param
@@ -1139,17 +1139,26 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             paramRef->width = rect.size.height*paramRef->whRatio;
             rect = horizontalCalculation(paramRef, rect);
         }else if (hCount == 1) {
-            rect = horizontalCalculation(paramRef, rect);
-            bindView.adaptiveWidth = paramRef->width<FLT_MAX? @NO:@YES;
-            bindView.adaptiveHeight = @NO;
-            if (paramRef->height<FLT_MAX) {
-                NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: whRatio.\n> 定义了多余参照：whRatio", bindView.aktName];
-                NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
-                __aktErrorReporter(204, description, sugget);
+            // 定义了高度并未定义宽度
+            if(paramRef->height<FLT_MAX-1 && paramRef->width>=FLT_MAX-1) {
+                rect = verticalCalculation(paramRef, rect);
+                // vCount = 2, hCount = 0 and whRatio is existing means that the view's width and height can't be adaptive.
+                bindView.adaptiveWidth = bindView.adaptiveHeight = @NO;
+                paramRef->width = rect.size.height*paramRef->whRatio;
+                rect = horizontalCalculation(paramRef, rect);
             }else{
-                paramRef->height = rect.size.width/paramRef->whRatio;
+                rect = horizontalCalculation(paramRef, rect);
+                bindView.adaptiveWidth = paramRef->width<FLT_MAX-1? @NO:@YES;
+                bindView.adaptiveHeight = @NO;
+                if (paramRef->height<FLT_MAX-1) {
+                    NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: whRatio.\n> 定义了多余参照：whRatio", bindView.aktName];
+                    NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
+                    __aktErrorReporter(204, description, sugget);
+                }else{
+                    paramRef->height = rect.size.width/paramRef->whRatio;
+                }
+                rect = verticalCalculation(paramRef, rect);
             }
-            rect = verticalCalculation(paramRef, rect);
         }else if (hCount == 2) {
             rect = horizontalCalculation(paramRef, rect);
             // vCount = 0, hCount = 2 and whRatio is existing means that the view's width and height can't be adaptive.
@@ -1163,7 +1172,7 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
         bindView.adaptiveWidth = bindView.adaptiveHeight = @NO;
         if (hCount == 1) {
             rect = verticalCalculation(paramRef, rect);
-            if (paramRef->width<FLT_MAX) {
+            if (paramRef->width<FLT_MAX-1) {
                 NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: whRatio.\n> 定义了多余参照：whRatio", bindView.aktName];
                 NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
                 __aktErrorReporter(204, description, sugget);
@@ -1173,7 +1182,7 @@ CGRect rectWhRatio(AKTLayoutParamRef paramRef, AKTLayoutAttributeRef attributeRe
             rect = horizontalCalculation(paramRef, rect);
         }else if (hCount == 2) {
             rect = horizontalCalculation(paramRef, rect);
-            if (paramRef->height<FLT_MAX) {
+            if (paramRef->height<FLT_MAX-1) {
                 NSString *description = [NSString stringWithFormat:@"> %@: Has redundant configuration: whRatio.\n> 定义了多余参照：whRatio", bindView.aktName];
                 NSString *sugget = [NSString stringWithFormat:@"> Remove unnecessary reference. For more details, please refer to the error message described in the document. 删除不必要的参照，详情请参考错误信息描述文档"];
                 __aktErrorReporter(204, description, sugget);

@@ -114,7 +114,7 @@ static char kAKTLabelMaxWidth;
         }
     }
     // Update aktLayout
-    [self setAKTNeedRelayout];
+    [self setNeedAKTLayout];
 }
 
 /**

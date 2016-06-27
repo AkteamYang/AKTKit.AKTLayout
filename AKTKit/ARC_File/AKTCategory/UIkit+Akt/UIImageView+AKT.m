@@ -41,6 +41,6 @@
     }
     [self sizeToFit];
     // Update aktLayout
-    [self setAKTNeedRelayout];
+    [self setNeedAKTLayout];
 }
 @end

@@ -334,7 +334,7 @@ extern BOOL screenRotatingAnimationSupport;
  *  设置视图需要刷新布局
  *  @备注：一般在更改了view的size需要立刻执行布局刷新时调用
  */
-- (void)setAKTNeedRelayout {
+- (void)setNeedAKTLayout {
     if (self.attributeRef) self.frame = calculateAttribute(self.attributeRef, NULL);
 }
 
