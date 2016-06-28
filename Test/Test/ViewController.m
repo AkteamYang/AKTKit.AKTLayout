@@ -106,33 +106,15 @@
         for (int j = 0; j<columns; j++) {
             UIView *v = [[UIView alloc]init];
             [self.view addSubview:v];
-            AKTWeakView(weakself, self);
-            AKTWeakView(weakLast, last);
             [v aktLayout:^(AKTLayoutShellAttribute *layout) {
-                [layout addDynamicLayoutInCondition:^BOOL{
-                    return mAKT_Portrait;
-                } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout){
-                    if(j == 0){
-                        dynamicLayout.left.equalTo(akt_view(weakself.view));
-                    }else{
-                        dynamicLayout.left.equalTo(weakLast.akt_right);
-                    }
-                    dynamicLayout.top.equalTo(weakself.view.akt_height).multiple(((float)i)/lines);
-                    dynamicLayout.width.equalTo(akt_view(weakself.view)).multiple(1.f/columns);
-                    dynamicLayout.height.equalTo(akt_view(weakself.view)).multiple(1.f/lines);
-                }];
-                [layout addDynamicLayoutInCondition:^BOOL{
-                    return !mAKT_Portrait;
-                } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout){
-                    if(j == 0){
-                        dynamicLayout.left.equalTo(akt_view(weakself.view));
-                    }else{
-                        dynamicLayout.left.equalTo(weakLast.akt_right);
-                    }
-                    dynamicLayout.top.equalTo(weakself.view.akt_height).multiple(((float)i)/lines);
-                    dynamicLayout.width.equalTo(akt_view(weakself.view)).multiple(1.f/(2*columns));
-                    dynamicLayout.height.equalTo(akt_view(weakself.view)).multiple(1.f/lines);
-                }];
+                if(j == 0){
+                    layout.left.equalTo(akt_view(self.view));
+                }else{
+                    layout.left.equalTo(last.akt_right);
+                }
+                layout.top.equalTo(self.view.akt_height).multiple(((float)i)/lines);
+                layout.width.equalTo(akt_view(self.view)).multiple(1.f/columns);
+                layout.height.equalTo(akt_view(self.view)).multiple(1.f/lines);
             }];
             v.aktName = @"akt_v";
             v.tag = (j+1)+(i*columns);
@@ -140,30 +122,20 @@
             UIView *sub = [UIView new];
             [v addSubview:sub];
             sub.backgroundColor = mAKT_Color_Color(171, 64, 98, 1);
-            AKTWeakView(weakV, v);
             [sub aktLayout:^(AKTLayoutShellAttribute *layout) {
-                [layout addDynamicLayoutInCondition:^BOOL{
-                    return 1;
-                } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                    dynamicLayout.centerXY.equalTo(akt_view(weakV));
-                    dynamicLayout.size.equalTo(akt_view(weakV)).multiple(.33);
-                }];
+                layout.centerXY.equalTo(akt_view(v));
+                layout.size.equalTo(akt_view(v)).multiple(.33);
             }];
             sub.aktName = @"akt_sub";
             sub.tag = (j+1)+(i*columns);
             // 添加一个视图（跨级参考sub）
             UIView*v1 = [UIView new];
             [self.view addSubview:v1];
-            AKTWeakView(weakSub, sub);
             v1.backgroundColor = mAKT_Color_Color(101, 89, 155, 1);
             [v1 aktLayout:^(AKTLayoutShellAttribute *layout) {
-                [layout addDynamicLayoutInCondition:^BOOL{
-                    return 1;
-                } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                    dynamicLayout.top.left.equalTo(akt_view(weakV));
-                    dynamicLayout.right.equalTo(weakSub.akt_left);
-                    dynamicLayout.bottom.equalTo(weakSub.akt_top);
-                }];
+                layout.top.left.equalTo(akt_view(v));
+                layout.right.equalTo(sub.akt_left);
+                layout.bottom.equalTo(sub.akt_top);
             }];
             v1.aktName = @"akt_v1";
             v1.tag = (j+1)+(i*columns);
@@ -171,15 +143,10 @@
             UIView*v2 = [UIView new];
             [self.view addSubview:v2];
             v2.backgroundColor = mAKT_Color_Color(0, 89, 155, 1);
-            AKTWeakView(weakV1, v1);
             [v2 aktLayout:^(AKTLayoutShellAttribute *layout) {
-                [layout addDynamicLayoutInCondition:^BOOL{
-                    return 1;
-                } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                    dynamicLayout.top.right.equalTo(akt_view(weakV));
-                    dynamicLayout.height.equalTo(weakV1.akt_height);
-                    dynamicLayout.left.equalTo(weakSub.akt_right);
-                }];
+                layout.top.right.equalTo(akt_view(v));
+                layout.height.equalTo(v1.akt_height);
+                layout.left.equalTo(sub.akt_right);
             }];
             v2.aktName = @"akt_v2";
             v2.tag = (j+1)+(i*columns);
@@ -187,16 +154,11 @@
             UIView*v3 = [UIView new];
             [self.view addSubview:v3];
             v3.backgroundColor = mAKT_Color_Color(101, 0, 155, 1);
-            AKTWeakView(weakV2, v2);
             [v3 aktLayout:^(AKTLayoutShellAttribute *layout) {
-                [layout addDynamicLayoutInCondition:^BOOL{
-                    return 1;
-                } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                    dynamicLayout.top.equalTo(weakSub.akt_bottom);
-                    dynamicLayout.left.equalTo(weakV1.akt_right);
-                    dynamicLayout.right.equalTo(weakV2.akt_left);
-                    dynamicLayout.bottom.equalTo(akt_view(weakself.view));
-                }];
+                layout.top.equalTo(sub.akt_bottom);
+                layout.left.equalTo(v1.akt_right);
+                layout.right.equalTo(v2.akt_left);
+                layout.bottom.equalTo(akt_view(self.view));
             }];
             v3.aktName = @"akt_v3";
             v3.tag = (j+1)+(i*columns);
