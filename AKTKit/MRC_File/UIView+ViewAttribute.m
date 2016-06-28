@@ -167,8 +167,10 @@ BOOL screenRotating                     = NO;
         }
         // 是否需要同步运算（需要动画时、需要旋转时 或者 视图是UITableView 、 UICollectionView）
         if (willCommitAnimation || (screenRotatingAnimationSupport && screenRotating) || [bindView isKindOfClass:[UITableView class]] || [bindView isKindOfClass:[UICollectionView class]]) {
-            CGRect rect = calculateAttribute(bindView.attributeRef, self);
-            [bindView setFrame:rect];
+                CGRect rect = calculateAttribute(bindView.attributeRef, self);
+                [bindView setFrame:rect];
+                // Perform method after all of the layout did complete.
+                __aktViewDidLayoutWithView(self);// 通知target当前视图布局完成
         }else{
             dispatch_async(dispatch_get_main_queue(), ^{
                 CGRect rect = calculateAttribute(bindView.attributeRef, self);
@@ -328,8 +330,6 @@ void __aktErrorReporter(int errorCode, NSString *description, NSString *suggest)
             return NO;
         }
         [self setNewFrame:frame];
-        // Perform method after all of the layout did complete.
-        __aktViewDidLayoutWithView(self);// 通知target当前视图布局完成
     }
     return YES;
 }
