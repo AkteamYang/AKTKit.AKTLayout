@@ -30,23 +30,24 @@ extern const int kLines;
         [_img aktDidLayoutWithComplete:^(UIView *view) {
             view.layer.cornerRadius = view.height/2;
         }];
-        AKTWeakView(weakself, self);
+        // 动态布局内部参照的视图需要声明为弱引用。
+        AKTWeakView(__self, self);
         [_img aktLayout:^(AKTLayoutShellAttribute *layout) {
             [layout addDynamicLayoutInCondition:^BOOL{
                 return mAKT_Portrait;
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                dynamicLayout.centerY.equalTo(akt_view(weakself));
+                dynamicLayout.centerY.equalTo(akt_view(__self));
                 dynamicLayout.whRatio.equalTo(akt_value(1.0));
-                dynamicLayout.left.equalTo(akt_view(weakself)).offset(10);
-                dynamicLayout.top.equalTo(akt_view(weakself)).offset(5);
+                dynamicLayout.left.equalTo(akt_view(__self)).offset(10);
+                dynamicLayout.top.equalTo(akt_view(__self)).offset(5);
             }];
             [layout addDynamicLayoutInCondition:^BOOL{
                 return !mAKT_Portrait;
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                dynamicLayout.centerY.equalTo(akt_view(weakself));
+                dynamicLayout.centerY.equalTo(akt_view(__self));
                 dynamicLayout.whRatio.equalTo(akt_value(1.0));
-                dynamicLayout.left.equalTo(akt_view(weakself)).offset(20);
-                dynamicLayout.top.equalTo(akt_view(weakself)).offset(10);
+                dynamicLayout.left.equalTo(akt_view(__self)).offset(20);
+                dynamicLayout.top.equalTo(akt_view(__self)).offset(10);
             }];
         }];
         _img.layer.masksToBounds = YES;
@@ -60,20 +61,20 @@ extern const int kLines;
     if (_title == nil) {
         _title = [UILabel new];
         [self addSubview:_title];
-        AKTWeakView(weakself, self);
-        AKTWeakView(weakImg, self.img);
+        AKTWeakView(__self, self);
+        AKTWeakView(__Img, self.img);
         [_title aktLayout:^(AKTLayoutShellAttribute *layout) {
             [layout addDynamicLayoutInCondition:^BOOL{
                 return mAKT_Portrait;
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                dynamicLayout.top.centerY.equalTo(akt_view(weakself));
-                dynamicLayout.left.equalTo(weakself.img.akt_right).offset(20);
+                dynamicLayout.top.centerY.equalTo(akt_view(__self));
+                dynamicLayout.left.equalTo(__self.img.akt_right).offset(20);
             }];
             [layout addDynamicLayoutInCondition:^BOOL{
                 return !mAKT_Portrait;
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                dynamicLayout.top.equalTo(akt_view(weakImg)).offset(10);
-                dynamicLayout.left.equalTo(weakImg.akt_right).offset(20);
+                dynamicLayout.top.equalTo(akt_view(__Img)).offset(10);
+                dynamicLayout.left.equalTo(__Img.akt_right).offset(20);
             }];
         }];
         [_title setTextColor:mAKT_Color_Text_52];
@@ -91,8 +92,8 @@ extern const int kLines;
     if (_descriptionLabel == nil) {
         _descriptionLabel = [UILabel new];
         [self addSubview:_descriptionLabel];
-        AKTWeakView(weakself, self);
-        AKTWeakView(weakTitle, self.title);
+        AKTWeakView(__self, self);
+        AKTWeakView(__title, self.title);
         [_descriptionLabel aktLayout:^(AKTLayoutShellAttribute *layout) {
             [layout addDynamicLayoutInCondition:^BOOL{
                 return mAKT_Portrait;
@@ -102,9 +103,9 @@ extern const int kLines;
             [layout addDynamicLayoutInCondition:^BOOL{
                 return !mAKT_Portrait;
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                dynamicLayout.left.equalTo(weakTitle.akt_left);
-                dynamicLayout.right.equalTo(weakself.akt_right).offset(-150);
-                dynamicLayout.top.equalTo(weakTitle.akt_bottom).offset(10);
+                dynamicLayout.left.equalTo(__title.akt_left);
+                dynamicLayout.right.equalTo(__self.akt_right).offset(-150);
+                dynamicLayout.top.equalTo(__title.akt_bottom).offset(10);
             }];
         }];
         [_descriptionLabel setTextColor:mAKT_Color_Text_154];
@@ -152,6 +153,7 @@ static NSString *const kDescription = @"kDescription";
         imgv.height = imgv.width/(imgv.image.size.width/imgv.image.size.height);
         _tableView.tableHeaderView = imgv;
         imgv.aktName = @"tableHeaderView";
+        // 静态布局不必声明弱引用变量，因为静态布局的block执行完之后就被释放，不会长期持有。
         [imgv aktLayout:^(AKTLayoutShellAttribute *layout) {
             layout.top.left.equalTo(akt_value(0));
             layout.width.equalTo(_tableView.akt_width);

@@ -35,6 +35,7 @@
     [self topMusicNameMake];
     [self topArtistMake];
     [self coverMake];
+    // 为container添加布局结束事件
     [self.container aktDidLayoutTarget:self forSelector:@selector(containerDidLayout:)];
     
     // Add layout.
@@ -89,7 +90,6 @@
         [self.artist aktLayout:^(AKTLayoutShellAttribute *layout) {
             layout.bottom.equalTo(__cover.akt_bottom).offset(-8);
             layout.left.equalTo(__musicName.akt_left);
-            //            layout.left.equalTo(__cover.akt_right).offset(15);
         }];
         self.artist.text = @"Sumsung";
         self.artist.textColor = mAKT_Color_Text_154;
@@ -234,66 +234,66 @@
 #pragma mark - view settings
 - (void)playLayout {
     // The view you'll reference to will be declared as weak reference.
-    AKTWeakView(weakContainer, self.container);
-    AKTWeakView(weakPlay, self.play);
-    AKTWeakView(weakCover, self.coverLittle);
+    AKTWeakView(__container, self.container);
+    AKTWeakView(__play, self.play);
+    AKTWeakView(__coverLittle, self.coverLittle);
     [self.play aktLayout:^(AKTLayoutShellAttribute *layout) {
         // Add dynamic layout for different conditions.
         [layout addDynamicLayoutInCondition:^BOOL{
-            return weakContainer.height>55;
+            return __container.height>55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-            [weakPlay setImage:mAKT_Image_Tint(@"CH_PlayBig") forState:(UIControlStateNormal)];
-            [weakPlay setImage:mAKT_Image_Tint(@"CH_PauseBig") forState:(UIControlStateSelected)];
+            [__play setImage:mAKT_Image_Tint(@"CH_PlayBig") forState:(UIControlStateNormal)];
+            [__play setImage:mAKT_Image_Tint(@"CH_PauseBig") forState:(UIControlStateSelected)];
         }];
         
         [layout addDynamicLayoutInCondition:^BOOL{
-            return weakContainer.height<=55;
+            return __container.height<=55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-            [weakPlay setImage:mAKT_Image_Tint(@"CH_PlayLittle") forState:(UIControlStateNormal)];
-            [weakPlay setImage:mAKT_Image_Tint(@"CH_PauseLittle") forState:(UIControlStateSelected)];
+            [__play setImage:mAKT_Image_Tint(@"CH_PlayLittle") forState:(UIControlStateNormal)];
+            [__play setImage:mAKT_Image_Tint(@"CH_PauseLittle") forState:(UIControlStateSelected)];
             
             dynamicLayout.width.equalTo(akt_value(30));
-            dynamicLayout.whRatio.equalTo(akt_view(weakCover));
-            dynamicLayout.centerY.equalTo(weakContainer.akt_centerY);
-            dynamicLayout.right.equalTo(weakContainer.akt_right).offset(-19-25-16);
+            dynamicLayout.whRatio.equalTo(akt_view(__coverLittle));
+            dynamicLayout.centerY.equalTo(__container.akt_centerY);
+            dynamicLayout.right.equalTo(__container.akt_right).offset(-19-25-16);
         }];
     }];
 }
 
 - (void)listLayout {
-    AKTWeakView(weakContainer, self.container);
-    AKTWeakView(weakCover, self.coverLittle);
-    AKTWeakView(weakPlayer, self.play);
+    AKTWeakView(__container, self.container);
+    AKTWeakView(__coverLittle, self.coverLittle);
+    AKTWeakView(__player, self.play);
     [self.list aktLayout:^(AKTLayoutShellAttribute *layout) {
         [layout addDynamicLayoutInCondition:^BOOL{
-            return weakContainer.height>55;
+            return __container.height>55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-            dynamicLayout.centerY.equalTo(weakPlayer.akt_centerY);
+            dynamicLayout.centerY.equalTo(__player.akt_centerY);
         }];
         [layout addDynamicLayoutInCondition:^BOOL{
-            return weakContainer.height<=55;
+            return __container.height<=55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-            dynamicLayout.whRatio.equalTo(akt_view(weakCover));
-            dynamicLayout.right.equalTo(weakContainer.akt_right).offset(-12);
-            dynamicLayout.centerY.equalTo(akt_view(weakContainer));
+            dynamicLayout.whRatio.equalTo(akt_view(__coverLittle));
+            dynamicLayout.right.equalTo(__container.akt_right).offset(-12);
+            dynamicLayout.centerY.equalTo(akt_view(__container));
         }];
     }];
 }
 
 - (void)coverLittleLayout {
-    AKTWeakView(weakContainer, self.container);
+    AKTWeakView(__container, self.container);
     [self.coverLittle aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.bottom.equalTo(weakContainer.akt_bottom);
+        layout.bottom.equalTo(self.container.akt_bottom);
         layout.width.equalTo(akt_value(55));
         [layout addDynamicLayoutInCondition:^BOOL{
-            return weakContainer.height>55;
+            return __container.height>55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
             dynamicLayout.height.equalTo(akt_value(55));
         }];
         [layout addDynamicLayoutInCondition:^BOOL{
-            return weakContainer.height<=55;
+            return __container.height<=55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-            dynamicLayout.left.top.equalTo(akt_view(weakContainer));
+            dynamicLayout.left.top.equalTo(akt_view(__container));
         }];
     }];
 }
@@ -301,106 +301,105 @@
 - (void)nextMusicLayout {
     UIImage *img = mAKT_Image_Tint(@"CH_Next");
     [self.nextMusic setImage:img forState:(UIControlStateNormal)];
-    AKTWeakView(weakPlay, self.play);
     [self.nextMusic aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.height.centerY.equalTo(akt_view(weakPlay));
+        layout.height.centerY.equalTo(akt_view(self.play));
         layout.whRatio.equalTo(akt_value(img.size.width/img.size.height));
-        layout.left.equalTo(weakPlay.akt_right).offset(25);
+        layout.left.equalTo(self.play.akt_right).offset(25);
     }];
 }
 
 - (void)lastMusicLayout {
     UIImage *img = mAKT_Image_Tint(@"CH_Last");
     [self.lastMusic setImage:img forState:(UIControlStateNormal)];
-    AKTWeakView(weakPlay, self.play);
     [self.lastMusic aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.height.centerY.equalTo(akt_view(weakPlay));
+        layout.height.centerY.equalTo(akt_view(self.play));
         layout.whRatio.equalTo(akt_value(img.size.width/img.size.height));
-        layout.right.equalTo(weakPlay.akt_left).offset(-25);
+        layout.right.equalTo(self.play.akt_left).offset(-25);
     }];
 }
 
 - (void)modeLayout {
     UIImage *img = mAKT_Image_Tint(@"CH_Mode0");
-    AKTWeakView(weakPlay, self.play);
-    AKTWeakView(container, self.container);
+    AKTWeakView(__container, self.container);
     [self.mode aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.centerY.equalTo(weakPlay.akt_centerY);
+        layout.centerY.equalTo(self.play.akt_centerY);
         layout.size.equalTo(akt_size(img.size.width, img.size.height));
         [layout addDynamicLayoutInCondition:^BOOL{
-            return container.height<=55;
+            return __container.height<=55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-            dynamicLayout.left.equalTo(container.akt_left).offset(12);
+            dynamicLayout.left.equalTo(__container.akt_left).offset(12);
         }];
     }];
 }
 
 - (void)sliderLayout {
-    AKTWeakView(contaner, self.container);
-    AKTWeakView(player, self.play);
     [self.slider aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.centerX.equalTo(akt_view(contaner));
+        layout.centerX.equalTo(akt_view(self.container));
         layout.height.equalTo(akt_value(40));
         layout.left.equalTo(akt_value(50));
-        layout.bottom.equalTo(player.akt_top).offset(-25);
+        layout.bottom.equalTo(self.play.akt_top).offset(-25);
     }];
 }
 
 - (void)currentTimeLayout {
-    AKTWeakView(slider, self.slider);
-    AKTWeakView(container, self.container);
+    AKTWeakView(__slider, self.slider);
+    AKTWeakView(__container, self.container);
     [self.currentTime aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.centerY.equalTo(akt_view(slider));
+        layout.centerY.equalTo(akt_view(self.slider));
         [layout addDynamicLayoutInCondition:^BOOL{
-            return container.height<=55;
+            return __container.height<=55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-            dynamicLayout.right.equalTo(slider.akt_left).offset(-50);
+            dynamicLayout.right.equalTo(__slider.akt_left).offset(-50);
         }];
     }];
     self.currentTime.text = self.currentTime.text;
 }
 
 - (void)durationLayout {
-    AKTWeakView(slider, self.slider);
-    AKTWeakView(container, self.container);
+    AKTWeakView(__slider, self.slider);
+    AKTWeakView(__container, self.container);
     [self.duration aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.centerY.equalTo(akt_view(slider));
+        layout.centerY.equalTo(akt_view(self.slider));
         [layout addDynamicLayoutInCondition:^BOOL{
-            return container.height<=55;
+            return __container.height<=55;
         } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-            dynamicLayout.left.equalTo(slider.akt_right).offset(50);
+            dynamicLayout.left.equalTo(__slider.akt_right).offset(50);
         }];
     }];
     self.duration.text = self.duration.text;
 }
 
 - (void)topMusicNameLayout {
-    AKTWeakView(container, self.container);
     [self.topMusicName aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.centerX.equalTo(akt_view(container));
-        layout.top.equalTo(container.akt_top).offset(10);
+        layout.centerX.equalTo(akt_view(self.container));
+        layout.top.equalTo(self.container.akt_top).offset(10);
     }];
     self.topMusicName.text = self.topMusicName.text;
 }
 
 - (void)topArtistLayout {
-    AKTWeakView(topMusicName, self.topMusicName);
     [self.topArtist aktLayout:^(AKTLayoutShellAttribute *layout) {
-        layout.centerX.equalTo(akt_view(topMusicName));
-        layout.top.equalTo(topMusicName.akt_bottom).offset(5);
+        layout.centerX.equalTo(akt_view(self.topMusicName));
+        layout.top.equalTo(self.topMusicName.akt_bottom).offset(5);
     }];
     self.topArtist.text = self.artist.text;
 }
 
 - (void)coverLayout {
-    AKTWeakView(container, self.container);
+    // 这里仅仅添加了垂直方向居中和宽高比，宽度和垂直方向的位置在container布局完成后直接设置frame
     [self.cover aktLayout:^(AKTLayoutShellAttribute *layout) {
         layout.whRatio.equalTo(akt_value(1));
-        layout.centerX.equalTo(akt_view(container));
+        layout.centerX.equalTo(akt_view(self.container));
     }];
 }
 
 #pragma mark - click events
+/**
+ *  Container 布局完成，在这里根据container的高度来动态地改变自视图的状态和位置, 在复杂布局中为了获得更大的灵活性， AKTLayout支持与frame混合布局
+ *  我们可以设置一部分AKTLayout约束，然后在设置完frame之后调用“setNeedAKTLayout”来更新到最新布局结果。
+ *
+ *  @param view
+ */
 - (void)containerDidLayout:(UIView *)view {
     CGFloat percent = (view.height -55)/(mAKT_SCREENHEIGHT-64-self.drag.height-55);
     self.topMusicName.alpha
@@ -425,7 +424,8 @@
         CGFloat height = percent*deltaHeight+30;
         CGFloat top = percent*deltaTop+(55-30)/2.0f;
         self.play.frame = CGRectMake(centerX-height/2.0f, top, height, height);
-        
+
+        // 由于以下frame设置并未影响他们AKTLayout布局的效果，所以不必再调用“setNeedAKTLayout”，例如：您通过AKTLayout设置了A的Size，然后通过frame改变A的(x，y), 在这时候AKTLayout所约束的size其实时没有变化的，所以不必调用"setNeedAKTLayout"来刷新结果，如果您不确定影响，最好调用以下这个方法。
         // CoverSmall
         self.coverLittle.x = percent*-55;
         // ListButton

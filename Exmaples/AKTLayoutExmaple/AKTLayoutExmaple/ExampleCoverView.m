@@ -32,9 +32,8 @@
         [self addSubview:_coverImg];
         _coverImg.image = mAKT_Image(@"over.jpg");
         _coverImg.layer.masksToBounds = YES;
-        AKTWeakView(weakself, self);
         [_coverImg aktLayout:^(AKTLayoutShellAttribute *layout) {
-            layout.edge.equalTo(akt_view(weakself));
+            layout.edge.equalTo(akt_view(self));
         }];
     }
     return _coverImg;

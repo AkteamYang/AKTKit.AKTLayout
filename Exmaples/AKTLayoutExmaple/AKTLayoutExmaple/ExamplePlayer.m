@@ -46,20 +46,24 @@
         _drag = [UILabel new];
         [self.view addSubview:_drag];
         _drag.y = 200;
-        AKTWeakView(weakself, self);
-        AKTWeakView(weakdrag, _drag);
+        // 动态布局内部参照的视图需要声明为弱引用再使用。
+        // 静态布局不必声明弱引用变量，因为静态布局的block执行完之后就被释放，不会长期持有。
+        AKTWeakView(__self, self);
+        AKTWeakView(__drag, _drag);
         [_drag aktLayout:^(AKTLayoutShellAttribute *layout) {
-            layout.centerX.left.equalTo(akt_view(weakself.view));
+            // 静态布局（一直存在的布局关系）
+            layout.centerX.left.equalTo(akt_view(self.view));
+            // 动态布局（在不同条件下会发生变化的布局关系）
             [layout addDynamicLayoutInCondition:^BOOL{
-                return (weakdrag.y<64+1);
+                return (__drag.y<64+1);
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                dynamicLayout.top.equalTo(weakself.navigationController.navigationBar.akt_bottom);
+                dynamicLayout.top.equalTo(__self.navigationController.navigationBar.akt_bottom);
                 dynamicLayout.height.equalTo(akt_value(40));
             }];
             [layout addDynamicLayoutInCondition:^BOOL{
-                return (weakdrag.y>=64+1);
+                return (__drag.y>=64+1);
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                dynamicLayout.bottom.equalTo(weakself.view.akt_bottom).offset(-55);
+                dynamicLayout.bottom.equalTo(__self.view.akt_bottom).offset(-55);
                 dynamicLayout.height.equalTo(akt_value(40));
             }];
         }];
@@ -83,12 +87,14 @@
     if (_container == nil) {
         _container = [UIView new];
         [self.view addSubview:_container];
+        AKTWeakView(__drag, self.drag);
+        AKTWeakView(__self, self);
         [_container aktLayout:^(AKTLayoutShellAttribute *layout) {
             [layout addDynamicLayoutInCondition:^BOOL{
                 return YES;
             } andAttribute:^(AKTLayoutShellAttribute *dynamicLayout) {
-                dynamicLayout.top.equalTo(self.drag.akt_bottom);
-                dynamicLayout.left.bottom.right.equalTo(akt_view(self.view));
+                dynamicLayout.top.equalTo(__drag.akt_bottom);
+                dynamicLayout.left.bottom.right.equalTo(akt_view(__self.view));
             }];
         }];
         [_container setBackgroundColor:mAKT_Color_White];
