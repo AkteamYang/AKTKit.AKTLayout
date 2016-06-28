@@ -6,6 +6,11 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 
 ###New update
 -----------------
+####V 1.3.0  
+更新日期2016.6.28
+- 增加动态布局特性，在不同的条件下布局可变。
+- 添加布局完成事件
+
 ####V 1.2.2  
 更新日期2016.6.5
 - 增加循环参照检测及提示
@@ -142,7 +147,8 @@ AKTLayou顶层采用了基于Objective-C语法的shell，通过shell我们可以
 	![iOS](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/screenShot.jpg?raw=true)
 - 关于参考复杂度
 	![Reference](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/reference.jpg?raw=true)
-> 图片展示了下文所测试的四种等级的视图参考，简单来讲越复杂的参考view间的关系越复杂，某个view的变化将影响相关的view进行布局刷新。
+	
+	> 图片展示了下文所测试的四种等级的视图参考，简单来讲越复杂的参考view间的关系越复杂，某个view的变化将影响相关的view进行布局刷新。
 
 这里我还需要解释一下，为什么测试中要用这么多数量的View，有人说平时不可能遇到这么多view的情况。首先第一，数量多是为了便于观察性能的消耗情况，第二我们关注的重点是不同布局方式的运行效率，有兴趣的话可以自己将总时间换算成不同复杂度下的单个view布局的耗时。
 
