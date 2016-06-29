@@ -122,6 +122,9 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 	  ```
       > 在动画代码块中重新添加AKTLayout，如果发生布局更新，界面将保持动画后的状态，新的AKTLayout布局将会替换旧的。
 
+- **More usage**
+
+https://github.com/AkteamYang/AKTKit.AKTLayout/wiki/Usage-of-AKTLayout
 ###Implementation architecture
 
 ------------
