@@ -7,8 +7,6 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架。
 ![AKTKit.AKTLayout](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/Demo/Demo1.gif?raw=true)
 > 动态特性
 
-###参照
------------------
 ####参照类型 
 
 | vertical  | horizontal  |
@@ -33,20 +31,30 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架。
 ```
 
 - 基础用法
+
 `layout.top.left.equalTo(akt_value(0));` 视图的顶部和左边缘坐标值等于0
+
 `layout.width.equalTo(_tableView.akt_width);` 视图的宽度等于`tableView`的宽度
+
 `layout.whRatio.equalTo(aktView(_tableView));` 视图的宽高比等于视图`tableView`的宽高比
+
 `layout.whRatio.equalTo(aktValue(1.0f));` 视图的宽高比等于1.0f
+
 `layout.size.equalTo(aktView(_tableView));` 视图的宽高等于`_tableView`的宽高
+
 `layout.edge.equalTo(aktView(_tableView));` 视图的边缘位置等于`_tableView`的边缘位置，即重合
 
 - 进阶用法
+
 `layout.top.left.equalTo(akt_value(10)).multiple(1.5);` 视图的顶部和左边缘坐标值等于10*1.5,即15
+
 `layout.top.left.equalTo(akt_value(10)).multiple(1.5).offset(2);` 视图的顶部和左边缘坐标值等于10*1.5+2,即17
+
 `layout.top.left.equalTo(akt_value(10)).coefficientOffset(5).multiple(1).offset(2);` 视图的顶部和左边缘坐标值等于(10+5)*1+2,即17
 
 ####动态布局
 - 动态布局的基本结构：
+
 ```objective-c
         AKTWeakView(__self, self);
         AKTWeakView(__Img, self.img);
@@ -67,20 +75,40 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架。
         }];
 ``` 
 - 基本用法
+
 动态布局用法和静态一样，只不过调用主体变成`dynamicLayout` ,使用的时候需要把`condition`和`attribute`block用到的视图参照声明为弱引用。
+
 `dynamicLayout.top.left.equalTo(akt_value(0));` 视图的顶部和左边缘坐标值等于0
+
 `dynamicLayout.width.equalTo(_tableView.akt_width);` 视图的宽度等于`tableView`的宽度
+
 `dynamicLayout.whRatio.equalTo(aktView(_tableView));` 视图的宽高比等于视图`tableView`的宽高比
+
 `dynamicLayout.whRatio.equalTo(aktValue(1.0f));` 视图的宽高比等于1.0f
+
 `dynamicLayout.size.equalTo(aktView(_tableView));` 视图的宽高等于`_tableView`的宽高
+
 `dynamicLayout.edge.equalTo(aktView(_tableView));` 视图的边缘位置等于`_tableView`的边缘位置，即重合
 
+
 `dynamicLayout.top.left.equalTo(akt_value(10)).multiple(1.5);` 视图的顶部和左边缘坐标值等于10*1.5,即15
+
 `dynamicLayout.top.left.equalTo(akt_value(10)).multiple(1.5).offset(2);` 视图的顶部和左边缘坐标值等于10*1.5+2,即17
+
 `dynamicLayout.top.left.equalTo(akt_value(10)).coefficientOffset(5).multiple(1).offset(2);` 视图的顶部和左边缘坐标值等于(10+5)*1+2,即17
 
 - 关于`condition`和`attribute`
+
 当`condition`返回为`YES`的时候布局将会使用对应的动态布局部分，`condition`block会被频繁调用不应该放置和条件判断无关的操作，`attribute`block只有需要更新动态布局时才会被调用，如果`condition`条件成立，但是上次和本次布局相同，`attribute`也不会被调用。由于二者会被长期持有，我们在`condition`和`attribute`中使用变量时尤其是参考的的视图需要声明为弱引用，其他对象的使用可以按照需要决定。
+
+####其他
+- 混合布局
+
+AKTLayout很灵活,在应对复杂布局的时候，支持使用一些`frame`计算,具体的做法是我们给视图添加部分AKTLayout布局，然后在必要的时候我们可以设置`frame`并调用`setNeedAKTLayout`方法来刷新`AKTLayout`的布局，最终得到的将是二者叠加的效果。
+- AKTLayout事件
+
+AKTLayout提供了布局完成事件接口`- (void)aktDidLayoutTarget:(id)target forSelector:(SEL)selector;`和`- (void)aktDidLayoutWithComplete:(void(^)(UIView *view))complete;`，您可以自己选择方法，`block`会被长期持有，注意循环引用的问题。
+
 
 ###FAQ&Contact
 
