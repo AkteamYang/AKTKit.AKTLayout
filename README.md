@@ -11,6 +11,10 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 - 增加动态布局特性，在不同的条件下布局可变。
 - 添加布局完成事件
 
+![Dynamic feature](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/Demo/Demo1.gif?raw=true)
+
+>1.3.0版本动态特性，可以根据不同的条件选择不同的布局
+
 ####V 1.2.2  
 更新日期2016.6.5
 - 增加循环参照检测及提示
