@@ -54,6 +54,10 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架。
 `layout.top.left.equalTo(akt_value(10)).coefficientOffset(5).multiple(1).offset(2);` 视图的顶部和左边缘坐标值等于(10+5)*1+2,即17
 
 ####动态布局
+
+![DynamicLayou](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/Demo/Demo2.gif?raw=true)
+> 动态布局更大程度上提高了自动布局的灵活性，你可以与`frame`混合布局。
+
 - 动态布局的基本结构：
 
 ```objective-c
