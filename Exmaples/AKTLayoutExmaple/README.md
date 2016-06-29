@@ -22,6 +22,7 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架。
 > 参照最终体现到坐标值，除了的`size`和`edge`之外，其余的参照都可以参考固定值和视图，为了提高运算效率参照的写法做了特殊规定，只能通过框架提供的固定方法获取：`aktValue()`、`aktView()`、`aktSize()`、`view.akt_top、view.akt_width......`
 
 ####静态布局
+
 - 静态布局的基本结构：
 ```objective-c
         [sub aktLayout:^(AKTLayoutShellAttribute *layout) {
@@ -99,12 +100,12 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架。
 
 - 关于`condition`和`attribute`
 
-当`condition`返回为`YES`的时候布局将会使用对应的动态布局部分，`condition`block会被频繁调用不应该放置和条件判断无关的操作，`attribute`block只有需要更新动态布局时才会被调用，如果`condition`条件成立，但是上次和本次布局相同，`attribute`也不会被调用。由于二者会被长期持有，我们在`condition`和`attribute`中使用变量时尤其是参考的的视图需要声明为弱引用，其他对象的使用可以按照需要决定。
+当`condition`返回为`YES`的时候布局将会使用对应的动态布局部分，`condition`block会被频繁调用不应该放置和条件判断无关的操作，`attribute`block只有需要更新动态布局时才会被调用，如果`condition`条件成立，但是上次和本次布局相同，`attribute`也不会被调用。由于二者会被长期持有，我们在`condition`和`attribute`中使用变量时尤其是参考的视图需要声明为弱引用，其他对象的使用可以按照需要决定。
 
 ####其他
 - 混合布局
 
-AKTLayout很灵活,在应对复杂布局的时候，支持使用一些`frame`计算,具体的做法是我们给视图添加部分AKTLayout布局，然后在必要的时候我们可以设置`frame`并调用`setNeedAKTLayout`方法来刷新`AKTLayout`的布局，最终得到的将是二者叠加的效果。
+AKTLayout很灵活,在应对复杂布局的时候，支持使用一些`frame`计算,具体的做法是我们给视图添加部分AKTLayout布局，然后在必要的时候我们可以设置`frame`并调用`setNeedAKTLayout`方法来刷新`AKTLayout`的布局，最终得到的将是二者叠加的效果,`Demo`的`interactive page`部分使用了混合布局。
 - AKTLayout事件
 
 AKTLayout提供了布局完成事件接口`- (void)aktDidLayoutTarget:(id)target forSelector:(SEL)selector;`和`- (void)aktDidLayoutWithComplete:(void(^)(UIView *view))complete;`，您可以自己选择方法，`block`会被长期持有，注意循环引用的问题。
