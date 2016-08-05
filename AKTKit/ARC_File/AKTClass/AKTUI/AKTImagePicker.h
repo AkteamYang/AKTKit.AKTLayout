@@ -15,6 +15,7 @@
 @property (strong, nonatomic) void(^result)(BOOL cancled, UIImage *img);
 @property (assign, nonatomic) BOOL enableEditing;
 @property (assign, nonatomic) CGSize size;
+@property (strong, nonatomic) UIViewController *superVc;
 - (void)chooseFromLibrary;
 - (void)chooseFromCamera;
 @end

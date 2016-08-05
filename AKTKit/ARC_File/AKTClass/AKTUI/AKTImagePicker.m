@@ -29,12 +29,12 @@
 - (void)chooseFromLibrary {
     [self.vc setSourceType:(UIImagePickerControllerSourceTypePhotoLibrary)];
     self.vc.allowsEditing = self.enableEditing;
-    [mAKT_APPDELEGATE.keyWindow.rootViewController presentViewController:self.vc animated:YES completion:nil];
+    if(self.superVc) [self.superVc presentViewController:self.vc animated:YES completion:nil];
 }
 - (void)chooseFromCamera {
     [self.vc setSourceType:(UIImagePickerControllerSourceTypeCamera)];
     self.vc.allowsEditing = self.enableEditing;
-    [mAKT_APPDELEGATE.keyWindow.rootViewController presentViewController:self.vc animated:YES completion:nil];
+    if(self.superVc) [self.superVc presentViewController:self.vc animated:YES completion:nil];
 }
 #pragma mark - model settings
 //|---------------------------------------------------------
@@ -52,7 +52,7 @@
  */
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-//    mAKT_Log(@"%@",info);
+    //    mAKT_Log(@"%@",info);
     if (self.result) {
         UIImage *img = self.enableEditing? info[UIImagePickerControllerEditedImage]:info[UIImagePickerControllerOriginalImage];
         if (self.size.width<FLT_MAX) {
