@@ -31,6 +31,11 @@
     self.vc.allowsEditing = self.enableEditing;
     if(self.superVc) [self.superVc presentViewController:self.vc animated:YES completion:nil];
 }
+- (void)chooseFromPicture {
+    [self.vc setSourceType:(UIImagePickerControllerSourceTypeSavedPhotosAlbum)];
+    self.vc.allowsEditing = self.enableEditing;
+    if(self.superVc) [self.superVc presentViewController:self.vc animated:YES completion:nil];
+}
 - (void)chooseFromCamera {
     [self.vc setSourceType:(UIImagePickerControllerSourceTypeCamera)];
     self.vc.allowsEditing = self.enableEditing;

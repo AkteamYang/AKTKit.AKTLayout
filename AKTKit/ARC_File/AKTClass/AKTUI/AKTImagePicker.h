@@ -17,5 +17,6 @@
 @property (assign, nonatomic) CGSize size;
 @property (strong, nonatomic) UIViewController *superVc;
 - (void)chooseFromLibrary;
+- (void)chooseFromPicture;
 - (void)chooseFromCamera;
 @end
