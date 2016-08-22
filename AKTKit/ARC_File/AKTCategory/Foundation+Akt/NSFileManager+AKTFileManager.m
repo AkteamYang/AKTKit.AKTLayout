@@ -46,6 +46,7 @@
     switch (type) {
         case AKTFilePathCreateType_BrandNew:
             [manager removeItemAtPath:path error:error];
+            [manager createDirectoryAtPath:[path stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
             [manager createFileAtPath:path contents:nil attributes:nil];
             break;
         case AKTFilePathCreateType_UseExistingIfNeeded:
@@ -55,6 +56,7 @@
             if (b == YES && dir == NO) {
                 nil;
             }else{
+                [manager createDirectoryAtPath:[path stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
                 [manager createFileAtPath:path contents:nil attributes:nil];
             }
             break;
