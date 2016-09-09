@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A88BCA7D1D8292340070B6F7 /* NSArray+AKTArray.m in Sources */ = {isa = PBXBuildFile; fileRef = A88BCA7A1D8292340070B6F7 /* NSArray+AKTArray.m */; };
+		A88BCA7E1D8292340070B6F7 /* NSDictionary+AKTDic.m in Sources */ = {isa = PBXBuildFile; fileRef = A88BCA7C1D8292340070B6F7 /* NSDictionary+AKTDic.m */; };
 		F84A2EEA1CC47F8A001C3F37 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F84A2ED01CC47F8A001C3F37 /* Info.plist */; };
 		F84A2EEB1CC47F8A001C3F37 /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = F84A2ED21CC47F8A001C3F37 /* MASCompositeConstraint.m */; };
 		F84A2EEC1CC47F8A001C3F37 /* MASConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = F84A2ED51CC47F8A001C3F37 /* MASConstraint.m */; };
@@ -55,6 +57,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A88BCA791D8292340070B6F7 /* NSArray+AKTArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+AKTArray.h"; sourceTree = "<group>"; };
+		A88BCA7A1D8292340070B6F7 /* NSArray+AKTArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+AKTArray.m"; sourceTree = "<group>"; };
+		A88BCA7B1D8292340070B6F7 /* NSDictionary+AKTDic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+AKTDic.h"; sourceTree = "<group>"; };
+		A88BCA7C1D8292340070B6F7 /* NSDictionary+AKTDic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+AKTDic.m"; sourceTree = "<group>"; };
 		F84A2ED01CC47F8A001C3F37 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F84A2ED11CC47F8A001C3F37 /* MASCompositeConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASCompositeConstraint.h; sourceTree = "<group>"; };
 		F84A2ED21CC47F8A001C3F37 /* MASCompositeConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASCompositeConstraint.m; sourceTree = "<group>"; };
@@ -231,6 +237,10 @@
 		F8B277A91CF0DEE200A21238 /* Foundation+Akt */ = {
 			isa = PBXGroup;
 			children = (
+				A88BCA791D8292340070B6F7 /* NSArray+AKTArray.h */,
+				A88BCA7A1D8292340070B6F7 /* NSArray+AKTArray.m */,
+				A88BCA7B1D8292340070B6F7 /* NSDictionary+AKTDic.h */,
+				A88BCA7C1D8292340070B6F7 /* NSDictionary+AKTDic.m */,
 				F8B277AA1CF0DEE200A21238 /* NSFileManager+AKTFileManager.h */,
 				F8B277AB1CF0DEE200A21238 /* NSFileManager+AKTFileManager.m */,
 				F8B277AC1CF0DEE200A21238 /* NSObject+AKT.h */,
@@ -465,11 +475,13 @@
 				F8B277FA1CF0DEE200A21238 /* AKTLayoutAttribute.m in Sources */,
 				F8B277F01CF0DEE200A21238 /* AKTNaviPushAnimation.m in Sources */,
 				F8B277FC1CF0DEE200A21238 /* AKTReferenceConfiguration.m in Sources */,
+				A88BCA7E1D8292340070B6F7 /* NSDictionary+AKTDic.m in Sources */,
 				F84A2EEF1CC47F8A001C3F37 /* MASViewAttribute.m in Sources */,
 				F89DF0861CF94EC700A59181 /* UIImageView+AKT.m in Sources */,
 				F84A2EEB1CC47F8A001C3F37 /* MASCompositeConstraint.m in Sources */,
 				F8B277F51CF0DEE200A21238 /* AKTNavigationBar.m in Sources */,
 				F8B77AF81CC27C1F00906CB7 /* AppDelegate.m in Sources */,
+				A88BCA7D1D8292340070B6F7 /* NSArray+AKTArray.m in Sources */,
 				F8B277FF1CF0DEE200A21238 /* UIView+ViewAttribute.m in Sources */,
 				F8B77AF51CC27C1F00906CB7 /* main.m in Sources */,
 				F8B277F71CF0DEE200A21238 /* AKTViewController.m in Sources */,
