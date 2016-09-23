@@ -11,14 +11,14 @@
 //--------------# System related #--------------
 // Show debug info in debug mode When it's value is equal to Yes
 #ifdef DEBUG
-    #if DEBUG != 0
+#if DEBUG != 0
 //        #define DEBUG_INFO_SHOW YES
-        #define DEBUG_INFO_SHOW NO
-    #else
-        #define DEBUG_INFO_SHOW NO
-    #endif
+#define DEBUG_INFO_SHOW NO
 #else
-    #define DEBUG_INFO_SHOW NO
+#define DEBUG_INFO_SHOW NO
+#endif
+#else
+#define DEBUG_INFO_SHOW NO
 #endif
 
 #define mAKT_SCREENWITTH ([UIScreen mainScreen].bounds.size.width)
@@ -46,18 +46,31 @@
 // 弱引用
 #define AKTLyoutVersion 12
 #if __has_feature(objc_arc)
-#define AKTWeakView(VAR, OBJ) __weak typeof(OBJ) VAR = OBJ
+    #define AKTWeakView(VAR, OBJ) __weak typeof(OBJ) VAR = OBJ
+
+    #define AKTRelease(obj) obj
+    #define AKTRetain(obj) obj
+    #define AKTAutorelease(obj) obj
 #else
-#define AKTWeakView(VAR, OBJ) __block typeof(OBJ) VAR = OBJ
+    #define AKTWeakView(VAR, OBJ) __block typeof(OBJ) VAR = OBJ
+    // 引用计数器操作
+    #define AKTRelease(obj) [obj release]
+    #define AKTRetain(obj) [obj retain]
+    #define AKTAutorelease(obj) [obj autorelease]
 #endif
 //--------------# E.n.d #--------------#>System related
 
 //--------------# UI related #--------------
 #import <UIKit/UIKit.h>
+#import "UIImage+AKT.h"
+#import "NSArray+AKTArray.h"
+#import "NSDictionary+AKTDic.h"
+
 // UIimage
 #define mAKT_Image(Name) [UIImage imageNamed:Name]
 #define mAKT_Image_Origin(Name) ([mAKT_Image(Name) imageWithRenderingMode:(UIImageRenderingModeAlwaysOriginal)])
 #define mAKT_Image_Tint(Name) ([mAKT_Image(Name) imageWithRenderingMode:(UIImageRenderingModeAlwaysTemplate)])
+UIImage * aktNoBlendImage(UIImage *image, UIColor *backgroundColor);
 
 // Font
 #define mAKT_FontRegular(S) [UIFont systemFontOfSize:S]
@@ -74,7 +87,8 @@
 #define mAKT_Font_Bold_12 [UIFont boldSystemFontOfSize:12]
 
 // Color setting
-#define mAKT_Color_Color(R,G,B,α) ([[UIColor alloc]initWithRed:R/255.0f green:G/255.0f blue:B/255.0f alpha:α])
+#define mAKT_Color_Color(R,G,B,α) ([UIColor colorWithRed:R/255.f green:G/255.f blue:B/255.f alpha:α])
+
 #define mAKT_Color_White ([UIColor whiteColor])
 #define mAKT_Color_Black ([UIColor blackColor])
 #define mAKT_Color_DarkGray ([UIColor darkGrayColor])
@@ -107,13 +121,22 @@ UIColor *aktRandomColor(CGFloat alpha);
 #define mAKT_Color_Background_204 (mAKT_Color_Color(204,204,204,1))
 
 // Add select effect
-#define mAKt_BUTTON_MASK(VIEW)     UIView *mask = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];\
-mask.backgroundColor = [UIColor blackColor];\
-mask.alpha = .4;\
-[(VIEW) addSubview:mask];\
-dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{\
-[mask removeFromSuperview];\
-})
+//#define mAKt_BUTTON_MASK(VIEW)     UIView *mask = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];\
+//mask.backgroundColor = [UIColor blackColor];\
+//mask.alpha = .4;\
+//[(VIEW) addSubview:mask];\
+//dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{\
+//[mask removeFromSuperview];\
+//})
+
+#define mAKT_CornerRadius(VIEW, RADIUS) __AKT_CornerRadius_IMPL__(VIEW, RADIUS)
+#define __AKT_CornerRadius_IMPL__(VIEW, RADIUS) (addmask(VIEW, RADIUS))
+void addmask(UIView *view, CGFloat cornerRadius);
+
+// Return pixel aligned value
+CGFloat aktPicFloat(CGFloat value);
+CGRect aktPixRect(CGFloat x, CGFloat y, CGFloat width, CGFloat height);
+CGSize aktPixSize(CGFloat width, CGFloat height);
 //--------------# E.n.d #--------------#>UI related
 
 //--------------# Foundation related #--------------
@@ -123,13 +146,13 @@ dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.1 * NSEC_PER_SEC)), d
 
 // AKTLog
 #ifdef DEBUG
-    #if DEBUG_INFO_SHOW == YES
-        #define mAKT_Log(fmt, ...) {NSLog((@"%s [Line %d] DEBUG: " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);}
-    #else
-        #define mAKT_Log(fmt, ...)
-    #endif
+#if DEBUG_INFO_SHOW == YES
+#define mAKT_Log(fmt, ...) {NSLog((@"%s [Line %d] DEBUG: " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);}
 #else
-    #define mAKT_Log(fmt, ...)
+#define mAKT_Log(fmt, ...)
+#endif
+#else
+#define mAKT_Log(fmt, ...)
 #endif
 
 // Internationalization
