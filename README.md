@@ -1,12 +1,12 @@
 [ ![AKTKit.AKTLayout](https://raw.githubusercontent.com/AkteamYang/AKTKit.AKTLayout/master/Imgs/AKTLayout.jpg) ](https://github.com/AkteamYang/AKTKit.AKTLayout)
-#[AKTLayout](https://github.com/AkteamYang/AKTKit.AKTLayout)
+# [AKTLayout](https://github.com/AkteamYang/AKTKit.AKTLayout)
 https://github.com/AkteamYang/AKTKit.AKTLayout
 
 AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系统的自动布局在复杂的界面呈现中，性能衰减十分严重（Masonry、PureLayout、FLKAutoLayout...都是基于`NSLayoutConstraint`的自动布局书写框架）。AKTLayout最初的目的仅仅是为了简化手动布局时的代码编写，后来引入了高性能的内建自动布局引擎，展现出令人惊喜的特性。
 
-###New update
+### New update
 -----------------
-####V 1.3.0  
+#### V 1.3.0  
 更新日期2016.6.28
 - 增加动态布局特性，在不同的条件下布局可变。
 - 添加布局完成事件
@@ -15,17 +15,17 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 
 >1.3.0版本动态特性，可以根据不同的条件选择不同的布局
 
-####V 1.2.2  
+#### V 1.2.2  
 更新日期2016.6.5
 - 增加循环参照检测及提示
 - 增加UILabel、UIImageView的自适应
 - 增加View布局完成事件
 
-####V 1.2.1  
+#### V 1.2.1  
 更新日期2016.5.24
 - 修复异步运算的兼容性问题
 
-####V 1.2.0  
+#### V 1.2.0  
 更新日期2016.5.21
 - 布局更新性能相比1.0.0提升约300%！
 - 移除对于UIView生命周期的介入性操作，不再需要手动控制UIView的生命周期，降低使用成本
@@ -35,13 +35,13 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 >1.2.0版本布局更新性能的提升还是非常明显的，主要更新了布局刷新的函数调用方式以及view的布局更新逻辑。由于view是相互参照的，某个view的变化会带动相关联的view的变化，在复杂布局中，这些关联关系常常是有重叠的，这样也就导致，同一个view可能被多次计算，理论上来讲只有最后一次计算才是有效的。目前AKTLayout 1.2.0采用最为高效的工作方式自动忽略无效的计算。
 
 
-###New beginning
+### New beginning
 ---------------
 ![orientation](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/AutoLayout.gif?raw=true)
 > 通过**AKTLayout**实现的自动布局
 以图片为中心，四周的矩形各有一个顶点和图片顶点相连，色块内部的白色矩形为子视图，参考了父视图的中心点和两个边缘。
 
-###Setup
+### Setup
 
 ------------
 - **从GitHub手动获取**
@@ -56,7 +56,7 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 	在Podfile中添加`pod 'AKTLayout'`如果你的`pod search AKTLayout `搜索不到结果，可以`pod setup`更新一下本地pod仓库
 
 
-###Usage
+### Usage
 
 ------------
 
@@ -125,7 +125,7 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架，由于系�
 - **More usage**
 
 https://github.com/AkteamYang/AKTKit.AKTLayout/wiki/Usage-of-AKTLayout
-###Implementation architecture
+### Implementation architecture
 
 ------------
 
@@ -173,7 +173,7 @@ AKTLayou顶层采用了基于Objective-C语法的shell，通过shell我们可以
 	
 AKTLyout采用优化的响应式布局更新系统，自动忽略无效的计算。当某个视图布局发生变化时，自动重计算参照此视图的视图布局，在复杂的参照布局中依然保持高性能。
 
-###FAQ&Contact
+### FAQ&Contact
 
 ------------
 目前已在9.0系统完成测试，低版本系统后续完成测试。
