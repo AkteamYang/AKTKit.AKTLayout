@@ -1,5 +1,5 @@
 [ ![AKTKit.AKTLayout](https://raw.githubusercontent.com/AkteamYang/AKTKit.AKTLayout/master/Imgs/AKTLayout.jpg) ](https://github.com/AkteamYang/AKTKit.AKTLayout)
-#[AKTLayout](https://github.com/AkteamYang/AKTKit.AKTLayout)
+# [AKTLayout](https://github.com/AkteamYang/AKTKit.AKTLayout)
 https://github.com/AkteamYang/AKTKit.AKTLayout
 
 AKTLayout是一个服务于IOS平台的高性能自动布局框架。由于系统的自动布局在复杂的界面呈现中，性能衰减十分严重（Masonry、PureLayout、FLKAutoLayout...都是基于`NSLayoutConstraint`的自动布局书写框架）。AKTLayout最初的目的仅仅是为了简化手动布局时的代码编写，后来引入了高性能的内建自动布局引擎，展现出令人惊喜的特性
@@ -7,7 +7,7 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架。由于系�
 ![AKTKit.AKTLayout](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/Demo/Demo1.gif?raw=true)
 > 动态特性
 
-####参照类型 
+#### 参照类型 
 
 | vertical  | horizontal  |
 | :------------: | :------------: |
@@ -21,7 +21,7 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架。由于系�
 ![AKTKit.AKTLayout](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/Demo/reference.png?raw=true)
 > 参照最终体现到坐标值，除了的`size`和`edge`之外，其余的参照都可以参考固定值和视图，为了提高运算效率参照的写法做了特殊规定，只能通过框架提供的固定方法获取：`aktValue()`、`aktView()`、`aktSize()`、`view.akt_top、view.akt_width......`
 
-####静态布局
+#### 静态布局
 
 - 静态布局的基本结构：
 ```objective-c
@@ -53,7 +53,7 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架。由于系�
 
 `layout.top.left.equalTo(akt_value(10)).coefficientOffset(5).multiple(1).offset(2);` 视图的顶部和左边缘坐标值等于(10+5)*1+2,即17
 
-####动态布局
+#### 动态布局
 
 ![DynamicLayou](https://github.com/AkteamYang/AKTKit.AKTLayout/blob/master/Imgs/Demo/Demo2.gif?raw=true)
 > 动态布局更大程度上提高了自动布局的灵活性，你可以与`frame`混合布局。
@@ -106,7 +106,7 @@ AKTLayout是一个服务于IOS平台的高性能自动布局框架。由于系�
 
 当`condition`返回为`YES`的时候布局将会使用对应的动态布局部分，`condition`block会被频繁调用不应该放置和条件判断无关的操作，`attribute`block只有需要更新动态布局时才会被调用，如果`condition`条件成立，但是上次和本次布局相同，`attribute`也不会被调用。由于二者会被长期持有，我们在`condition`和`attribute`中使用变量时尤其是参考的视图需要声明为弱引用，其他对象的使用可以按照需要决定。
 
-####其他
+#### 其他
 - 混合布局
 
 AKTLayout很灵活,在应对复杂布局的时候，支持使用一些`frame`计算,具体的做法是我们给视图添加部分AKTLayout布局，然后在必要的时候我们可以设置`frame`并调用`setNeedAKTLayout`方法来刷新`AKTLayout`的布局，最终得到的将是二者叠加的效果,`Demo`的`interactive page`部分使用了混合布局。
@@ -115,7 +115,7 @@ AKTLayout很灵活,在应对复杂布局的时候，支持使用一些`frame`计
 AKTLayout提供了布局完成事件接口`- (void)aktDidLayoutTarget:(id)target forSelector:(SEL)selector;`和`- (void)aktDidLayoutWithComplete:(void(^)(UIView *view))complete;`，您可以自己选择方法，`block`会被长期持有，注意循环引用的问题。
 
 
-###FAQ&Contact
+### FAQ&Contact
 
 ------------
 目前已在9.0系统完成测试，低版本系统后续完成测试。
